@@ -388,3 +388,18 @@ class WeeklyBlacklist(Model):
     id            = Column(Integer, primary_key=True)
     user_id       = Column(Integer, ForeignKey('users.id'))
     reason        = Column(String(256))
+
+
+class ModeratorReviewRequest(Model):
+    """ A record that indicates a cubers.io has requested that the associated UserEventResults be
+    reviewed by an admin or results moderator. """
+
+    __tablename__ = 'moderator_review_request'
+    id            = Column(Integer, primary_key=True)
+    results_id    = Column(Integer, ForeignKey('user_event_results.id'))
+    Results       = relationship('UserEventResults', primaryjoin=results_id == UserEventResults.id)
+    user_id       = Column(Integer, ForeignKey('users.id'))
+    ReportingUser = relationship('User', primaryjoin=user_id == User.id)
+    admin_id      = Column(Integer, ForeignKey('users.id'))
+    AdminUser     = relationship('User', primaryjoin=admin_id == User.id)
+    isAddressed   = Column(Boolean)
