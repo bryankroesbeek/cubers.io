@@ -6,7 +6,7 @@ from arrow import now
 from app import app
 from app.persistence.models import UserEventResults, User
 from app.persistence.comp_manager import get_comp_event_name_by_id, get_comp_event_by_id
-from app.persistence.weekly_blacklist_manager import ensure_weekly_blacklist_for_user,\
+from app.persistence.weekly_blacklist_manager import create_weekly_blacklist_for_user,\
     get_weekly_blacklist_entry_by_user_id
 from app.tasks.results_management import blacklist_all_complete_results_for_user_and_comp
 
@@ -183,7 +183,7 @@ def __perform_average_results_blacklist_action(results: UserEventResults,
     blacklisted due to being lower than the single threshold. """
 
     # Make sure any new result this week are auto-blacklisted
-    ensure_weekly_blacklist_for_user(user)
+    create_weekly_blacklist_for_user(user)
 
     # Retroactively blacklisted any non-blacklisted results already submitted this week
     comp_id = get_comp_event_by_id(results.comp_event_id).competition_id

@@ -397,7 +397,8 @@ class ModeratorReviewRequest(Model):
     __tablename__ = 'moderator_review_request'
     id            = Column(Integer, primary_key=True)
     results_id    = Column(Integer, ForeignKey('user_event_results.id'))
-    Results       = relationship('UserEventResults', primaryjoin=results_id == UserEventResults.id)
+    Results       = relationship('UserEventResults', primaryjoin=results_id == UserEventResults.id,
+        backref="ModeratorReviewRequest")
     user_id       = Column(Integer, ForeignKey('users.id'))
     ReportingUser = relationship('User', primaryjoin=user_id == User.id)
     admin_id      = Column(Integer, ForeignKey('users.id'))
