@@ -16,6 +16,8 @@ from app.persistence.user_results_manager import save_event_results, get_event_r
 from app.util.events import get_mbld_successful_and_attempted
 from app.routes.timer import timer_page
 from app.routes import api_login_required
+from app.routes.api.api_routes import get_event
+from app.util.token import valid_token
 
 # -------------------------------------------------------------------------------------------------
 
@@ -53,9 +55,16 @@ ERR_MSG_NOT_VALID_FOR_FMC = 'This operation is not valid for FMC!'
 
 @app.route('/post_solve', methods=['POST'])
 @api_login_required
+@app.route('/api/submit-solve', methods=['POST'])
 def post_solve():
     """ Saves a solve. Ensures the user has UserEventResults for this event, associated this solve
     with those results, and processes the results to make sure all relevant data is up-to-date. """
+
+    if not valid_token(request.headers.get('X_CSRF_TOKEN')):
+        return ('', 400)
+
+    if not current_user.is_authenticated:
+        return abort(HTTPStatus.UNAUTHORIZED)
 
     # Extract JSON solve data, deserialize to dict, and verify that all expected fields are present
     solve_data = json.loads(request.data)
@@ -110,7 +119,7 @@ def post_solve():
     process_event_results(user_event_results, comp_event, current_user)
     save_event_results(user_event_results)
 
-    return timer_page(comp_event_id, gather_info_for_live_refresh=True)
+    return get_event(comp_event_id)#timer_page(comp_event_id, gather_info_for_live_refresh=True)
 
 
 @app.route('/toggle_prev_penalty', methods=['POST'])
@@ -169,7 +178,7 @@ def toggle_prev_penalty():
     process_event_results(user_event_results, comp_event, current_user)
     save_event_results(user_event_results)
 
-    return timer_page(comp_event_id, gather_info_for_live_refresh=True)
+    return get_event(comp_event_id)#timer_page(comp_event_id, gather_info_for_live_refresh=True)
 
 
 @app.route('/delete_prev_solve', methods=['POST'])
@@ -218,7 +227,7 @@ def delete_prev_solve():
         process_event_results(user_event_results, comp_event, current_user)
         save_event_results(user_event_results)
 
-    return timer_page(comp_event_id, gather_info_for_live_refresh=True)
+    return get_event(comp_event_id) #timer_page(comp_event_id, gather_info_for_live_refresh=True)
 
 
 @app.route('/apply_comment', methods=['POST'])
@@ -403,7 +412,7 @@ def delete_solve():
         process_event_results(user_event_results, comp_event, current_user)
         save_event_results(user_event_results)
 
-    return timer_page(comp_event.id, gather_info_for_live_refresh=True)
+    return get_event(comp_event.id) #timer_page(comp_event_id, gather_info_for_live_refresh=True)
 
 # -------------------------------------------------------------------------------------------------
 
