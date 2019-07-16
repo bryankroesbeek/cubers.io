@@ -1,0 +1,3 @@
+web: FLASK_ENV=development flask run
+frontend: npm run watch
+worker: huey_consumer.py app.huey -k thread -w 4
