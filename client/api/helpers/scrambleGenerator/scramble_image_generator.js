@@ -1,4 +1,4 @@
-(function() {
+export function sig(scramble, eventName, settings) {
     var app = window.app;
 
     var cube_colors = [];
@@ -61,31 +61,31 @@
         "Dino Cube": [12, 12],
     }
 
-    var setColors = function() {
-        if (window.app.userSettingsManager.get_setting(app.Settings.USE_CUSTOM_CUBE_COLORS)) {
+    var setColors = function () {
+        if (settings.USE_CUSTOM_CUBE_COLORS) {
             cube_colors = [
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_CUBE_COLOR_D),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_CUBE_COLOR_L),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_CUBE_COLOR_B),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_CUBE_COLOR_U),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_CUBE_COLOR_R),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_CUBE_COLOR_F)
+                settings.CUSTOM_CUBE_COLOR_D,
+                settings.CUSTOM_CUBE_COLOR_L,
+                settings.CUSTOM_CUBE_COLOR_B,
+                settings.CUSTOM_CUBE_COLOR_U,
+                settings.CUSTOM_CUBE_COLOR_R,
+                settings.CUSTOM_CUBE_COLOR_F
             ];
             skewb_colors = [
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_CUBE_COLOR_U),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_CUBE_COLOR_B),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_CUBE_COLOR_R),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_CUBE_COLOR_D),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_CUBE_COLOR_F),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_CUBE_COLOR_L)
+                settings.CUSTOM_CUBE_COLOR_U,
+                settings.CUSTOM_CUBE_COLOR_B,
+                settings.CUSTOM_CUBE_COLOR_R,
+                settings.CUSTOM_CUBE_COLOR_D,
+                settings.CUSTOM_CUBE_COLOR_F,
+                settings.CUSTOM_CUBE_COLOR_L
             ];
             sq1_colors = {
-                'U': window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_CUBE_COLOR_U),
-                'R': window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_CUBE_COLOR_R),
-                'F': window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_CUBE_COLOR_F),
-                'D': window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_CUBE_COLOR_D),
-                'L': window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_CUBE_COLOR_L),
-                'B': window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_CUBE_COLOR_B)
+                'U': settings.CUSTOM_CUBE_COLOR_U,
+                'R': settings.CUSTOM_CUBE_COLOR_R,
+                'F': settings.CUSTOM_CUBE_COLOR_F,
+                'D': settings.CUSTOM_CUBE_COLOR_D,
+                'L': settings.CUSTOM_CUBE_COLOR_L,
+                'B': settings.CUSTOM_CUBE_COLOR_B
             };
         } else {
             // Order is    D,      L,      B,      U,      R,      F
@@ -102,38 +102,38 @@
             };
         }
 
-        if (window.app.userSettingsManager.get_setting(app.Settings.USE_CUSTOM_PYRAMINX_COLORS)) {
+        if (false) {
             pyra_colors = [
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_PYRAMINX_COLOR_F),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_PYRAMINX_COLOR_L),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_PYRAMINX_COLOR_R),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_PYRAMINX_COLOR_D)
+                settings.CUSTOM_PYRAMINX_COLOR_F,
+                settings.CUSTOM_PYRAMINX_COLOR_L,
+                settings.CUSTOM_PYRAMINX_COLOR_R,
+                settings.CUSTOM_PYRAMINX_COLOR_D
             ];
         } else {
             pyra_colors = ['#0f0', '#f00', '#00f', '#ff0'];
         }
 
-        if (window.app.userSettingsManager.get_setting(app.Settings.USE_CUSTOM_MEGAMINX_COLORS)) {
+        if (false) {
             mega_colors = [
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_MEGAMINX_COLOR_1),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_MEGAMINX_COLOR_2),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_MEGAMINX_COLOR_3),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_MEGAMINX_COLOR_4),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_MEGAMINX_COLOR_5),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_MEGAMINX_COLOR_6),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_MEGAMINX_COLOR_7),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_MEGAMINX_COLOR_8),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_MEGAMINX_COLOR_9),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_MEGAMINX_COLOR_10),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_MEGAMINX_COLOR_11),
-                window.app.userSettingsManager.get_setting(app.Settings.CUSTOM_MEGAMINX_COLOR_12),
+                settings.CUSTOM_MEGAMINX_COLOR_1,
+                settings.CUSTOM_MEGAMINX_COLOR_2,
+                settings.CUSTOM_MEGAMINX_COLOR_3,
+                settings.CUSTOM_MEGAMINX_COLOR_4,
+                settings.CUSTOM_MEGAMINX_COLOR_5,
+                settings.CUSTOM_MEGAMINX_COLOR_6,
+                settings.CUSTOM_MEGAMINX_COLOR_7,
+                settings.CUSTOM_MEGAMINX_COLOR_8,
+                settings.CUSTOM_MEGAMINX_COLOR_9,
+                settings.CUSTOM_MEGAMINX_COLOR_10,
+                settings.CUSTOM_MEGAMINX_COLOR_11,
+                settings.CUSTOM_MEGAMINX_COLOR_12,
             ];
         } else {
             mega_colors = ['#fff', '#d00', '#060', '#81f', '#fc0', '#00b', '#ffb', '#8df', '#f83', '#7e0', '#f9f', '#999'];
         }
     };
 
-    var mathlib = (function() {
+    var mathlib = (function () {
         var DEBUG = false;
 
         var Cnk = [],
@@ -205,31 +205,31 @@
             this.ea = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22];
         }
 
-        CubieCube.EdgeMult = function(a, b, prod) {
+        CubieCube.EdgeMult = function (a, b, prod) {
             for (var ed = 0; ed < 12; ed++) {
                 prod.ea[ed] = a.ea[b.ea[ed] >> 1] ^ (b.ea[ed] & 1);
             }
         }
 
-        CubieCube.CornMult = function(a, b, prod) {
+        CubieCube.CornMult = function (a, b, prod) {
             for (var corn = 0; corn < 8; corn++) {
                 var ori = ((a.ca[b.ca[corn] & 7] >> 3) + (b.ca[corn] >> 3)) % 3;
                 prod.ca[corn] = a.ca[b.ca[corn] & 7] & 7 | ori << 3;
             }
         }
 
-        CubieCube.CubeMult = function(a, b, prod) {
+        CubieCube.CubeMult = function (a, b, prod) {
             CubieCube.CornMult(a, b, prod);
             CubieCube.EdgeMult(a, b, prod);
         }
 
-        CubieCube.prototype.init = function(ca, ea) {
+        CubieCube.prototype.init = function (ca, ea) {
             this.ca = ca.slice();
             this.ea = ea.slice();
             return this;
         }
 
-        CubieCube.prototype.isEqual = function(c) {
+        CubieCube.prototype.isEqual = function (c) {
             for (var i = 0; i < 8; i++) {
                 if (this.ca[i] != c.ca[i]) {
                     return false;
@@ -268,7 +268,7 @@
             [48, 14]
         ];
 
-        CubieCube.prototype.toFaceCube = function(cFacelet, eFacelet) {
+        CubieCube.prototype.toFaceCube = function (cFacelet, eFacelet) {
             cFacelet = cFacelet || cornerFacelet;
             eFacelet = eFacelet || edgeFacelet;
             var ts = "URFDLB";
@@ -291,7 +291,7 @@
             return f.join("");
         }
 
-        CubieCube.prototype.invFrom = function(cc) {
+        CubieCube.prototype.invFrom = function (cc) {
             for (var edge = 0; edge < 12; edge++) {
                 this.ea[cc.ea[edge] >> 1] = edge << 1 | cc.ea[edge] & 1;
             }
@@ -301,7 +301,7 @@
             return this;
         }
 
-        CubieCube.prototype.fromFacelet = function(facelet, cFacelet, eFacelet) {
+        CubieCube.prototype.fromFacelet = function (facelet, cFacelet, eFacelet) {
             cFacelet = cFacelet || cornerFacelet;
             eFacelet = eFacelet || edgeFacelet;
             var count = 0;
@@ -365,7 +365,7 @@
 
         CubieCube.moveCube = moveCube;
 
-        CubieCube.prototype.edgeCycles = function() {
+        CubieCube.prototype.edgeCycles = function () {
             var visited = [];
             var small_cycles = [0, 0, 0];
             var cycles = 0;
@@ -409,7 +409,7 @@
         }
 
         function createPrun(prun, init, size, maxd, doMove, N_MOVES, N_POWER, N_INV) {
-            var isMoveTable = $.isArray(doMove);
+            var isMoveTable = Array.isArray(doMove);
             N_MOVES = N_MOVES || 6;
             N_POWER = N_POWER || 3;
             N_INV = N_INV || 256;
@@ -427,7 +427,7 @@
                 var find = inv ? 0xf : l;
                 var check = inv ? l : 0xf;
 
-                out: for (var p = 0; p < size; p++, val >>= 4) {
+                out: for (var p = 0; p < size; p++ , val >>= 4) {
                     if ((p & 7) == 0) {
                         val = prun[p >> 3];
                         if (!inv && val == -1) {
@@ -474,7 +474,7 @@
 
         var _ = Solver.prototype;
 
-        _.search = function(state, minl, MAXL) {
+        _.search = function (state, minl, MAXL) {
             MAXL = (MAXL || 99) + 1;
             if (!this.inited) {
                 this.move = [];
@@ -502,7 +502,7 @@
             return maxl == MAXL ? null : this.sol.reverse();
         }
 
-        _.toStr = function(sol, move_map, power_map) {
+        _.toStr = function (sol, move_map, power_map) {
             var ret = [];
             for (var i = 0; i < sol.length; i++) {
                 ret.push(move_map[sol[i][0]] + power_map[sol[i][1]]);
@@ -510,7 +510,7 @@
             return ret.join(' ').replace(/ +/g, ' ');
         }
 
-        _.idaSearch = function(state, maxl, lm) {
+        _.idaSearch = function (state, maxl, lm) {
             var N_STATES = this.N_STATES;
             for (var i = 0; i < N_STATES; i++) {
                 if (getPruning(this.prun[i], state[i]) > maxl) {
@@ -606,7 +606,7 @@
         }
     })();
 
-    var clock = (function(rn, Cnk) {
+    var clock = (function (rn, Cnk) {
         var moveArr = [
             [0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], //UR
             [0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0], //DR
@@ -804,7 +804,7 @@
 
     })(mathlib.rn, mathlib.Cnk);
 
-    var image = (function() {
+    var image = (function () {
 
         var scalingFactor = 10;
 
@@ -818,7 +818,7 @@
             var moveseq = [];
             var moves = ("" + ' ' + scramble).split(' ');
             var m, w, f, p;
-            for (var s=0; s<moves.length; s++) {
+            for (var s = 0; s < moves.length; s++) {
                 m = scrambleReg.exec(moves[s]);
                 if (m == null) {
                     continue;
@@ -828,7 +828,7 @@
                     p = "2'".indexOf(m[5] || 'X') + 2;
                     f = [0, 4, 5][f % 3];
                     moveseq.push([moveMap.indexOf("FRUBLD".charAt(f)), 2, p]);
-                    moveseq.push([moveMap.indexOf("FRUBLD".charAt(f)), 1, 4-p]);
+                    moveseq.push([moveMap.indexOf("FRUBLD".charAt(f)), 1, 4 - p]);
                     continue;
                 }
                 w = f < 12 ? (~~m[1] || ~~m[4] || ((m[3] == "w" || f > 5) && 2) || 1) : -1;
@@ -865,7 +865,7 @@
             ctx.beginPath();
 
             ctx.fillStyle = color;
-            if(color == TRANSPARENT) {
+            if (color == TRANSPARENT) {
                 ctx.strokeStyle = TRANSPARENT;
             } else {
                 ctx.strokeStyle = "#000";
@@ -947,7 +947,7 @@
             }
         }
 
-        var mgmImage = (function() {
+        var mgmImage = (function () {
             var moveU = [4, 0, 1, 2, 3, 9, 5, 6, 7, 8, 10, 11, 12, 13, 58, 59, 16, 17, 18, 63, 20, 21, 22, 23, 24, 14, 15, 27, 28, 29, 19, 31, 32, 33, 34, 35, 25, 26, 38, 39, 40, 30, 42, 43, 44, 45, 46, 36, 37, 49, 50, 51, 41, 53, 54, 55, 56, 57, 47, 48, 60, 61, 62, 52, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131];
             var moveR = [81, 77, 78, 3, 4, 86, 82, 83, 8, 85, 87, 122, 123, 124, 125, 121, 127, 128, 129, 130, 126, 131, 89, 90, 24, 25, 88, 94, 95, 29, 97, 93, 98, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 26, 22, 23, 48, 30, 31, 27, 28, 53, 32, 69, 70, 66, 67, 68, 74, 75, 71, 72, 73, 76, 101, 102, 103, 99, 100, 106, 107, 108, 104, 105, 109, 46, 47, 79, 80, 45, 51, 52, 84, 49, 50, 54, 0, 1, 2, 91, 92, 5, 6, 7, 96, 9, 10, 15, 11, 12, 13, 14, 20, 16, 17, 18, 19, 21, 113, 114, 110, 111, 112, 118, 119, 115, 116, 117, 120, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65];
             var moveD = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 33, 34, 35, 14, 15, 38, 39, 40, 19, 42, 43, 44, 45, 46, 25, 26, 49, 50, 51, 30, 53, 54, 55, 56, 57, 36, 37, 60, 61, 62, 41, 64, 65, 11, 12, 13, 47, 48, 16, 17, 18, 52, 20, 21, 22, 23, 24, 58, 59, 27, 28, 29, 63, 31, 32, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 124, 125, 121, 122, 123, 129, 130, 126, 127, 128, 131];
@@ -998,7 +998,7 @@
             }
 
             var movere = /[RD][+-]{2}|U'?/
-            return function(moveseq) {
+            return function (moveseq) {
                 var state = [];
                 for (var i = 0; i < 12; i++) {
                     for (var j = 0; j < 11; j++) {
@@ -1016,10 +1016,8 @@
                     doMove(state, axis, inv);
                 }
                 var imgSize = scalingFactor / 7.5;
-                canvas.width(7 * imgSize + 'em');
-                canvas.height(3.5 * imgSize + 'em');
-                canvas.attr('width', 9.8 * width);
-                canvas.attr('height', 4.9 * width);
+                canvas.width = 9.8 * width;
+                canvas.height  = 4.9 * width;
                 drawFace(state, 0, [width, off1X + 0 * efrac2, off1Y + 0 * efrac2], PI * 0.0);
                 drawFace(state, 11, [width, off1X + Math.cos(PI * 0.1) * efrac2, off1Y + Math.sin(PI * 0.1) * efrac2], PI * 0.2);
                 drawFace(state, 22, [width, off1X + Math.cos(PI * 0.5) * efrac2, off1Y + Math.sin(PI * 0.5) * efrac2], PI * 0.6);
@@ -1185,7 +1183,7 @@
             var movere = /([UD][RL]|ALL|[UDRLy])(\d[+-]?)?/
             var movestr = ['UR', 'DR', 'DL', 'UL', 'U', 'R', 'D', 'L', 'ALL']
 
-            return function(moveseq) {
+            return function (moveseq) {
                 var moves = moveseq.split(/\s+/);
                 var moveArr = clock.moveArr;
                 var flip = 9;
@@ -1212,15 +1210,13 @@
                     }
                 }
                 clks = [clks[0], clks[3], clks[6], clks[1], clks[4], clks[7], clks[2], clks[5], clks[8],
-                    12 - clks[2], clks[10], 12 - clks[8], clks[9], clks[11], clks[13], 12 - clks[0], clks[12], 12 - clks[6]
+                12 - clks[2], clks[10], 12 - clks[8], clks[9], clks[11], clks[13], 12 - clks[0], clks[12], 12 - clks[6]
                 ];
                 buttons = [buttons[3], buttons[2], buttons[0], buttons[1], 1 - buttons[0], 1 - buttons[1], 1 - buttons[3], 1 - buttons[2]];
 
                 var imgSize = scalingFactor / 7.5;
-                canvas.width(6.25 * imgSize + 'em');
-                canvas.height(3 * imgSize + 'em');
-                canvas.attr('width', 6.25 * 20 * width);
-                canvas.attr('height', 3 * 20 * width);
+                canvas.width = 6.25 * 20 * width;
+                canvas.height = 3 * 20 * width;
 
                 var y = [10, 30, 50];
                 var x = [10, 30, 50, 75, 95, 115];
@@ -1237,7 +1233,7 @@
         })();
 
 
-        var sq1Image = (function() {
+        var sq1Image = (function () {
             var posit = [];
             var mid = 0;
 
@@ -1293,7 +1289,7 @@
 
             var movere = /^\s*\(\s*(-?\d+),\s*(-?\d+)\s*\)\s*$/
 
-            return function(moveseq) {
+            return function (moveseq) {
 
                 if (!colors) {
                     setColors();
@@ -1315,11 +1311,8 @@
 
 
                 var imgSize = scalingFactor / 10;
-                canvas.width(11 * imgSize / 1.3 + 'em');
-                canvas.height(6.3 * imgSize / 1.3 + 'em');
-
-                canvas.attr('width', 11 * width);
-                canvas.attr('height', 6.3 * width);
+                canvas.width = 11 * width;
+                canvas.height = 6.3 * width;
 
                 var trans = [width, 2.7, 2.7];
                 //draw top
@@ -1374,7 +1367,7 @@
             }
         })();
 
-        var skewbImage = (function() {
+        var skewbImage = (function () {
             var width = 45;
             var gap = width / 10;
             var posit = [];
@@ -1455,7 +1448,7 @@
                 ], transform);
             }
 
-            return function(moveseq) {
+            return function (moveseq) {
                 var cnt = 0;
                 for (var i = 0; i < 6; i++) {
                     for (var f = 0; f < 5; f++) {
@@ -1467,11 +1460,8 @@
                     doMove(scramble[i][0], scramble[i][2] == 1 ? 1 : 2);
                 }
                 var imgSize = scalingFactor / 10;
-                canvas.width((8 * hsq3 + 0.3) * imgSize + 'em');
-                canvas.height(6.2 * imgSize + 'em');
-
-                canvas.attr('width', (8 * hsq3 + 0.3) * width + 1);
-                canvas.attr('height', 6.2 * width + 1);
+                canvas.width = (8 * hsq3 + 0.3) * width + 1;
+                canvas.height = 6.2 * width + 1;
 
                 for (var i = 0; i < 6; i++) {
                     face(i);
@@ -1496,7 +1486,7 @@
 
          */
 
-        var pyraImage = (function() {
+        var pyraImage = (function () {
             var width = 45;
             var posit = [];
             var colors = null;
@@ -1545,7 +1535,7 @@
                 }
             }
 
-            return function(moveseq) {
+            return function (moveseq) {
                 var cnt = 0;
                 for (var i = 0; i < 4; i++) {
                     for (var f = 0; f < 9; f++) {
@@ -1557,11 +1547,8 @@
                     doMove(scramble[i][0] + (scramble[i][1] == 2 ? 4 : 0), scramble[i][2] == 1 ? 1 : 2);
                 }
                 var imgSize = scalingFactor / 10;
-                canvas.width(7 * imgSize + 'em');
-                canvas.height(6.5 * hsq3 * imgSize + 'em');
-
-                canvas.attr('width', 7 * width);
-                canvas.attr('height', 6.5 * hsq3 * width);
+                canvas.width = 7 * width;
+                canvas.height = 6.5 * hsq3 * width;
 
                 for (var i = 0; i < 4; i++) {
                     face(i);
@@ -1569,25 +1556,25 @@
             }
         })();
 
-                /*
+        /*
 
-    face:
-      3
-    1 5 4 2
-      0
+face:
+3
+1 5 4 2
+0
 
-    posit:
-        0 1 2
-        3 4 5
-        6 7 8
+posit:
+0 1 2
+3 4 5
+6 7 8
 
-         */
+ */
 
-        var rediImage = (function() {
+        var rediImage = (function () {
             var width = 30;
             var posit = [];
             var colors = null;
-            var REDI_EDGE_INDICES = [1,3,5,7,10,12,14,16,19,21,23,25,28,30,32,34,37,39,41,43,46,48,50,52];
+            var REDI_EDGE_INDICES = [1, 3, 5, 7, 10, 12, 14, 16, 19, 21, 23, 25, 28, 30, 32, 34, 37, 39, 41, 43, 46, 48, 50, 52];
 
             function doMove(move) {
                 if (move == 'R') {
@@ -1669,23 +1656,23 @@
                         if (REDI_EDGE_INDICES.includes(posit_index)) {
                             if (i == 0 && j == 1) {
                                 drawPolygon(ctx, color, [
-                                    [i, i,     i + 1, i + 1.5, i + 1],
+                                    [i, i, i + 1, i + 1.5, i + 1],
                                     [j, j + 1, j + 1, j + 0.5, j]
                                 ], [width, offx, offy]);
                             } else if (i == 1 && j == 0) {
                                 drawPolygon(ctx, color, [
-                                    [i, i,     i + 0.5, i + 1, i + 1],
+                                    [i, i, i + 0.5, i + 1, i + 1],
                                     [j, j + 1, j + 1.5, j + 1, j]
                                 ], [width, offx, offy]);
                             } else if (i == 2 && j == 1) {
                                 drawPolygon(ctx, color, [
-                                    [i, i - 0.5, i,     i + 1, i + 1],
+                                    [i, i - 0.5, i, i + 1, i + 1],
                                     [j, j + 0.5, j + 1, j + 1, j]
                                 ], [width, offx, offy]);
                             } else {
                                 drawPolygon(ctx, color, [
-                                    [i, i,     i + 1, i + 1, i + 0.5],
-                                    [j, j + 1, j + 1, j    , j - 0.5]
+                                    [i, i, i + 1, i + 1, i + 0.5],
+                                    [j, j + 1, j + 1, j, j - 0.5]
                                 ], [width, offx, offy]);
                             }
                         } else {
@@ -1698,7 +1685,7 @@
                 }
             }
 
-            return function(moveseq) {
+            return function (moveseq) {
                 var cnt = 0;
                 for (var i = 0; i < 6; i++) {
                     for (var f = 0; f < 9; f++) {
@@ -1712,11 +1699,9 @@
                 }
 
                 var imgSize = scalingFactor / 50;
-                canvas.width(39 * imgSize + 'em');
-                canvas.height(29 * imgSize + 'em');
 
-                canvas.attr('width', 39 * 3 / 9 * width + 1);
-                canvas.attr('height', 29 * 3 / 9 * width + 1);
+                canvas.width = 39 * 3 / 9 * width + 1;
+                canvas.height = 29 * 3 / 9 * width + 1;
 
                 for (var i = 0; i < 6; i++) {
                     face(i);
@@ -2098,6 +2083,7 @@
                     doMove(scramble[i]);
                 }
 
+                // TODO
                 var imgSize = scalingFactor / 50;
                 canvas.width(39 * imgSize + 'em');
                 canvas.height((29 * imgSize)*1.33 + 'em');
@@ -2341,11 +2327,11 @@
                         // set color as normal, unless the void cube flag is set and the piece we're coloring
                         // is not an edge or corner
                         var color = colors[posit[(f * size + y) * size + x]];
-                        if (isVoidCube && (![0,size-1].includes(i)) && (![0,size-1].includes(j))) {
+                        if (isVoidCube && (![0, size - 1].includes(i)) && (![0, size - 1].includes(j))) {
                             color = TRANSPARENT;
                         }
 
-                        if (is332 && (j == 1) && [1,5,4,2].includes(f)) { continue; }
+                        if (is332 && (j == 1) && [1, 5, 4, 2].includes(f)) { continue; }
                         if (is332) {
                             if (f == 0) {
                                 adjustedOffy = initialOffy - 0.5;
@@ -2467,13 +2453,10 @@
                 }
 
                 if (returnCubeState) { return posit; }
+                var imgSize = scalingFactor / 1;
 
-                var imgSize = scalingFactor / 50;
-                canvas.width(39 * imgSize + 'em');
-                canvas.height(29 * imgSize + 'em');
-
-                canvas.attr('width', 39 * size / 9 * width + 1);
-                canvas.attr('height', 29 * size / 9 * width + 1);
+                canvas.width = 39 * size / 9 * width + 1;
+                canvas.height = 29 * size / 9 * width + 1;
 
                 for (var i = 0; i < 6; i++) {
                     face(i, size, isVoidCube, is332);
@@ -2572,11 +2555,11 @@
         }
 
         function getCanvasWidth() {
-            return parseInt($(canvas[0]).css('width').replace('px',''));
+            return canvas.width;
         }
 
         function getCanvasHeight() {
-            return parseInt($(canvas[0]).css('height').replace('px',''));
+            return canvas.height;
         }
 
         function setScalingFactorDirectly(size) {
@@ -2584,18 +2567,18 @@
         }
 
         function clearCanvas() {
-            ctx.clearRect(0, 0, canvas[0].width, canvas[0].height);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
 
         function findCanvas(canvasId) {
-            canvas = $(canvasId);
+            canvas = document.getElementById(canvasId);
             if (canvas.length == 0) {
                 return false;
             }
-            if (!canvas[0].getContext) {
+            if (!canvas.getContext) {
                 return false;
             }
-            ctx = canvas[0].getContext('2d');
+            ctx = canvas.getContext('2d');
             return true;
         }
 
@@ -2615,8 +2598,8 @@
      * Utility class for generating puzzle scrambles.
      */
     function ScrambleImageGenerator() {
-        this.largeCanvasId = '#big_scramble_image';
-        this.normalCanvasId = '#normal_scramble_image';
+        this.largeCanvasId = 'big_scramble_image';
+        this.normalCanvasId = 'normal_scramble_image';
         this.largeScalingFactor = 10;
         this.haveEstablishedLargeScalingFactor = false;
         this.desktopScalingFactor = 10;
@@ -2625,31 +2608,18 @@
         setColors();
 
         this.prepareNewImage();
-
-        var resetImageScalingAndRenderAgain = function() {
-            this.largeScalingFactor = 10;
-            this.haveEstablishedLargeScalingFactor = false;
-            this.desktopScalingFactor = 10;
-            this.haveEstablishedDesktopScalingFactor = false;
-            this.showNormalImage();
-        };
-        $(window).resize(resetImageScalingAndRenderAgain.bind(this));
     }
 
     ScrambleImageGenerator.prototype.prepareNewImage = function() {
 
         // Store these for later in case in case the user takes action to show a bigger scramble image
-        this.savedScramble = app.scramble;
-        this.savedEventName = app.eventName;
+        this.savedScramble = scramble;
+        this.savedEventName = eventName;
 
         // If the event is COLL, extract the actual scramble part, which should be the final thing after a line break
         if (this.savedEventName == 'COLL') {
             this.savedScramble = this.savedScramble.split('<br/>').pop();
         }
-
-        // Attempt to draw normal image. If we're on mobile, the normal canvas won't exist
-        // and it'll just bail early.
-        this.showNormalImage();
     };
 
     ScrambleImageGenerator.prototype.getCubeState = function(scramble) {
@@ -2700,7 +2670,7 @@
         }
 
         // Find the correct scaling factor and remember that we've done so
-        var targetWidth = $('.scramble_preview').width();
+        var targetWidth = document.getElementsByClassName('sidebar-scramble-preview')[0].clientWidth;
         this.desktopScalingFactor = this.determineScalingFactorAndDraw(targetWidth);
         this.haveEstablishedDesktopScalingFactor = true;
 
@@ -2722,7 +2692,7 @@
 
         // Target width & height is 20 less than device/browser width & height, so there's a ~10px buffer on either side
         // Find the correct scaling factor and remember that we've done so
-        var targetWidth = $(window).width() - 20;
+        var targetWidth = window.innerWidth - 20;
         this.largeScalingFactor = this.determineScalingFactorAndDraw(targetWidth);
         this.haveEstablishedLargeScalingFactor = true;
 
@@ -2735,7 +2705,6 @@
         // Start at 10, that's pretty small
         var testScalingFactor = 10;
         while (true) {
-
             image.setScalingFactorDirectly(testScalingFactor);
             image.draw([this.savedEventName, this.savedScramble], CANVAS_SMALL_RADIUS_IDX);
 
@@ -2743,9 +2712,6 @@
                 testScalingFactor = 50;
                 break;
             } else if (Math.abs(image.getCanvasWidth() - targetWidth)/(targetWidth) < 0.10) {
-                if (window.app.isMobile) {
-                    testScalingFactor -= 2;
-                }
                 if (image.getCanvasWidth() >= targetWidth) {
                     testScalingFactor -= 1;
                 }
@@ -2759,14 +2725,11 @@
     };
 
     ScrambleImageGenerator.prototype._clearImage = function() {
-        if (image.findCanvas('#normal_scramble_image')) {
-            image.clearCanvas();
-        }
-        if (image.findCanvas('#big_scramble_image')) {
+        if (image.findCanvas('normal_scramble_image')) {
             image.clearCanvas();
         }
     };
 
     // Make ScrambleImageGenerator visible at app scope
-    window.app.ScrambleImageGenerator = ScrambleImageGenerator;
-})();
+    return new ScrambleImageGenerator();
+};
