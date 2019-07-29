@@ -455,7 +455,10 @@ def get_bulk_settings_for_user_as_dict(user_id, setting_codes):
         __ensure_all_settings_desired_exist(user_id, setting_codes)
         return get_bulk_settings_for_user_as_dict(user_id, setting_codes)
 
-    return { setting.setting_code: setting.setting_value for setting in settings }
+    return { setting.setting_code: {
+        "value": setting.setting_value,
+        "title": SETTING_INFO_MAP[setting.setting_code].title
+    } for setting in settings }
 
 
 def get_settings_for_user_for_edit(user_id, setting_codes):

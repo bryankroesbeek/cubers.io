@@ -4,9 +4,11 @@ import { Header } from './Components/Header/Header';
 import { BrowserRouter } from 'react-router-dom';
 import { Home } from './Components/Home/Home';
 import { Compete } from './Components/Compete/Compete';
+import { UserSettings } from './Components/UserSettings/UserSettings'
 
 import * as Api from './api/api'
 import * as Types from './api/types'
+import * as Helpers from './api/helpers/settingsHelper'
 
 type RouterState = {
     settings: Types.UserSettings | "loading"
@@ -30,6 +32,7 @@ export class MainRouter extends React.Component<RouterProps, RouterState> {
 
     render() {
         if (this.state.settings === "loading") return null
+        let settings = this.state.settings
 
         return <BrowserRouter>
             <Header />
@@ -38,10 +41,15 @@ export class MainRouter extends React.Component<RouterProps, RouterState> {
                 <Route exact path="/" component={() => <Home />} />
 
                 <Route path="/compete/:eventType" component={({ match }: any) => {
-                    let settings = this.state.settings as Types.UserSettings
-                    return <Compete eventType={Number(match.params.eventType)} settings={settings} />
+                    return <Compete eventType={Number(match.params.eventType)} settings={Helpers.minifyRawSettings(settings)} />
                 }} />
                 <Route path="/event" component={() => <div>Event</div>} />
+                <Route path="/settings" component={() =>
+                    <UserSettings
+                        settings={settings}
+                        updateSettings={settings => this.setState({ settings: settings })}
+                    />}
+                />
             </Switch>
         </BrowserRouter>
     }

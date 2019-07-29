@@ -6,7 +6,7 @@ import * as Helpers from '../../api/helpers'
 import { ManualEntry } from '../Helper/ManualEntry';
 
 type TimerProps = {
-    settings: Types.UserSettings
+    settings: Types.UserSettingsMinified
     previousSolve: Types.PreviousSolve | "none"
     currentScrambleId: { id: number } | "none"
     eventName: string

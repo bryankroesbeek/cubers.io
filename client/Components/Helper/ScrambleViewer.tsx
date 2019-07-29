@@ -7,7 +7,7 @@ import * as ScrambleGenerator from '../../api/helpers/scrambleGenerator/scramble
 
 type ScrambleViewerProps = {
     event: Types.Event
-    settings: Types.UserSettings
+    settings: Types.UserSettingsMinified
 }
 
 type ScrambleViewerState = {

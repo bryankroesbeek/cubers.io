@@ -8,7 +8,7 @@ import { ScrambleViewer } from '../Helper/ScrambleViewer'
 
 type CompeteProps = {
     eventType: number
-    settings: Types.UserSettings
+    settings: Types.UserSettingsMinified
 }
 
 type CompeteState = {

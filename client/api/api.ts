@@ -29,15 +29,15 @@ function sendResources<T>(url: string, data: any, method: "POST" | "PUT" | "DELE
 }
 
 function postResources<T>(url: string, data: any): Promise<T> {
-    return sendResources(url, data, "POST")
+    return sendResources<T>(url, data, "POST")
 }
 
 function putResources<T>(url: string, data: any): Promise<T> {
-    return sendResources(url, data, "PUT")
+    return sendResources<T>(url, data, "PUT")
 }
 
 function deleteResources<T>(url: string, data: any): Promise<T> {
-    return sendResources(url, data, "DELETE")
+    return sendResources<T>(url, data, "DELETE")
 }
 
 export function getUserSettings(): Promise<types.UserSettings> {
