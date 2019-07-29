@@ -18,6 +18,8 @@ type UserSettingsState = {
 }
 
 export class UserSettings extends React.Component<UserSettingsProps, UserSettingsState>{
+    colorPickerRef: React.RefObject<HTMLSpanElement>
+
     constructor(props: UserSettingsProps) {
         super(props)
 
@@ -25,6 +27,22 @@ export class UserSettings extends React.Component<UserSettingsProps, UserSetting
             settings: Helpers.cleanSettings(props.settings),
             expandedOption: null
         }
+
+        this.colorPickerRef = React.createRef()
+    }
+
+    handleClick = (e: MouseEvent) => {
+        if (!this.colorPickerRef.current) return
+        if (!this.colorPickerRef.current.contains(e.target as Element))
+            this.setState({ expandedOption: null })
+    }
+
+    componentDidMount() {
+        window.addEventListener('mousedown', this.handleClick)
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('mousedown', this.handleClick)
     }
 
     submitSettings() {
@@ -102,7 +120,7 @@ export class UserSettings extends React.Component<UserSettingsProps, UserSetting
                     <span className="guide"></span>
                     {this.state.expandedOption === setting.key ?
                         <span className="color-setting-picker-align">
-                            <span className="color-setting-picker">
+                            <span ref={this.colorPickerRef} className="color-setting-picker">
                                 <SketchPicker disableAlpha={true} color={setting.value} onChangeComplete={e => {
                                     let newState = cloneDeep(this.state)
                                     let colors = cloneDeep(puzzleSettings)
