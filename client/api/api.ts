@@ -1,4 +1,5 @@
 import * as types from './types'
+import * as helpers from './helpers/settingsHelper'
 
 let getHeaders = (): Headers => {
     let token = document.getElementsByName('Anti-Forgery-Token')[0].getAttribute('value')
@@ -90,4 +91,8 @@ export function submitComment(compEventId: number, comment: string): Promise<typ
         comp_event_id: compEventId,
         comment: comment
     })
+}
+
+export function updateSettings(settings: types.UserSettingsMinified): Promise<types.UserSettings> {
+    return postResources<types.UserSettings>('/api/update-settings', settings)
 }

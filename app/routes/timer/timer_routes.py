@@ -99,7 +99,7 @@ SUBTYPE_MBLD   = 'subtype_mbld'
 
 # -------------------------------------------------------------------------------------------------
 
-@app.route('/compete/<int:comp_event_id>')
+# @app.route('/compete/<int:comp_event_id>')
 def timer_page(comp_event_id, gather_info_for_live_refresh=False):
     """ It's the freakin' timer page. """
 
@@ -404,6 +404,8 @@ SETTINGS_TO_POPULATE = [
     SettingCode.HIDE_SCRAMBLE_PREVIEW,
     SettingCode.ENABLE_MOVING_SHAPES_BG,
     SettingCode.USE_CUSTOM_CUBE_COLORS,
+    SettingCode.REDDIT_COMP_NOTIFY,
+    SettingCode.REDDIT_RESULTS_NOTIFY,
     SettingCode.CUSTOM_CUBE_COLOR_U,
     SettingCode.CUSTOM_CUBE_COLOR_F,
     SettingCode.CUSTOM_CUBE_COLOR_R,
@@ -434,10 +436,10 @@ def __get_user_settings(user):
     """ Retrieves certain settings for use in the front-end. If there is no logged-in user, just
     retrieve default values for these settings. """
 
-    if user:
-        settings = get_bulk_settings_for_user_as_dict(user.id, SETTINGS_TO_POPULATE)
-    else:
-        settings = get_default_values_for_settings(SETTINGS_TO_POPULATE)
+    return get_bulk_settings_for_user_as_dict(user.id, SETTINGS_TO_POPULATE)
+    # if user:
+    # else:
+    #     settings = get_default_values_for_settings(SETTINGS_TO_POPULATE)
 
     # Convert boolean settings back to actual booleans
     for code, value in settings.items():

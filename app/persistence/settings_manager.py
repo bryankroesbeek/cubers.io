@@ -114,7 +114,7 @@ def boolean_validator(value):
     raise ValueError("{} is not an acceptable value.".format(value))
 
 
-HEX_CHARACTERS = set([c for c in 'ABCDEF0123456789'])
+HEX_CHARACTERS = set([c for c in 'abcdefABCDEF0123456789'])
 
 def hex_color_validator(value):
     """ Validates a string which represents a color in hex format. """
@@ -454,7 +454,7 @@ def get_bulk_settings_for_user_as_dict(user_id, setting_codes):
     if len(settings) < len(setting_codes):
         __ensure_all_settings_desired_exist(user_id, setting_codes)
         return get_bulk_settings_for_user_as_dict(user_id, setting_codes)
-
+    
     return { setting.setting_code: {
         "value": setting.setting_value,
         "title": SETTING_INFO_MAP[setting.setting_code].title

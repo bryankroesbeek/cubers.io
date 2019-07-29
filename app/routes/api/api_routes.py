@@ -3,6 +3,8 @@
 from flask import render_template, redirect, url_for, jsonify, request, session
 from flask_login import current_user
 
+import json
+
 from app import app
 from app.persistence import comp_manager
 from app.persistence.events_manager import get_all_bonus_events_names
@@ -12,8 +14,11 @@ from app.persistence.settings_manager import get_setting_for_user, SettingCode, 
 from app.persistence.user_results_manager import get_event_results_for_user
 from app.persistence.comp_manager import get_comp_event_by_id
 
+from app.persistence.settings_manager import set_new_settings_for_user, SettingCode, SettingType, FALSE_STR, TRUE_STR, get_color_defaults
+
 from app.routes.home.home_routes import __build_is_incomplete_func
 from app.routes.timer.timer_routes import __build_user_solves_list, __determine_scramble_id_text_index, __get_user_settings
+from app.routes.user.settings_routes import __handle_get, __ALL_SETTINGS, LOG_USER_UPDATED_SETTINGS
 
 from .constants import *
 from app.util.token import valid_token
@@ -50,7 +55,7 @@ def get_header_info():
             'name': current_user.username,
             'profile_url': url_for('profile', username=current_user.username),
             'logout_url': url_for('logout'),
-            'settings_url': url_for('edit_settings')
+            'settings_url': '/settings'
         }
 
     header_info = {
@@ -225,3 +230,30 @@ def get_user_settings():
     settings = __get_user_settings(current_user)
     return jsonify(settings)
 
+@app.route('/api/update-settings', methods=["POST"])
+def update_settings():
+    if not current_user:
+        return ('', 401)
+
+    if not valid_token(request.headers.get('X_CSRF_TOKEN')):
+        return ('', 400)
+
+    form = json.loads(request.data)
+
+    new_settings = { code: form.get(code) for code in __ALL_SETTINGS }
+    set_new_settings_for_user(current_user.id, new_settings)
+
+    app.logger.info(LOG_USER_UPDATED_SETTINGS.format(current_user.username), extra=new_settings)
+
+    return get_user_settings()
+
+# @app.route('/api/editable-user-settings')
+# def get_editable_user_settings():
+#     if not current_user:
+#         return ('', 401)
+
+#     settings = __handle_get(current_user)
+
+#     # sett = 
+
+#     return jsonify(settings)
