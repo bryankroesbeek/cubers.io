@@ -130,17 +130,17 @@ export function cleanSettings(settings: Types.UserSettings): Types.CleanUserSett
     }
 
     let redditSettings = {
-        reddit_comp_notify: { title: "reddit_comp_notify", value: settings.reddit_comp_notify.value === "true" },
-        reddit_results_notify: { title: "reddit_results_notify", value: settings.reddit_results_notify.value === "true" },
+        reddit_comp_notify: { title: settings.reddit_comp_notify.title, value: settings.reddit_comp_notify.value === "true" },
+        reddit_results_notify: { title: settings.reddit_results_notify.title, value: settings.reddit_results_notify.value === "true" },
     }
 
     let generalSettings = {
-        manual_time_entry_by_default: { title: "manual_time_entry_by_default", value: settings.manual_time_entry_by_default.value === "true" },
-        use_inspection_time: { title: "use_inspection_time", value: settings.use_inspection_time.value === "true" },
-        hide_inspection_time: { title: "hide_inspection_time", value: settings.hide_inspection_time.value === "true" },
-        hide_running_timer: { title: "hide_running_timer", value: settings.hide_running_timer.value === "true" },
-        hide_scramble_preview: { title: "hide_scramble_preview", value: settings.hide_scramble_preview.value === "true" },
-        enable_moving_shapes_bg: { title: "enable_moving_shapes_bg", value: settings.enable_moving_shapes_bg.value === "true" },
+        manual_time_entry_by_default: { title: settings.manual_time_entry_by_default.title, value: settings.manual_time_entry_by_default.value === "true" },
+        use_inspection_time: { title: settings.use_inspection_time.title, value: settings.use_inspection_time.value === "true" },
+        hide_inspection_time: { title: settings.hide_inspection_time.title, value: settings.hide_inspection_time.value === "true" },
+        hide_running_timer: { title: settings.hide_running_timer.title, value: settings.hide_running_timer.value === "true" },
+        hide_scramble_preview: { title: settings.hide_scramble_preview.title, value: settings.hide_scramble_preview.value === "true" },
+        enable_moving_shapes_bg: { title: settings.enable_moving_shapes_bg.title, value: settings.enable_moving_shapes_bg.value === "true" },
     }
 
     return {
