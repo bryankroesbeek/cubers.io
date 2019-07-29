@@ -15,7 +15,8 @@ from app.util.token import generate_token
 # -------------------------------------------------------------------------------------------------
 
 @app.route('/')
-def index():
+@app.route('/<path:_>')
+def index(_ = None):
     """ Main page for the app. Shows cards for every event in the current competition."""
 
     if not current_user.is_authenticated:

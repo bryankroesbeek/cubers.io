@@ -72,7 +72,7 @@ __ALL_SETTINGS += CUSTOM_MEGAMINX_COLOR_SETTINGS + TIMER_SETTINGS
 
 # -------------------------------------------------------------------------------------------------
 
-@app.route('/settings', methods=['GET', 'POST'])
+# @app.route('/settings', methods=['GET', 'POST'])
 def edit_settings():
     """ A route for showing a editing a user's personal settings. """
 
