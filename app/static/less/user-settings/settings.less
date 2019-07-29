@@ -1,0 +1,97 @@
+.settings-wrapper {
+    background: white;
+    padding: 15px; 
+    padding-bottom: 150px;
+}
+
+.settings-form {
+    max-width: 750px;
+    margin: 0 auto;
+}
+
+.settings-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.block-title {
+    font-size: 15pt;
+    font-weight: 500;
+}
+
+.settings-block-field {
+    display: flex;
+    margin: 10px;
+    padding: 5px;
+    height: 50px;
+}
+
+.field-title {
+    display: flex;
+    font-size: 12pt;
+    align-items: center;
+}
+
+.guide {
+    display: flex;
+    flex: 1;
+    margin: auto 15px;
+    height: 1px;
+    border: 1px dashed #e8e8e8;
+}
+
+.settings-option-wrapper {
+    display: flex;
+}
+
+.settings-option {
+    background: #f8f9fa;
+    border: 1px solid darken(#f8f9fa, 10%);
+    padding: 5px 10px;
+    font-size: 11pt;
+
+    &.true {
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+    }
+    
+    &.false {
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
+    &.toggled {
+        background: #28a745;
+        border-color: darken(#28a745, 10%);
+        color: #efefef;
+    }
+
+    transition: 0.5s;
+}
+
+.settings-submit-button {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-family: 'Roboto';
+    font-weight: 600;
+    font-size: 14pt;
+    background: #efefef;
+    color: #363636;
+    border: 2px solid #363636;
+
+    &:hover {
+        background: #565656;
+        color: white;
+    }
+    
+    &:active {
+        background: #161616;
+        color: white;
+    }
+
+    transition: 0.25s;
+}

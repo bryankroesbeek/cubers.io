@@ -28,9 +28,9 @@ export class SettingsToggle extends React.Component<SettingsToggleProps, Setting
     }
 
     render() {
-        return <div className="settings-option">
-            <button className={`settings-option-yes ${this.props.toggled ? "toggled" : ""}`} onClick={this.switchOn}>Yes</button>
-            <button className={`settings-option-no  ${this.props.toggled ? "" : "toggled"}`} onClick={this.switchOff}>No</button>
+        return <div className="settings-option-wrapper">
+            <button className={`settings-option true ${this.props.toggled ? "toggled" : ""}`} onClick={this.switchOn}>Yes</button>
+            <button className={`settings-option false ${this.props.toggled ? "" : "toggled"}`} onClick={this.switchOff}>No</button>
         </div>
     }
 }

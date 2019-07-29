@@ -1,0 +1,49 @@
+.color-picker-toggle {
+    height: 38px;
+    width: 50px;
+    display: block;
+    padding: 5px;
+
+    border-radius: 4px;
+    font-family: 'Roboto';
+    font-weight: 600;
+    font-size: 14pt;
+    background: #efefef;
+    color: #363636;
+    border: 1px solid #363636;
+
+    &:hover {
+        background: #565656;
+        color: white;
+    }
+    
+    &:active {
+        background: #161616;
+        color: white;
+    }
+
+    &:disabled {
+        background: #dfdfdf;
+        color: #363636;
+    }
+
+    transition: 0.25s;
+}
+
+.color-preview-block {
+    position: relative;
+    height: 100%;
+    border-radius: 4px;
+}
+
+.color-setting-picker-align {
+    position: relative;
+    display: flex;
+    justify-content: left;
+}
+
+.color-setting-picker {
+    position: absolute;
+    right: 10px;
+    margin-bottom: 15px;
+}

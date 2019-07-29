@@ -37,11 +37,12 @@ export class UserSettings extends React.Component<UserSettingsProps, UserSetting
         let generalSettings = this.state.settings.generalSettings
 
         return <div className="settings-block">
-            <label>General Settings</label>
+            <label className="block-title">General Settings</label>
             {Object.keys(this.state.settings.generalSettings).map(s => {
                 let setting = this.state.settings.generalSettings[s]
-                return <div>
-                    <label>{setting.title}</label>
+                return <div className="settings-block-field">
+                    <span className="field-title">{setting.title}</span>
+                    <span className="guide"></span>
                     <SettingsToggle toggled={setting.value} setSwitch={(value) => {
                         let newState = cloneDeep(this.state)
                         newState.settings.generalSettings[s].value = value
@@ -55,17 +56,19 @@ export class UserSettings extends React.Component<UserSettingsProps, UserSetting
     renderRedditSettings() {
         let settings = this.state.settings.redditSettings
         return <div className="settings-block">
-            <label>Reddit Settings</label>
-            <div>
-                <label>{settings.reddit_comp_notify.title}</label>
+            <label className="block-title">Reddit Settings</label>
+            <div className="settings-block-field">
+                <span className="field-title">{settings.reddit_comp_notify.title}</span>
+                <span className="guide"></span>
                 <SettingsToggle toggled={settings.reddit_comp_notify.value} setSwitch={(value) => {
                     let newState = cloneDeep(this.state)
                     newState.settings.redditSettings.reddit_comp_notify.value = value
                     this.setState(newState)
                 }} />
             </div>
-            <div>
-                <label>{settings.reddit_results_notify.title}</label>
+            <div className="settings-block-field">
+                <span className="field-title">{settings.reddit_results_notify.title}</span>
+                <span className="guide"></span>
                 <SettingsToggle toggled={settings.reddit_results_notify.value} setSwitch={(value) => {
                     let newState = cloneDeep(this.state)
                     newState.settings.redditSettings.reddit_results_notify.value = value
@@ -81,9 +84,10 @@ export class UserSettings extends React.Component<UserSettingsProps, UserSetting
         useCustomColors: boolean
     ) {
         return <div className="settings-block">
-            <label>{puzzleType} Color Preferences</label>
-            <span>
-                <label>Use Custom {puzzleType} Colors</label>
+            <span className="block-title">{puzzleType} Color Preferences</span>
+            <span className="settings-block-field">
+                <label className="field-title">Use Custom {puzzleType} Colors</label>
+                <span className="guide"></span>
                 <SettingsToggle toggled={useCustomColors} setSwitch={(value) => {
                     let newState = cloneDeep(this.state)
                     if (puzzleType === "Megaminx") newState.settings.megaminxSettings.use_custom_megaminx_colors = value
@@ -93,8 +97,26 @@ export class UserSettings extends React.Component<UserSettingsProps, UserSetting
                 }} />
             </span>
             {puzzleSettings.map((setting, count) =>
-                <div key={setting.key} className="color-setting">
-                    <span className="color-setting-title">{setting.title}</span>
+                <div key={setting.key} className="settings-block-field">
+                    <span className="field-title">{setting.title}</span>
+                    <span className="guide"></span>
+                    {this.state.expandedOption === setting.key ?
+                        <span className="color-setting-picker-align">
+                            <span className="color-setting-picker">
+                                <SketchPicker disableAlpha={true} color={setting.value} onChangeComplete={e => {
+                                    let newState = cloneDeep(this.state)
+                                    let colors = cloneDeep(puzzleSettings)
+                                    colors[count].value = e.hex
+
+                                    if (puzzleType === "Megaminx") newState.settings.megaminxSettings.values = colors
+                                    if (puzzleType === "Pyraminx") newState.settings.pyraminxSettings.values = colors
+                                    if (puzzleType === "Cube") newState.settings.cubeSettings.values = colors
+
+                                    this.setState(newState)
+                                }} />
+                            </span>
+                        </span> : null
+                    }
                     <button className="color-picker-toggle" disabled={!useCustomColors} onClick={e => {
                         e.preventDefault()
                         if (this.state.expandedOption === setting.key) return this.setState({ expandedOption: null })
@@ -102,29 +124,14 @@ export class UserSettings extends React.Component<UserSettingsProps, UserSetting
                     }}>
                         <div className="color-preview-block" style={{ background: setting.value }}></div>
                     </button>
-                    {this.state.expandedOption === setting.key ?
-                        <div className="color-setting-picker">
-                            <SketchPicker disableAlpha={true} color={setting.value} onChangeComplete={e => {
-                                let newState = cloneDeep(this.state)
-                                let colors = cloneDeep(puzzleSettings)
-                                colors[count].value = e.hex
-
-                                if (puzzleType === "Megaminx") newState.settings.megaminxSettings.values = colors
-                                if (puzzleType === "Pyraminx") newState.settings.pyraminxSettings.values = colors
-                                if (puzzleType === "Cube") newState.settings.cubeSettings.values = colors
-
-                                this.setState(newState)
-                            }} />
-                        </div> : null
-                    }
                 </div>
             )}
         </div>
     }
 
     render() {
-        return <div>
-            <form onSubmit={e => {
+        return <div className="settings-wrapper">
+            <form className="settings-form" onSubmit={e => {
                 e.preventDefault()
                 this.submitSettings()
             }}>
@@ -149,7 +156,7 @@ export class UserSettings extends React.Component<UserSettingsProps, UserSetting
                     this.state.settings.megaminxSettings.values,
                     this.state.settings.megaminxSettings.use_custom_megaminx_colors
                 )}
-                <button className="submit-button" type="submit">Save Changes</button>
+                <button className="settings-submit-button" type="submit">Save Changes</button>
             </form>
         </div>
     }
