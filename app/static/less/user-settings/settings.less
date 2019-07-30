@@ -10,13 +10,15 @@
 }
 
 .settings-block {
+    padding: 10px 0;
     display: flex;
     flex-direction: column;
 }
 
 .block-title {
-    font-size: 15pt;
-    font-weight: 500;
+    font-size: 16pt;
+    font-weight: 600;
+    margin: 15px 0;
 }
 
 .settings-block-field {
@@ -34,7 +36,7 @@
 
 .guide {
     display: flex;
-    flex: 1;
+    flex: 1 1;
     margin: auto 15px;
     height: 1px;
     border: 1px dashed #e8e8e8;
@@ -79,17 +81,19 @@
     font-family: 'Roboto';
     font-weight: 600;
     font-size: 14pt;
-    background: #efefef;
-    color: #363636;
-    border: 2px solid #363636;
+    background: #007bff;
+    color: white;
+    border: 1px solid darken(#007bff, 10%);
 
     &:hover {
-        background: #565656;
+        background: darken(#007bff, 10%);
+        border-color: darken(#007bff, 20%);
         color: white;
     }
     
     &:active {
-        background: #161616;
+        background: darken(#007bff, 20%);
+        border-color: darken(#007bff, 30%);
         color: white;
     }
 
