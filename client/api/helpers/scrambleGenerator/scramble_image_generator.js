@@ -62,30 +62,30 @@ export function sig(scramble, eventName, settings) {
     }
 
     var setColors = function () {
-        if (settings.USE_CUSTOM_CUBE_COLORS) {
+        if (settings.use_custom_cube_colors) {
             cube_colors = [
-                settings.CUSTOM_CUBE_COLOR_D,
-                settings.CUSTOM_CUBE_COLOR_L,
-                settings.CUSTOM_CUBE_COLOR_B,
-                settings.CUSTOM_CUBE_COLOR_U,
-                settings.CUSTOM_CUBE_COLOR_R,
-                settings.CUSTOM_CUBE_COLOR_F
+                settings.custom_cube_color_D,
+                settings.custom_cube_color_L,
+                settings.custom_cube_color_B,
+                settings.custom_cube_color_U,
+                settings.custom_cube_color_R,
+                settings.custom_cube_color_F
             ];
             skewb_colors = [
-                settings.CUSTOM_CUBE_COLOR_U,
-                settings.CUSTOM_CUBE_COLOR_B,
-                settings.CUSTOM_CUBE_COLOR_R,
-                settings.CUSTOM_CUBE_COLOR_D,
-                settings.CUSTOM_CUBE_COLOR_F,
-                settings.CUSTOM_CUBE_COLOR_L
+                settings.custom_cube_color_U,
+                settings.custom_cube_color_B,
+                settings.custom_cube_color_R,
+                settings.custom_cube_color_D,
+                settings.custom_cube_color_F,
+                settings.custom_cube_color_L
             ];
             sq1_colors = {
-                'U': settings.CUSTOM_CUBE_COLOR_U,
-                'R': settings.CUSTOM_CUBE_COLOR_R,
-                'F': settings.CUSTOM_CUBE_COLOR_F,
-                'D': settings.CUSTOM_CUBE_COLOR_D,
-                'L': settings.CUSTOM_CUBE_COLOR_L,
-                'B': settings.CUSTOM_CUBE_COLOR_B
+                'U': settings.custom_cube_color_U,
+                'R': settings.custom_cube_color_R,
+                'F': settings.custom_cube_color_F,
+                'D': settings.custom_cube_color_D,
+                'L': settings.custom_cube_color_L,
+                'B': settings.custom_cube_color_B
             };
         } else {
             // Order is    D,      L,      B,      U,      R,      F
@@ -102,31 +102,31 @@ export function sig(scramble, eventName, settings) {
             };
         }
 
-        if (false) {
+        if (settings.use_custom_pyraminx_colors) {
             pyra_colors = [
-                settings.CUSTOM_PYRAMINX_COLOR_F,
-                settings.CUSTOM_PYRAMINX_COLOR_L,
-                settings.CUSTOM_PYRAMINX_COLOR_R,
-                settings.CUSTOM_PYRAMINX_COLOR_D
+                settings.custom_pyraminx_color_F,
+                settings.custom_pyraminx_color_L,
+                settings.custom_pyraminx_color_R,
+                settings.custom_pyraminx_color_D
             ];
         } else {
             pyra_colors = ['#0f0', '#f00', '#00f', '#ff0'];
         }
 
-        if (false) {
+        if (settings.use_custom_megaminx_colors) {
             mega_colors = [
-                settings.CUSTOM_MEGAMINX_COLOR_1,
-                settings.CUSTOM_MEGAMINX_COLOR_2,
-                settings.CUSTOM_MEGAMINX_COLOR_3,
-                settings.CUSTOM_MEGAMINX_COLOR_4,
-                settings.CUSTOM_MEGAMINX_COLOR_5,
-                settings.CUSTOM_MEGAMINX_COLOR_6,
-                settings.CUSTOM_MEGAMINX_COLOR_7,
-                settings.CUSTOM_MEGAMINX_COLOR_8,
-                settings.CUSTOM_MEGAMINX_COLOR_9,
-                settings.CUSTOM_MEGAMINX_COLOR_10,
-                settings.CUSTOM_MEGAMINX_COLOR_11,
-                settings.CUSTOM_MEGAMINX_COLOR_12,
+                settings.custom_megaminx_color_1,
+                settings.custom_megaminx_color_2,
+                settings.custom_megaminx_color_3,
+                settings.custom_megaminx_color_4,
+                settings.custom_megaminx_color_5,
+                settings.custom_megaminx_color_6,
+                settings.custom_megaminx_color_7,
+                settings.custom_megaminx_color_8,
+                settings.custom_megaminx_color_9,
+                settings.custom_megaminx_color_10,
+                settings.custom_megaminx_color_11,
+                settings.custom_megaminx_color_12,
             ];
         } else {
             mega_colors = ['#fff', '#d00', '#060', '#81f', '#fc0', '#00b', '#ffb', '#8df', '#f83', '#7e0', '#f9f', '#999'];
