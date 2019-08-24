@@ -38,6 +38,7 @@ PENALTY_TO_TOGGLE = 'penalty_to_toggle'
 PENALTY_DNF       = 'penalty_dnf'
 PENALTY_PLUS_TWO  = 'penalty_plus_two'
 FMC_COMMENT       = 'fmc_comment'
+PENALTY_CLEAR     = 'penalty_clear'
 
 COMMENT = 'comment'
 
@@ -121,117 +122,6 @@ def post_solve():
 
     return get_event(comp_event_id)#timer_page(comp_event_id, gather_info_for_live_refresh=True)
 
-
-@app.route('/toggle_prev_penalty', methods=['POST'])
-@app.route('/api/toggle-prev-penalty', methods=['PUT'])
-@api_login_required
-def toggle_prev_penalty():
-    """ Toggles the either the DNF or +2 status of the last solve for the specified user and
-    competition event. """
-
-    # Extract JSON solve data, deserialize to dict, and verify that all expected fields are present
-    solve_data = json.loads(request.data)
-    if not all(key in solve_data for key in (COMP_EVENT_ID,)):
-        return (ERR_MSG_MISSING_INFO, HTTPStatus.BAD_REQUEST)
-
-    # Extract all the specific fields out of the solve data dictionary
-    comp_event_id = solve_data[COMP_EVENT_ID]
-    penalty_to_toggle = solve_data[PENALTY_TO_TOGGLE]
-
-    # Retrieve the specified competition event
-    comp_event = get_comp_event_by_id(comp_event_id)
-    if not comp_event:
-        return (ERR_MSG_NO_SUCH_EVENT.format(comp_event_id), HTTPStatus.NOT_FOUND)
-
-    # If this is FMC, this isn't valid
-    if comp_event.Event.name == 'FMC':
-        return (ERR_MSG_NOT_VALID_FOR_FMC, HTTPStatus.BAD_REQUEST)
-
-    # Verify that the competition event belongs to the active competition.
-    comp = comp_event.Competition
-    if not comp.active:
-        return (ERR_MSG_INACTIVE_COMP, HTTPStatus.BAD_REQUEST)
-
-    # Retrieve the user's results record for this event
-    user_event_results = get_event_results_for_user(comp_event_id, current_user)
-    if (not user_event_results) or (not user_event_results.solves):
-        return (ERR_MSG_NO_RESULTS.format(comp_event_id), HTTPStatus.NOT_FOUND)
-
-    # Grab the last completed solve
-    previous_solve = user_event_results.solves[-1]
-
-    if penalty_to_toggle == PENALTY_DNF:
-        # Toggle DNF
-        # If the solve now has DNF, ensure it doesn't also have +2
-        previous_solve.is_dnf = not previous_solve.is_dnf
-        if previous_solve.is_dnf:
-            previous_solve.is_plus_two = False
-
-    else:
-        # Toggle +2
-        # If the solve now has +2, ensure it doesn't also have DNF
-        previous_solve.is_plus_two = not previous_solve.is_plus_two
-        if previous_solve.is_plus_two:
-            previous_solve.is_dnf = False
-
-    # Process through the user's event results, ensuring PB flags, best single, average, overall
-    # event result, etc are all up-to-date.
-    process_event_results(user_event_results, comp_event, current_user)
-    save_event_results(user_event_results)
-
-    return get_event(comp_event_id)#timer_page(comp_event_id, gather_info_for_live_refresh=True)
-
-
-@app.route('/delete_prev_solve', methods=['POST'])
-@app.route('/api/delete-solve', methods=['DELETE'])
-@api_login_required
-def delete_prev_solve():
-    """ Deletes the last completed solve of the specified competition event for this user. """
-
-    # Extract JSON solve data, deserialize to dict, and verify that all expected fields are present
-    solve_data = json.loads(request.data)
-    if not all(key in solve_data for key in (COMP_EVENT_ID,)):
-        return (ERR_MSG_MISSING_INFO, HTTPStatus.BAD_REQUEST)
-
-    # Extract all the specific fields out of the solve data dictionary
-    comp_event_id = solve_data[COMP_EVENT_ID]
-
-    # Retrieve the specified competition event
-    comp_event = get_comp_event_by_id(comp_event_id)
-    if not comp_event:
-        return (ERR_MSG_NO_SUCH_EVENT.format(comp_event_id), HTTPStatus.NOT_FOUND)
-
-    # Verify that the competition event belongs to the active competition.
-    comp = comp_event.Competition
-    if not comp.active:
-        return (ERR_MSG_INACTIVE_COMP, HTTPStatus.BAD_REQUEST)
-
-    # Retrieve the user's results record for this event
-    user_event_results = get_event_results_for_user(comp_event_id, current_user)
-    if (not user_event_results) or (not user_event_results.solves):
-        return (ERR_MSG_NO_RESULTS.format(comp_event_id), HTTPStatus.NOT_FOUND)
-
-    # If the results only have one solve (which we're about to delete), we need to delete the
-    # results entirely
-    do_delete_user_results_after_solve = len(user_event_results.solves) == 1
-
-    # Grab the last completed solve and delete it
-    previous_solve = user_event_results.solves[-1]
-    delete_user_solve(previous_solve)
-
-    # If no more solves left, just delete the whole results record
-    if do_delete_user_results_after_solve:
-        delete_event_results(user_event_results)
-
-    # Otherwise process through the user's event results, ensuring PB flags, best single, average,
-    # overall event result, etc are all up-to-date.
-    else:
-        process_event_results(user_event_results, comp_event, current_user)
-        save_event_results(user_event_results)
-
-    return get_event(comp_event_id) #timer_page(comp_event_id, gather_info_for_live_refresh=True)
-
-
 @app.route('/apply_comment', methods=['POST'])
 @app.route('/api/submit-comment', methods=['PUT'])
 @api_login_required
@@ -277,7 +167,8 @@ def apply_comment():
 def set_time():
     """ Applies the specified time to the specified solve. """
 
-    target_solve_data, err_msg, http_status_code = __retrieve_target_solve(request.data, current_user)
+    solve_data = json.loads(request.data)
+    target_solve_data, err_msg, http_status_code = __retrieve_target_solve(solve_data, current_user)
     if not target_solve_data:
         return err_msg, http_status_code
 
@@ -307,91 +198,51 @@ def set_time():
 
     return timer_page(comp_event.id, gather_info_for_live_refresh=True)
 
-
-@app.route('/set_plus_two', methods=['POST'])
+@app.route('/api/submit-penalty', methods=['PUT'])
 @api_login_required
-def set_plus_two():
-    """ Applies +2 to the specified solve. """
+def set_penalty():
+    """ Applies the specified penalty to the solve """
 
-    target_solve_data, err_msg, http_status_code = __retrieve_target_solve(request.data, current_user)
+    solve_data = json.loads(request.data)
+    target_solve_data, err_msg, http_status_code = __retrieve_target_solve(solve_data, current_user)
     if not target_solve_data:
         return err_msg, http_status_code
 
     # Extract the target solve, user's event results, and the associated competition event
-    target_solve, user_event_results, comp_event = target_solve_data
+    target_solve, user_event_results, comp_event, penalty = target_solve_data
 
     # If this is FMC, this isn't valid
     if comp_event.Event.name == 'FMC':
         return (ERR_MSG_NOT_VALID_FOR_FMC, HTTPStatus.BAD_REQUEST)
 
-    # Make the target solve +2, and ensure it's not DNF
-    target_solve.is_plus_two = True
-    target_solve.is_dnf = False
+    if penalty == PENALTY_CLEAR:
+        # Remove penalties
+        target_solve.is_dnf = False
+        target_solve.is_plus_two = False
+
+    elif penalty == PENALTY_PLUS_TWO:
+        # Toggle target solve +2, and ensure it's not DNF
+        target_solve.is_plus_two = not target_solve.is_plus_two
+        target_solve.is_dnf = False
+
+    elif penalty == PENALTY_DNF:
+        # Toggle target solve DNF, and ensure it's not +2
+        target_solve.is_plus_two = False
+        target_solve.is_dnf = not target_solve.is_dnf
 
     process_event_results(user_event_results, comp_event, current_user)
     save_event_results(user_event_results)
 
-    return timer_page(comp_event.id, gather_info_for_live_refresh=True)
-
-
-@app.route('/set_dnf', methods=['POST'])
-@api_login_required
-def set_dnf():
-    """ Applies DNF to the specified solve. """
-
-    target_solve_data, err_msg, http_status_code = __retrieve_target_solve(request.data, current_user)
-    if not target_solve_data:
-        return err_msg, http_status_code
-
-    # Extract the target solve, user's event results, and the associated competition event
-    target_solve, user_event_results, comp_event = target_solve_data
-
-    # If this is FMC, this isn't valid
-    if comp_event.Event.name == 'FMC':
-        return (ERR_MSG_NOT_VALID_FOR_FMC, HTTPStatus.BAD_REQUEST)
-
-    # Make the target solve DNF, and ensure it's not +2
-    target_solve.is_dnf = True
-    target_solve.is_plus_two = False
-
-    process_event_results(user_event_results, comp_event, current_user)
-    save_event_results(user_event_results)
-
-    return timer_page(comp_event.id, gather_info_for_live_refresh=True)
-
-
-@app.route('/clear_penalty', methods=['POST'])
-@api_login_required
-def clear_penalty():
-    """ Clears penalties from the specified solve. """
-
-    target_solve_data, err_msg, http_status_code = __retrieve_target_solve(request.data, current_user)
-    if not target_solve_data:
-        return err_msg, http_status_code
-
-    # Extract the target solve, user's event results, and the associated competition event
-    target_solve, user_event_results, comp_event = target_solve_data
-
-    # If this is FMC, this isn't valid
-    if comp_event.Event.name == 'FMC':
-        return (ERR_MSG_NOT_VALID_FOR_FMC, HTTPStatus.BAD_REQUEST)
-
-    # Clear penalties
-    target_solve.is_plus_two = False
-    target_solve.is_dnf = False
-
-    process_event_results(user_event_results, comp_event, current_user)
-    save_event_results(user_event_results)
-
-    return timer_page(comp_event.id, gather_info_for_live_refresh=True)
-
+    return get_event(comp_event.id) #timer_page(comp_event.id, gather_info_for_live_refresh=True)
 
 @app.route('/delete_solve', methods=['POST'])
+@app.route('/api/delete-solve', methods=['DELETE'])
 @api_login_required
 def delete_solve():
     """ Deletes the specified solve. """
 
-    target_solve_data, err_msg, http_status_code = __retrieve_target_solve(request.data, current_user)
+    solve_data = json.loads(request.data)
+    target_solve_data, err_msg, http_status_code = __retrieve_target_solve(solve_data, current_user)
     if not target_solve_data:
         return err_msg, http_status_code
 
@@ -419,7 +270,7 @@ def delete_solve():
 
 # -------------------------------------------------------------------------------------------------
 
-def __retrieve_target_solve(request_data, user):
+def __retrieve_target_solve(solve_data, user):
     """ Utility method to retrieve the specified solve (by solve id and competition event id).
     Validates the solve belongs to an active competition, and belongs to the specified user.
     Returns the following shapes:
@@ -430,7 +281,7 @@ def __retrieve_target_solve(request_data, user):
     """
 
     # Extract JSON solve data, deserialize to dict, and verify that all expected fields are present
-    solve_data = json.loads(request_data)
+    
     if not all(key in solve_data for key in (SOLVE_ID, COMP_EVENT_ID)):
         return None, ERR_MSG_MISSING_INFO, HTTPStatus.BAD_REQUEST
 

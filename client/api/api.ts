@@ -69,7 +69,7 @@ export function postSolve(time: {
 }
 
 export function putDnf(solveId: number, compEventId: number): Promise<types.Event> {
-    return putResources('/api/toggle-prev-penalty', {
+    return putResources('/api/submit-penalty', {
         solve_id: solveId,
         comp_event_id: compEventId,
         penalty_to_toggle: "penalty_dnf"
@@ -77,10 +77,18 @@ export function putDnf(solveId: number, compEventId: number): Promise<types.Even
 }
 
 export function putPlusTwo(solveId: number, compEventId: number): Promise<types.Event> {
-    return putResources('/api/toggle-prev-penalty', {
+    return putResources('/api/submit-penalty', {
         solve_id: solveId,
         comp_event_id: compEventId,
         penalty_to_toggle: "penalty_plus_two"
+    })
+}
+
+export function putClearPenalty(solveId: number, compEventId: number): Promise<types.Event> {
+    return putResources('/api/submit-penalty', {
+        solve_id: solveId,
+        comp_event_id: compEventId,
+        penalty_to_toggle: "penalty_clear"
     })
 }
 
