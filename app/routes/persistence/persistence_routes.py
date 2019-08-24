@@ -54,8 +54,8 @@ ERR_MSG_NOT_VALID_FOR_FMC = 'This operation is not valid for FMC!'
 # -------------------------------------------------------------------------------------------------
 
 @app.route('/post_solve', methods=['POST'])
-@api_login_required
 @app.route('/api/submit-solve', methods=['POST'])
+@api_login_required
 def post_solve():
     """ Saves a solve. Ensures the user has UserEventResults for this event, associated this solve
     with those results, and processes the results to make sure all relevant data is up-to-date. """
@@ -123,6 +123,7 @@ def post_solve():
 
 
 @app.route('/toggle_prev_penalty', methods=['POST'])
+@app.route('/api/toggle-prev-penalty', methods=['PUT'])
 @api_login_required
 def toggle_prev_penalty():
     """ Toggles the either the DNF or +2 status of the last solve for the specified user and
@@ -182,6 +183,7 @@ def toggle_prev_penalty():
 
 
 @app.route('/delete_prev_solve', methods=['POST'])
+@app.route('/api/delete-solve', methods=['DELETE'])
 @api_login_required
 def delete_prev_solve():
     """ Deletes the last completed solve of the specified competition event for this user. """
@@ -231,6 +233,7 @@ def delete_prev_solve():
 
 
 @app.route('/apply_comment', methods=['POST'])
+@app.route('/api/submit-comment', methods=['PUT'])
 @api_login_required
 def apply_comment():
     """ Applies the supplied comment to the desired competition event for this user. """
@@ -263,7 +266,7 @@ def apply_comment():
     user_event_results.comment = comment
     save_event_results(user_event_results)
 
-    return timer_page(comp_event_id, gather_info_for_live_refresh=True)
+    return get_event(comp_event_id) #return timer_page(comp_event_id, gather_info_for_live_refresh=True)
 
 # -------------------------------------------------------------------------------------------------
 # Below are routes called by the timer page solve context menu

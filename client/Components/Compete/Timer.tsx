@@ -12,8 +12,8 @@ type TimerProps = {
     eventName: string
     comment: string
     postTime: (time: number, penalty: Penalty, callback: () => void) => void
-    postPenalty: (penalty: Penalty) => void
-    deleteTime: () => void
+    postPenalty: (id: number, penalty: Penalty) => void
+    deleteTime: (id: number) => void
     updateComment: (text: string) => void
 }
 
@@ -201,7 +201,8 @@ export class Timer extends React.Component<TimerProps, TimerState>{
     }
 
     updateTime(penalty: Penalty) {
-        this.props.postPenalty(penalty)
+        let previousSolve = this.props.previousSolve as Types.PreviousSolve
+        this.props.postPenalty(previousSolve.id, penalty)
     }
 
     getPenaltyState(): Penalty {
@@ -224,6 +225,7 @@ export class Timer extends React.Component<TimerProps, TimerState>{
         if (this.props.previousSolve === "none") return null
         if (this.state.prompt === "none") return <div className={`prompt-background hide invisible`}></div>
 
+        let previousSolve = this.props.previousSolve as Types.PreviousSolve
         let visibility = this.state.promptVisibility === "invisible" ? "hide" : ""
 
         let title = this.state.prompt === "comment" ? `Comment for ${this.props.eventName}` :
@@ -231,7 +233,7 @@ export class Timer extends React.Component<TimerProps, TimerState>{
 
         let buttonText = this.state.prompt === "comment" ? "Update Comment" : "Yes"
         let submitButtonAction = this.state.prompt === "comment" ? () => this.props.updateComment(this.state.comment) :
-            () => this.props.deleteTime()
+            () => this.props.deleteTime(previousSolve.id)
 
         let textbox = this.state.prompt === "comment" ? <div className="prompt-textbox">
             <textarea

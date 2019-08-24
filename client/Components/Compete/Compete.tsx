@@ -43,10 +43,9 @@ export class Compete extends React.Component<CompeteProps, CompeteState>{
                 <div className="sidebar-title">Solves</div>
                 <div className="sidebar-times">
                     {this.state.event.event.solves.map((solve, count) =>
-                        <div
-                            key={`solve_${count}`}
-                            className="time"
-                        >{solve}</div>
+                        <div key={`solve_${count}`} className="time">
+                            {solve.friendlyTime}
+                        </div>
                     )}
                 </div>
                 <ScrambleViewer
@@ -77,22 +76,22 @@ export class Compete extends React.Component<CompeteProps, CompeteState>{
                             scramble_id: event.currentScramble.id
                         }).then(newEvent => this.setState({ event: newEvent }, () => callback()))
                     }}
-                    postPenalty={(penalty) => {
+                    postPenalty={(id, penalty) => {
                         let event = this.state.event as Types.Event
                         if (penalty === "+2") {
-                            Api.putPlusTwo(event.event.id)
+                            Api.putPlusTwo(id, event.event.id)
                                 .then(newEvent => this.setState({ event: newEvent }))
                             return
                         }
                         if (penalty === "DNF") {
-                            Api.putDnf(event.event.id)
+                            Api.putDnf(id, event.event.id)
                                 .then(newEvent => this.setState({ event: newEvent }))
                             return
                         }
                     }}
-                    deleteTime={() => {
+                    deleteTime={(id: number) => {
                         let event = this.state.event as Types.Event
-                        Api.deleteSolve(event.event.id)
+                        Api.deleteSolve(id, event.event.id)
                             .then(newEvent => this.setState({ event: newEvent }))
                     }}
                     updateComment={(text: string) => {

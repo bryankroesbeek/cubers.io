@@ -22,6 +22,7 @@ from app.routes.user.settings_routes import __handle_get, __ALL_SETTINGS, LOG_US
 
 from .constants import *
 from app.util.token import valid_token
+from app.util.api.helpers import *
 
 # -------------------------------------------------------------------------------------------------
 
@@ -193,9 +194,11 @@ def get_event(event_id):
         previous_was_dnf            = solves[previous_idx].is_dnf
         previous_was_plus_two       = solves[previous_idx].is_plus_two
         previous_was_inspection_dnf = solves[previous_idx].is_inspection_dnf
+        previous_id                 = solves[previous_idx].id
 
         previous_solve = {
             'time': previous_time,
+            'id': previous_id,
             'is_plus_2': previous_was_plus_two,
             'is_dnf': previous_was_dnf,
             'is_inspection_dnf': previous_was_inspection_dnf
@@ -217,7 +220,7 @@ def get_event(event_id):
             'name': event_name,
             'format': event_format,
             'description': event_description,
-            'solves': user_solves,
+            'solves': restructure_solves(user_solves),
             'comment': comment
         }
     })

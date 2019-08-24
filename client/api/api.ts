@@ -68,20 +68,25 @@ export function postSolve(time: {
     return postResources('/api/submit-solve', time)
 }
 
-export function putDnf(compEventId: number): Promise<types.Event> {
-    return putResources('/api/toggle-dnf', {
-        comp_event_id: compEventId
+export function putDnf(solveId: number, compEventId: number): Promise<types.Event> {
+    return putResources('/api/toggle-prev-penalty', {
+        solve_id: solveId,
+        comp_event_id: compEventId,
+        penalty_to_toggle: "penalty_dnf"
     })
 }
 
-export function putPlusTwo(compEventId: number): Promise<types.Event> {
-    return putResources('/api/toggle-plus-two', {
-        comp_event_id: compEventId
+export function putPlusTwo(solveId: number, compEventId: number): Promise<types.Event> {
+    return putResources('/api/toggle-prev-penalty', {
+        solve_id: solveId,
+        comp_event_id: compEventId,
+        penalty_to_toggle: "penalty_plus_two"
     })
 }
 
-export function deleteSolve(compEventId: number): Promise<types.Event> {
+export function deleteSolve(solveId: number, compEventId: number): Promise<types.Event> {
     return deleteResources('/api/delete-solve', {
+        solve_id: solveId,
         comp_event_id: compEventId
     })
 }

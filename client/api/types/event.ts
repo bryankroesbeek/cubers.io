@@ -10,9 +10,17 @@ export type Event = {
         format: "Ao5" | "Mo3" | "Bo3" | "Bo1",
         id: number,
         name: string,
-        solves: string[],
+        solves: Solve[],
         comment: string
     }
+}
+
+export type Solve = {
+    friendlyTime: string,
+    isDnf: boolean,
+    isPlusTwo: boolean,
+    scramble: string,
+    solveId: number
 }
 
 export type PreviousSolve = {
@@ -20,4 +28,5 @@ export type PreviousSolve = {
     is_inspection_dnf: boolean
     is_plus_2: boolean
     time: string
+    id: number
 }
