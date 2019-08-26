@@ -4,7 +4,7 @@ from collections import namedtuple, OrderedDict
 from csv import writer as csv_writer
 from io import StringIO
 
-from flask import render_template, make_response
+from flask import render_template, make_response, jsonify
 from flask_login import current_user
 
 from app import app
@@ -35,6 +35,8 @@ def event_results(event_name):
     averages = get_ordered_pb_averages_for_event(event.id)
 
     title = "{} Records".format(event.name)
+
+    return jsonify(list(map(lambda single: single.__dict__, singles)))
 
     return render_template("records/event.html", event_id=event.id, event_name=event.name,
         singles=singles, averages=averages, alternative_title=title,

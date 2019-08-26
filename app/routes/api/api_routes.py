@@ -249,14 +249,3 @@ def update_settings():
     app.logger.info(LOG_USER_UPDATED_SETTINGS.format(current_user.username), extra=new_settings)
 
     return get_user_settings()
-
-# @app.route('/api/editable-user-settings')
-# def get_editable_user_settings():
-#     if not current_user:
-#         return ('', 401)
-
-#     settings = __handle_get(current_user)
-
-#     # sett = 
-
-#     return jsonify(settings)

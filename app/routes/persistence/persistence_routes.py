@@ -128,6 +128,9 @@ def post_solve():
 def apply_comment():
     """ Applies the supplied comment to the desired competition event for this user. """
 
+    if not valid_token(request.headers.get('X_CSRF_TOKEN')):
+        return ('', 400)
+
     # Extract JSON solve data, deserialize to dict, and verify that all expected fields are present
     solve_data = json.loads(request.data)
     if not all(key in solve_data for key in (COMP_EVENT_ID, COMMENT)):
@@ -167,6 +170,9 @@ def apply_comment():
 def set_time():
     """ Applies the specified time to the specified solve. """
 
+    if not valid_token(request.headers.get('X_CSRF_TOKEN')):
+        return ('', 400)
+
     solve_data = json.loads(request.data)
     target_solve_data, err_msg, http_status_code = __retrieve_target_solve(solve_data, current_user)
     if not target_solve_data:
@@ -196,12 +202,15 @@ def set_time():
     process_event_results(user_event_results, comp_event, current_user)
     save_event_results(user_event_results)
 
-    return timer_page(comp_event.id, gather_info_for_live_refresh=True)
+    return get_event(comp_event.id) #timer_page(comp_event.id, gather_info_for_live_refresh=True)
 
 @app.route('/api/submit-penalty', methods=['PUT'])
 @api_login_required
 def set_penalty():
     """ Applies the specified penalty to the solve """
+
+    if not valid_token(request.headers.get('X_CSRF_TOKEN')):
+        return ('', 400)
 
     solve_data = json.loads(request.data)
     target_solve_data, err_msg, http_status_code = __retrieve_target_solve(solve_data, current_user)
@@ -240,6 +249,9 @@ def set_penalty():
 @api_login_required
 def delete_solve():
     """ Deletes the specified solve. """
+
+    if not valid_token(request.headers.get('X_CSRF_TOKEN')):
+        return ('', 400)
 
     solve_data = json.loads(request.data)
     target_solve_data, err_msg, http_status_code = __retrieve_target_solve(solve_data, current_user)
