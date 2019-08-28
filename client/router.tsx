@@ -9,6 +9,7 @@ import { UserSettings } from './Components/UserSettings/UserSettings'
 import * as Api from './api/api'
 import * as Types from './api/types'
 import * as Helpers from './api/helpers/settingsHelper'
+import { Records } from './Components/Records/Records'
 
 type RouterState = {
     settings: Types.UserSettings | "loading"
@@ -43,7 +44,7 @@ export class MainRouter extends React.Component<RouterProps, RouterState> {
                 <Route path="/compete/:eventType" component={({ match }: any) => {
                     return <Compete eventType={Number(match.params.eventType)} settings={Helpers.minifyRawSettings(settings)} />
                 }} />
-                <Route path="/event" component={() => <div>Event</div>} />
+                <Route path="/event/:eventType" component={({ match }: any) => <Records key={`records-${match.params.eventType}`} event={match.params.eventType} />} />
                 <Route path="/settings" component={() =>
                     <UserSettings
                         settings={settings}

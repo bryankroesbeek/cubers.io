@@ -23,7 +23,8 @@ CSV_EMPTY             = ''
 
 # -------------------------------------------------------------------------------------------------
 
-@app.route('/event/<event_name>/')
+# @app.route('/event/<event_name>/')
+@app.route('/api/records/<event_name>', methods=["GET"])
 def event_results(event_name):
     """ A route for showing the global top results for a specific event. """
 

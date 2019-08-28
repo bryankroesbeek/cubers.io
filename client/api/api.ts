@@ -109,3 +109,7 @@ export function submitComment(compEventId: number, comment: string): Promise<typ
 export function updateSettings(settings: types.UserSettingsMinified): Promise<types.UserSettings> {
     return postResources<types.UserSettings>('/api/update-settings', settings)
 }
+
+export function getRecords(event: string, type: "single" | "average"): Promise<types.PersonalRecord[]> {
+    return fetchResources<types.PersonalRecord[]>(`/api/records/${event}`)
+}

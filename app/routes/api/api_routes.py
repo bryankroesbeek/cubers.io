@@ -37,16 +37,16 @@ def get_header_info():
         title = comp.title
 
     wca_events = list(map(lambda event: {
-        'url': url_for('event_results', event_name=event),
+        'url': "/event/" + event, #url_for('event_results', event_name=event),
         'name': event
     }, WCA_EVENTS))
     non_wca_events = list(map(lambda event: {
-        'url': url_for('event_results', event_name=event),
+        'url': "/event/" + event, #url_for('event_results', event_name=event),
         'name': event
     }, NON_WCA_EVENTS))
 
     sum_of_ranks = list(map(lambda sort: {
-        'url': url_for('sum_of_ranks', sor_type=sort['sort']),
+        'url': "/sum_of_ranks/" + sort['name'], #url_for('sum_of_ranks', sor_type=sort['sort']),
         'name': sort['name']
     }, SUM_OF_RANKS))
 
