@@ -37,7 +37,13 @@ def event_results(event_name):
 
     title = "{} Records".format(event.name)
 
-    return jsonify(list(map(lambda single: single.__dict__, singles)))
+    result = {
+        "solves": list(map(lambda single: single.__dict__, singles)),
+        "event_id": event.id,
+        "is_admin": current_user.is_admin or current_user.is_results_mod
+    }
+
+    return jsonify(result)
 
     return render_template("records/event.html", event_id=event.id, event_name=event.name,
         singles=singles, averages=averages, alternative_title=title,

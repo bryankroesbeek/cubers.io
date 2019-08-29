@@ -110,6 +110,6 @@ export function updateSettings(settings: types.UserSettingsMinified): Promise<ty
     return postResources<types.UserSettings>('/api/update-settings', settings)
 }
 
-export function getRecords(event: string, type: "single" | "average"): Promise<types.PersonalRecord[]> {
-    return fetchResources<types.PersonalRecord[]>(`/api/records/${event}`)
+export function getRecords(event: string, type: "single" | "average"): Promise<types.EventRecords> {
+    return fetchResources<types.EventRecords>(`/api/records/${event}`)
 }
