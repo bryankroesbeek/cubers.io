@@ -218,7 +218,8 @@ def set_penalty():
         return err_msg, http_status_code
 
     # Extract the target solve, user's event results, and the associated competition event
-    target_solve, user_event_results, comp_event, penalty = target_solve_data
+    target_solve, user_event_results, comp_event = target_solve_data
+    penalty = solve_data['penalty_to_toggle']
 
     # If this is FMC, this isn't valid
     if comp_event.Event.name == 'FMC':
