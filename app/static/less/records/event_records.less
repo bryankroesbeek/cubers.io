@@ -1,0 +1,61 @@
+.records-page {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    background: white;
+}
+
+.records-wrapper {
+    margin: 0 16%;
+}
+
+.records-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 15px; 
+}
+
+.records-event-image {
+    margin: 15px auto;
+    width: 75px;
+    height: 75px;
+    filter: saturate(0) brightness(1.4);
+}
+
+.records-navbar {
+    position: relative;
+    display: flex;
+    border-bottom: 1px solid #dee2e6;
+    justify-content: center;
+    
+    &-button {
+        margin-bottom: -1px;
+        background: transparent;
+        border: 1px solid transparent;
+        padding: 8px;
+        color: #007bff;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+
+        &:hover {
+            color: darken(#007bff, 15%);
+            border-color: lighten(#dee2e6, 5%) lighten(#dee2e6, 5%) transparent;
+        }
+
+        &:active {
+            color: darken(#007bff, 25%);
+            border-color: #dee2e6 #dee2e6 transparent;
+        }
+
+        &.active {
+            color: #495057;
+            border-color: #dee2e6 #dee2e6 #ffffff;
+        }
+
+        &.export {
+            position: absolute;
+            right: 0;
+        }
+    }
+}
