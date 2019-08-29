@@ -38,7 +38,8 @@ def event_results(event_name):
     title = "{} Records".format(event.name)
 
     result = {
-        "solves": list(map(lambda single: single.__dict__, singles)),
+        "singles": list(map(lambda single: single.__dict__, singles)),
+        "averages": list(map(lambda average: average.__dict__, averages)),
         "event_id": event.id,
         "is_admin": current_user.is_admin or current_user.is_results_mod
     }

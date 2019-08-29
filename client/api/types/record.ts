@@ -10,5 +10,6 @@ export type PersonalRecord = {
 export type EventRecords = {
     is_admin: boolean
     event_id: number
-    solves: PersonalRecord[]
+    singles: PersonalRecord[]
+    averages: PersonalRecord[]
 }

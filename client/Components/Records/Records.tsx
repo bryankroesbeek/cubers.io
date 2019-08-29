@@ -35,6 +35,8 @@ export class Records extends React.Component<RecordsProps, RecordsState>{
     render() {
         if (this.state.eventRecords === "loading") return null
 
+        let solves = this.state.type === "single" ? this.state.eventRecords.singles : this.state.eventRecords.averages
+
         return <div className="records-page">
             <div className="records-wrapper">
                 <div className="records-header">
@@ -61,7 +63,7 @@ export class Records extends React.Component<RecordsProps, RecordsState>{
                             </tr>
                         </thead>
                         <tbody>
-                            {this.state.eventRecords.solves.map(solve => <tr>
+                            {solves.map(solve => <tr>
                                 <td>{solve.rank}</td>
                                 <td><Link to={`/u/${solve.username}`}>/u/{solve.username}</Link></td>
                                 <td>{Number(solve.personal_best) / 100}</td>
