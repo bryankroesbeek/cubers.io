@@ -51,7 +51,7 @@ export class MainRouter extends React.Component<RouterProps, RouterState> {
                 <Route path="/compete/:eventType" component={({ match }: any) => {
                     return <Compete eventType={Number(match.params.eventType)} settings={Helpers.minifyRawSettings(settings)} />
                 }} />
-                <Route path="/event/:eventType" component={({ match }: any) => <Records key={`records-${match.params.eventType}`} event={match.params.eventType} />} />
+                <Route path="/event/:eventType" component={({ match }: any) => <Records key={`records-${match.params.eventType}`} event={match.params.eventType} user={user} />} />
                 <Route path="/settings" component={() =>
                     <UserSettings
                         settings={settings}

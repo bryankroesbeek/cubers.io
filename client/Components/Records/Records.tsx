@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 
 type RecordsProps = {
     event: string
+    user: Types.User
 }
 
 type RecordsState = {
@@ -63,7 +64,7 @@ export class Records extends React.Component<RecordsProps, RecordsState>{
                             </tr>
                         </thead>
                         <tbody>
-                            {solves.map(solve => <tr>
+                            {solves.map(solve => <tr className={`${this.props.user.id === solve.user_id ? "hey-its-me" : ""}`}>
                                 <td>{solve.rank}</td>
                                 <td><Link to={`/u/${solve.username}`}>/u/{solve.username}</Link></td>
                                 <td>{Number(solve.personal_best) / 100}</td>

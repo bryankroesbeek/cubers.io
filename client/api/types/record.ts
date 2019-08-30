@@ -5,6 +5,10 @@ export type PersonalRecord = {
     personal_best: string
     comp_id: number
     comp_title: string
+    user_id: number
+    comment: string,
+    numerical_rank: string,
+    user_is_verified: string,
 }
 
 export type EventRecords = {
