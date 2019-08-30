@@ -29,10 +29,6 @@ export class Records extends React.Component<RecordsProps, RecordsState>{
             .then(records => this.setState({ eventRecords: records }))
     }
 
-    handleExport() {
-        // Handle the export
-    }
-
     render() {
         if (this.state.eventRecords === "loading") return null
 
@@ -50,7 +46,7 @@ export class Records extends React.Component<RecordsProps, RecordsState>{
                             className={`records-navbar-button ${this.state.type === "average" ? "active" : ""}`}
                             onClick={() => this.setState({ type: "average" })}>Average</button>
 
-                        <button className="records-navbar-button export" onClick={() => this.handleExport()}>Export to CSV</button>
+                        <a className="records-navbar-button export" href={`/event/${this.props.event}/export/`}>Export to CSV</a>
                     </div>
                 </div>
                 <div className="records-table">
