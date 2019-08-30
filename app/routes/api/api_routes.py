@@ -50,10 +50,9 @@ def get_header_info():
         'name': sort['name']
     }, SUM_OF_RANKS))
 
-    user = "none"
+    user_items = "none"
     if current_user:
-        user = {
-            'name': current_user.username,
+        user_items = {
             'profile_url': url_for('profile', username=current_user.username),
             'logout_url': url_for('logout'),
             'settings_url': '/settings'
@@ -90,10 +89,21 @@ def get_header_info():
                 'url': url_for('results_list')
             }
         },
-        'current_user': user
+        'userItems': user_items
     }
 
     return jsonify(header_info)
+
+@app.route('/api/user-info')
+def get_user_info():
+    user = "none"
+    if current_user:
+        user = {
+            'name': current_user.username,
+            'id': current_user.id
+        }
+
+    return jsonify(user)
 
 @app.route("/api/competition-events")
 def competition_events():

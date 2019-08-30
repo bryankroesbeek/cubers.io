@@ -45,6 +45,10 @@ export function getUserSettings(): Promise<types.UserSettings> {
     return fetchResources('/api/user-settings')
 }
 
+export function getUserInfo(): Promise<types.User> {
+    return fetchResources('/api/user-info')
+}
+
 export function getHeaderInfo(): Promise<types.HeaderInfo> {
     return fetchResources("/api/header-info")
 }

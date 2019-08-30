@@ -2,7 +2,7 @@ export type HeaderInfo = {
     title: string
     recordsItems: Record
     leaderboardItems: Leaderboard
-    current_user: CurrentUser
+    userItems: UserItems
 }
 
 export type Record = {
@@ -17,9 +17,8 @@ export type Leaderboard = {
     all: DetailedUrl
 }
 
-export type CurrentUser = {
+export type UserItems = {
     logout_url: string
-    name: string
     profile_url: string
     settings_url: string
 } | "none"
@@ -32,4 +31,9 @@ export type HeaderItem = {
 export type DetailedUrl = {
     url: string
     name: string
+}
+
+export type User = {
+    name: string
+    id: number
 }

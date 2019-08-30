@@ -12,6 +12,7 @@ import * as Helpers from './api/helpers/settingsHelper'
 import { Records } from './Components/Records/Records'
 
 type RouterState = {
+    user: Types.User | "loading"
     settings: Types.UserSettings | "loading"
 }
 
@@ -22,21 +23,27 @@ export class MainRouter extends React.Component<RouterProps, RouterState> {
         super(props)
 
         this.state = {
-            settings: "loading"
+            settings: "loading",
+            user: "loading"
         }
     }
 
-    componentDidMount() {
-        Api.getUserSettings()
-            .then(settings => this.setState({ settings: settings }))
+    async componentDidMount() {
+        let userSettings = await Api.getUserSettings()
+
+        let userInfo = await Api.getUserInfo()
+
+        this.setState({ settings: userSettings, user: userInfo })
     }
 
     render() {
         if (this.state.settings === "loading") return null
+        if (this.state.user === "loading") return null
         let settings = this.state.settings
+        let user = this.state.user
 
         return <BrowserRouter>
-            <Header />
+            <Header user={user} />
 
             <Switch>
                 <Route exact path="/" component={() => <Home />} />

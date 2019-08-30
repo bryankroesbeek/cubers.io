@@ -4,14 +4,14 @@ import * as Api from '../../api/api'
 import * as Types from '../../api/types'
 
 type HeaderProps = {
-
+    user: Types.User
 }
 
 type HeaderState = {
     title: string
     recordsItems: Types.Record | "loading"
     leaderboardItems: Types.Leaderboard | "loading",
-    current_user: Types.CurrentUser
+    userItems: Types.UserItems
     currentDropdown: "none" | "records" | "leaderboards" | "profile" | "wca" | "non-wca" | "sum"
 }
 
@@ -26,7 +26,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             title: "cubers.io",
             recordsItems: "loading",
             leaderboardItems: "loading",
-            current_user: "none",
+            userItems: "none",
             currentDropdown: "none"
         }
 
@@ -39,7 +39,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                 title: info.title,
                 recordsItems: info.recordsItems,
                 leaderboardItems: info.leaderboardItems,
-                current_user: info.current_user
+                userItems: info.userItems
             }))
 
         window.addEventListener('click', this.handleClick)
@@ -139,7 +139,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     }
 
     renderUser() {
-        if (this.state.current_user === "none")
+        if (this.state.userItems === "none")
             return <Link className="nav-link py-0" to="/login">Login with Reddit</Link>
 
         let show = this.state.currentDropdown === "profile" ? "show" : ""
@@ -148,10 +148,10 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             <button className="nav-link dropdown-toggle py-0" onClick={() => {
                 this.setState({ currentDropdown: "profile" })
             }}>
-                {this.state.current_user.name}
+                {this.props.user.name}
             </button>
             <div className={`dropdown-menu dropdown-menu-right ${show}`}>
-                <Link className="dropdown-item" to={this.state.current_user.profile_url} onClick={this.hideNavigation}>Profile</Link>
+                <Link className="dropdown-item" to={this.state.userItems.profile_url} onClick={this.hideNavigation}>Profile</Link>
                 <div className="dropdown-divider"></div>
                 <Link className="dropdown-item" to="/logout" onClick={this.hideNavigation}>Logout</Link>
             </div>
@@ -159,8 +159,8 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     }
 
     renderSettings() {
-        if (this.state.current_user === "none") return null
-        return <Link className="nav-link py-0" to={this.state.current_user.settings_url}>
+        if (this.state.userItems === "none") return null
+        return <Link className="nav-link py-0" to={this.state.userItems.settings_url}>
             <i className="fas fa-cog"></i>
         </Link>
     }
