@@ -15,7 +15,7 @@ type RecordsState = {
 }
 
 export class Records extends React.Component<RecordsProps, RecordsState>{
-    MySolve: React.Ref<HTMLTableRowElement>
+    MySolve: React.RefObject<HTMLTableRowElement>
 
     constructor(props: RecordsProps) {
         super(props)
@@ -33,6 +33,11 @@ export class Records extends React.Component<RecordsProps, RecordsState>{
             .then(records => this.setState({ eventRecords: records }))
     }
 
+    scrollToUser() {
+        let current = this.MySolve.current
+        if (current) current.scrollIntoView({ behavior: "smooth", block: "center" })
+    }
+
     renderSolves(solves: Types.PersonalRecord[]) {
         return solves.map(solve => {
             let verifiedIcon = null
@@ -41,7 +46,9 @@ export class Records extends React.Component<RecordsProps, RecordsState>{
                 verifiedIcon = <i className={`fas fa-user-check ${verified} mr-1`} />
             }
 
-            return <tr ref={this.MySolve} className={this.props.user.id === solve.user_id ? "my-solve" : null}>
+            let ref = solve.user_id === this.props.user.id ? this.MySolve : null
+
+            return <tr key={`user-${solve.user_id}-${this.state.type}`} ref={ref} className={this.props.user.id === solve.user_id ? "my-solve" : null}>
                 <td>{solve.rank}</td>
                 <td>{verifiedIcon}<Link to={`/u/${solve.username}`}>/u/{solve.username}</Link></td>
                 <td>{Number(solve.personal_best) / 100}</td>
@@ -77,7 +84,9 @@ export class Records extends React.Component<RecordsProps, RecordsState>{
                                 <th>Rank</th>
                                 <th>
                                     User
-                                    <button className="records-table-locate-user">
+                                    <button className="records-table-locate-user" onClick={() => {
+                                        this.scrollToUser()
+                                    }}>
                                         <i className="fas fa-arrow-down" id="scrollSingle" />
                                     </button>
                                 </th>
