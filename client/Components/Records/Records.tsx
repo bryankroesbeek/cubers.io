@@ -41,7 +41,7 @@ export class Records extends React.Component<RecordsProps, RecordsState>{
     renderSolves(solves: Types.PersonalRecord[]) {
         return solves.map(solve => {
             let verifiedIcon = null
-            if (this.props.user.admin) {
+            if (this.props.user.admin || this.props.user.mod) {
                 let verified = solve.user_is_verified ? "verified" : "unverified"
                 verifiedIcon = <i className={`fas fa-user-check ${verified} mr-1`} />
             }

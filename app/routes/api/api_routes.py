@@ -101,7 +101,8 @@ def get_user_info():
         user = {
             'name': current_user.username,
             'id': current_user.id,
-            'admin': current_user.is_admin
+            'admin': current_user.is_admin,
+            'mod': current_user.is_results_mod
         }
 
     return jsonify(user)
