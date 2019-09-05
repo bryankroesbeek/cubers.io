@@ -8,7 +8,7 @@ export type PersonalRecord = {
     user_id: number
     comment: string,
     numerical_rank: string,
-    user_is_verified: string,
+    user_is_verified: boolean,
 }
 
 export type EventRecords = {
