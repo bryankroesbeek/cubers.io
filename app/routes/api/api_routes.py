@@ -100,7 +100,8 @@ def get_user_info():
     if current_user:
         user = {
             'name': current_user.username,
-            'id': current_user.id
+            'id': current_user.id,
+            'admin': current_user.is_admin
         }
 
     return jsonify(user)

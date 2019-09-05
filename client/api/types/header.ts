@@ -36,4 +36,5 @@ export type DetailedUrl = {
 export type User = {
     name: string
     id: number
+    admin: boolean
 }
