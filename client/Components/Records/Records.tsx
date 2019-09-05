@@ -15,6 +15,8 @@ type RecordsState = {
 }
 
 export class Records extends React.Component<RecordsProps, RecordsState>{
+    MySolve: React.Ref<HTMLTableRowElement>
+
     constructor(props: RecordsProps) {
         super(props)
 
@@ -22,11 +24,30 @@ export class Records extends React.Component<RecordsProps, RecordsState>{
             eventRecords: "loading",
             type: "single"
         }
+
+        this.MySolve = React.createRef()
     }
 
     componentDidMount() {
         Api.getRecords(this.props.event, "single")
             .then(records => this.setState({ eventRecords: records }))
+    }
+
+    renderSolves(solves: Types.PersonalRecord[]) {
+        return solves.map(solve => {
+            let verifiedIcon = null
+            if (this.props.user.admin) {
+                let verified = solve.user_is_verified ? "verified" : "unverified"
+                verifiedIcon = <i className={`fas fa-user-check ${verified} mr-1`} />
+            }
+
+            return <tr ref={this.MySolve} className={this.props.user.id === solve.user_id ? "my-solve" : null}>
+                <td>{solve.rank}</td>
+                <td>{verifiedIcon}<Link to={`/u/${solve.username}`}>/u/{solve.username}</Link></td>
+                <td>{Number(solve.personal_best) / 100}</td>
+                <td><Link to={`${solve.comp_id}`}>{solve.comp_title}</Link></td>
+            </tr>
+        })
     }
 
     render() {
@@ -54,18 +75,18 @@ export class Records extends React.Component<RecordsProps, RecordsState>{
                         <thead className="thead-dark">
                             <tr>
                                 <th>Rank</th>
-                                <th>User</th>
+                                <th>
+                                    User
+                                    <button className="records-table-locate-user">
+                                        <i className="fas fa-arrow-down" id="scrollSingle" />
+                                    </button>
+                                </th>
                                 <th>Time</th>
                                 <th>Competition</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {solves.map(solve => <tr className={`${this.props.user.id === solve.user_id ? "hey-its-me" : ""}`}>
-                                <td>{solve.rank}</td>
-                                <td><Link to={`/u/${solve.username}`}>/u/{solve.username}</Link></td>
-                                <td>{Number(solve.personal_best) / 100}</td>
-                                <td><Link to={`${solve.comp_id}`}>{solve.comp_title}</Link></td>
-                            </tr>)}
+                            {this.renderSolves(solves)}
                         </tbody>
                     </table>
                 </div>
