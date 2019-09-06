@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { Home } from './Components/Home/Home';
 import { Compete } from './Components/Compete/Compete';
 import { UserSettings } from './Components/UserSettings/UserSettings'
+import { SumOfRanks } from './Components/Records/SumOfRanks'
 
 import * as Api from './api/api'
 import * as Types from './api/types'
@@ -52,6 +53,9 @@ export class MainRouter extends React.Component<RouterProps, RouterState> {
                     return <Compete eventType={Number(match.params.eventType)} settings={Helpers.minifyRawSettings(settings)} />
                 }} />
                 <Route path="/event/:eventType" component={({ match }: any) => <Records key={`records-${match.params.eventType}`} event={match.params.eventType} user={user} />} />
+
+                <Route path="/sum-of-ranks/:eventType" component={({ match }: any) => <SumOfRanks key={`records-${match.params.eventType}`} type={match.params.eventType} user={user} />} />
+                
                 <Route path="/settings" component={() =>
                     <UserSettings
                         settings={settings}
