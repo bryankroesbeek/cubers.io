@@ -2,6 +2,7 @@ import * as React from 'react'
 
 import * as Api from '../../api/api'
 import * as Types from '../../api/types'
+import * as Helpers from '../../api/helpers'
 import { Link } from 'react-router-dom';
 
 type RecordsProps = {
@@ -51,7 +52,7 @@ export class Records extends React.Component<RecordsProps, RecordsState>{
             return <tr key={`user-${solve.user_id}-${this.state.type}`} ref={ref} className={this.props.user.id === solve.user_id ? "my-solve" : null}>
                 <td>{solve.rank}</td>
                 <td>{verifiedIcon}<Link to={`/u/${solve.username}`}>/u/{solve.username}</Link></td>
-                <td>{Number(solve.personal_best) / 100}</td>
+                <td>{Helpers.toReadableTime(Number(solve.personal_best) * 10)}</td>
                 <td><Link to={`${solve.comp_id}`}>{solve.comp_title}</Link></td>
             </tr>
         })
@@ -84,11 +85,11 @@ export class Records extends React.Component<RecordsProps, RecordsState>{
                                 <th>Rank</th>
                                 <th>
                                     User
-                                    <button className="records-table-locate-user" onClick={() => {
-                                        this.scrollToUser()
-                                    }}>
-                                        <i className="fas fa-arrow-down" id="scrollSingle" />
-                                    </button>
+                                        <button className="records-table-locate-user" onClick={() => {
+                                            this.scrollToUser()
+                                        }}>
+                                            <i className="fas fa-arrow-down" id="scrollSingle" />
+                                        </button>
                                 </th>
                                 <th>Time</th>
                                 <th>Competition</th>
