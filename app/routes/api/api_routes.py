@@ -46,7 +46,7 @@ def get_header_info():
     }, NON_WCA_EVENTS))
 
     sum_of_ranks = list(map(lambda sort: {
-        'url': "/sum_of_ranks/" + sort['name'], #url_for('sum_of_ranks', sor_type=sort['sort']),
+        'url': "/sum-of-ranks/" + sort['sort'], #url_for('sum_of_ranks', sor_type=sort['sort']),
         'name': sort['name']
     }, SUM_OF_RANKS))
 
