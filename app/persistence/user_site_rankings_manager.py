@@ -28,7 +28,7 @@ def get_user_site_rankings_all_sorted_single():
         first()[0]
 
     return DB.session.\
-        query(UserSiteRankings.sum_all_single, User.username).\
+        query(UserSiteRankings.sum_all_single, User).\
         join(User).\
         filter(UserSiteRankings.sum_all_single != max_combined_single).\
         order_by(UserSiteRankings.sum_all_single.asc()).\
@@ -45,7 +45,7 @@ def get_user_site_rankings_all_sorted_average():
         first()[0]
 
     return DB.session.\
-        query(UserSiteRankings.sum_all_average, User.username).\
+        query(UserSiteRankings.sum_all_average, User).\
         join(User).\
         filter(UserSiteRankings.sum_all_average != max_combined_average).\
         order_by(UserSiteRankings.sum_all_average.asc()).\
@@ -62,7 +62,7 @@ def get_user_site_rankings_wca_sorted_single():
         first()[0]
 
     return DB.session.\
-        query(UserSiteRankings.sum_wca_single, User.username).\
+        query(UserSiteRankings.sum_wca_single, User).\
         join(User).\
         filter(UserSiteRankings.sum_wca_single != max_combined_single).\
         order_by(UserSiteRankings.sum_wca_single.asc()).\
@@ -79,7 +79,7 @@ def get_user_site_rankings_wca_sorted_average():
         first()[0]
 
     return DB.session.\
-        query(UserSiteRankings.sum_wca_average, User.username).\
+        query(UserSiteRankings.sum_wca_average, User).\
         join(User).\
         filter(UserSiteRankings.sum_wca_average != max_combined_average).\
         order_by(UserSiteRankings.sum_wca_average.asc()).\
@@ -96,7 +96,7 @@ def get_user_site_rankings_non_wca_sorted_single():
         first()[0]
 
     return DB.session.\
-        query(UserSiteRankings.sum_non_wca_single, User.username).\
+        query(UserSiteRankings.sum_non_wca_single, User).\
         join(User).\
         filter(UserSiteRankings.sum_non_wca_single != max_combined_single).\
         order_by(UserSiteRankings.sum_non_wca_single.asc()).\
@@ -113,7 +113,7 @@ def get_user_site_rankings_non_wca_sorted_average():
         first()[0]
 
     return DB.session.\
-        query(UserSiteRankings.sum_non_wca_average, User.username).\
+        query(UserSiteRankings.sum_non_wca_average, User).\
         join(User).\
         filter(UserSiteRankings.sum_non_wca_average != max_combined_average).\
         order_by(UserSiteRankings.sum_non_wca_average.asc()).\

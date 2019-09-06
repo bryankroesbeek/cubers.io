@@ -117,3 +117,7 @@ export function updateSettings(settings: types.UserSettingsMinified): Promise<ty
 export function getRecords(event: string, type: "single" | "average"): Promise<types.EventRecords> {
     return fetchResources<types.EventRecords>(`/api/records/${event}`)
 }
+
+export function getSumOfRanks(type: string): Promise<types.SumOfRanks> {
+    return fetchResources<types.SumOfRanks>(`/api/sum-of-ranks/${type}`)
+}
