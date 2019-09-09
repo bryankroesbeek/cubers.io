@@ -1615,7 +1615,7 @@ posit:
 
             function face(f) {
 
-                size = 3;
+                let size = 3;
 
                 if (!colors) {
                     setColors();
@@ -1744,7 +1744,7 @@ posit:
 
             function face(f) {
 
-                size = 3;
+                let size = 3;
 
                 if (!colors) {
                     setColors();
@@ -1993,8 +1993,8 @@ posit:
 
             function face(f) {
 
-                size = 3;
-                longSize = 4;
+                let size = 3;
+                let longSize = 4;
 
                 if (!colors) {
                     setColors();
@@ -2165,8 +2165,8 @@ posit:
 
             function face(f) {
 
-                size = 2;
-                longSize = 3;
+                let size = 2;
+                let longSize = 3;
 
                 if (!colors) {
                     setColors();
@@ -2467,7 +2467,7 @@ posit:
         var types_nnn = ['', '', '2x2', '3x3', '4x4', '5x5', '6x6', '7x7', '8x8', '9x9'];
 
         function setBorderRadius(type, canvasSize) {
-            cornerRadiusOptions = cornerRadiusMap[type] || defaultCornerRadiusOptions;
+            let cornerRadiusOptions = cornerRadiusMap[type] || defaultCornerRadiusOptions;
             eventCornerRadius = cornerRadiusOptions[canvasSize];
         }
 
