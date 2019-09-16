@@ -37,7 +37,7 @@ export class ManualEntry extends React.Component<ManualEntryProps, ManualEntrySt
     }
 
     convertToMilliseconds(value: string) {
-        if (value.length <= 5) return Number(value) * 100
+        if (value.length <= 5) return Number(value) * 1000
 
         let seconds = Number(value.includes(':') ? value.split(':')[0] : 0) * 60
         let milliSeconds = Math.round((Number(value.includes(':') ? value.split(':')[1] : value) + seconds) * 1000)
