@@ -1,7 +1,7 @@
 export type HeaderInfo = {
     title: string
     recordsItems: Record
-    leaderboardItems: Leaderboard
+    leaderboardItems: LeaderboardHeaderItem
     userItems: UserItems
 }
 
@@ -11,7 +11,7 @@ export type Record = {
     sum: HeaderItem
 }
 
-export type Leaderboard = {
+export type LeaderboardHeaderItem = {
     current: DetailedUrl
     previous: DetailedUrl
     all: DetailedUrl

@@ -1,3 +1,5 @@
+import { CommonUser } from "./common"
+
 export type SumOfRanks = {
     title: string
     averages: Rank[]
@@ -6,9 +8,5 @@ export type SumOfRanks = {
 
 export type Rank = {
     rank_count: number,
-        user: {
-            id: number,
-            name: string,
-            verified: boolean
-        }
+    user: CommonUser
 }
