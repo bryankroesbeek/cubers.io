@@ -2,8 +2,9 @@
 
 from arrow import now
 
-from flask import render_template, redirect
+from flask import render_template, redirect, jsonify
 from flask_login import current_user
+from slugify import slugify
 
 from app import app
 from app.business.user_results import set_medals_on_best_event_results
@@ -25,35 +26,34 @@ LOG_USER_VIEWING_RESULTS = '{} viewing results for {} in {}'
 
 # -------------------------------------------------------------------------------------------------
 
-@app.route('/leaderboards/<int:comp_id>/')
+@app.route('/api/leaderboards/comp/<int:comp_id>/')
 def comp_results(comp_id):
     """ A route for showing results for a specific competition. """
 
     competition = get_competition(comp_id)
     if not competition:
-        return "Oops, that's not a real competition. Try again, ya clown."
+        return "Oops, that's not a real competition. Try again, ya clown.", 404
 
     comp_events = get_all_comp_events_for_comp(comp_id)
     comp_events = sort_comp_events_by_global_sort_order(comp_events)
 
-    events_names_ids = list()
-    id_3x3 = None
-    for comp_event in comp_events:
-        if comp_event.Event.name == '3x3':
-            id_3x3 = comp_event.id
-        events_names_ids.append({
-            'name':          comp_event.Event.name,
-            'comp_event_id': comp_event.id,
-            'event_id':      comp_event.Event.id,
-        })
+    # alternative_title = "{} leaderboards".format(competition.title)
 
-    alternative_title = "{} leaderboards".format(competition.title)
+    events = map(lambda c: {
+        'name': c.Event.name,
+        'compEventId': c.id,
+        'eventId': c.Event.id,
+        'slug': slugify(c.Event.name)
+    } , comp_events)
 
-    return render_template("results/results_comp.html", alternative_title=alternative_title,
-        events_names_ids=events_names_ids, id_3x3=id_3x3, comp_id=comp_id)
+    return jsonify(list(events))
+
+    # return render_template("results/results_comp.html", alternative_title=alternative_title,
+    #     events_names_ids=events_names_ids, id_3x3=id_3x3, comp_id=comp_id)
 
 
-@app.route('/compevent/<comp_event_id>/')
+# @app.route('/compevent/<comp_event_id>/')
+@app.route('/api/leaderboards/event/<comp_event_id>/')
 def comp_event_results(comp_event_id):
     """ A route for obtaining results for a specific competition event and rendering them
     for the leaderboards pages. """
@@ -79,8 +79,10 @@ def comp_event_results(comp_event_id):
     results = get_all_complete_user_results_for_comp_event(comp_event_id, omit_blacklisted=False)
     results = list(results)  # take out of the SQLAlchemy BaseQuery and put into a simple list
 
-    if not results:
-        return "Nobody has participated in this event yet. Maybe you'll be the first!"
+    # return jsonify(results)
+
+    # if not results:
+    #     return "Nobody has participated in this event yet. Maybe you'll be the first!"
 
     results = filter_blacklisted_results(results, show_admin, current_user)
 
@@ -107,9 +109,31 @@ def comp_event_results(comp_event_id):
     # Sort the results
     results_with_ranks = sort_user_results_with_rankings(results, comp_event.Event.eventFormat)
 
-    return render_template("results/comp_event_table.html", results=results_with_ranks,
-        comp_event=comp_event, show_admin=show_admin, scrambles=scrambles)
+    good_results = list(map(lambda result: {
+        "rank": result[0],
+        "visibleRank": result[1],
+        "solve": {
+            "times": result[2]['times_string'].split(', '),
+            "best_single": result[2]['single'],
+            "average": result[2]['average'],
+            "user": get_user(result[2]['User'])        
+        }
+    },results_with_ranks))
 
+    return jsonify({
+        'results': good_results,
+        'scrambles': scrambles
+    })
+
+    # return render_template("results/comp_event_table.html", results=results_with_ranks,
+    #     comp_event=comp_event, show_admin=show_admin, scrambles=scrambles)
+
+def get_user(user):
+    return {
+        'name': user.username,
+        'id': user.id,
+        'verified': user.is_verified if current_user.is_admin else "none"
+    }
 
 def get_overall_performance_data(comp_id):
     """ TODO: comment """
