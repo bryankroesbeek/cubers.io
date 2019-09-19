@@ -121,3 +121,11 @@ export function getRecords(event: string, type: "single" | "average"): Promise<t
 export function getSumOfRanks(type: string): Promise<types.SumOfRanks> {
     return fetchResources<types.SumOfRanks>(`/api/sum-of-ranks/${type}`)
 }
+
+export function getLeaderboardItems(compId: number): Promise<types.LeaderboardEvent[]> {
+    return fetchResources<types.LeaderboardEvent[]>(`/api/leaderboards/comp/${compId}`)
+}
+
+export function getLeaderboardEvent(eventId: number): Promise<types.Leaderboard> {
+    return fetchResources<types.Leaderboard>(`/api/leaderboards/event/${eventId}`)
+}
