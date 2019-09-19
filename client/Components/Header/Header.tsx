@@ -10,7 +10,7 @@ type HeaderProps = {
 type HeaderState = {
     title: string
     recordsItems: Types.Record | "loading"
-    leaderboardItems: Types.Leaderboard | "loading",
+    leaderboardItems: Types.LeaderboardHeaderItem | "loading",
     userItems: Types.UserItems
     currentDropdown: "none" | "records" | "leaderboards" | "profile" | "wca" | "non-wca" | "sum"
 }

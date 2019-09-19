@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { Route, Switch } from 'react-router'
-import { Header } from './Components/Header/Header';
-import { BrowserRouter } from 'react-router-dom';
-import { Home } from './Components/Home/Home';
-import { Compete } from './Components/Compete/Compete';
+import { Header } from './Components/Header/Header'
+import { BrowserRouter } from 'react-router-dom'
+import { Home } from './Components/Home/Home'
+import { Compete } from './Components/Compete/Compete'
 import { UserSettings } from './Components/UserSettings/UserSettings'
 import { SumOfRanks } from './Components/Records/SumOfRanks'
 
@@ -11,6 +11,7 @@ import * as Api from './api/api'
 import * as Types from './api/types'
 import * as Helpers from './api/helpers/settingsHelper'
 import { Records } from './Components/Records/Records'
+import { Leaderboards } from './Components/Leaderboards/Leaderboards'
 
 type RouterState = {
     user: Types.User | "loading"
@@ -55,16 +56,24 @@ export class MainRouter extends React.Component<RouterProps, RouterState> {
 
                 <Route>
                     <div className="white-container">
-                        <Route path="/event/:eventType" component={({ match }: any) => <Records key={`records-${match.params.eventType}`} event={match.params.eventType} user={user} />} />
+                        <Route path="/event/:eventType" component={({ match }: any) =>
+                            <Records key={`records-${match.params.eventType}`} event={match.params.eventType} user={user} />
+                        } />
 
-                        <Route path="/sum-of-ranks/:eventType" component={({ match }: any) => <SumOfRanks key={`records-${match.params.eventType}`} type={match.params.eventType} user={user} />} />
+                        <Route path="/sum-of-ranks/:eventType" component={({ match }: any) =>
+                            <SumOfRanks key={`records-${match.params.eventType}`} type={match.params.eventType} user={user} />
+                        } />
+
+                        <Route path="/leaderboards/:compId" component={({ match }: any) =>
+                            <Leaderboards key={`leaderboards-${match.params.compId}`} competitionId={match.params.compId} user={user} />
+                        } />
 
                         <Route path="/settings" component={() =>
                             <UserSettings
                                 settings={settings}
                                 updateSettings={settings => this.setState({ settings: settings })}
-                            />}
-                        />
+                            />
+                        } />
                     </div>
                 </Route>
             </Switch>
