@@ -12,6 +12,7 @@ import * as Types from './api/types'
 import * as Helpers from './api/helpers/settingsHelper'
 import { Records } from './Components/Records/Records'
 import { Leaderboards } from './Components/Leaderboards/Leaderboards'
+import { LeaderboardsCollection } from './Components/Leaderboards/LeaderboardCollection';
 
 type RouterState = {
     user: Types.User | "loading"
@@ -62,6 +63,10 @@ export class MainRouter extends React.Component<RouterProps, RouterState> {
 
                         <Route path="/sum-of-ranks/:eventType" component={({ match }: any) =>
                             <SumOfRanks key={`records-${match.params.eventType}`} type={match.params.eventType} user={user} />
+                        } />
+
+                        <Route exact path="/leaderboards" component={() =>
+                            <LeaderboardsCollection user={user} />
                         } />
 
                         <Route path="/leaderboards/:compId" component={({ match }: any) =>
