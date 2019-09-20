@@ -183,13 +183,31 @@ def prev_leaders():
     return redirect("leaderboards/{}".format(comp.id))
 
 
-@app.route('/leaderboards/')
+@app.route('/api/leaderboards/')
 def results_list():
     """ A route for showing which competitions results can be viewed for. """
 
     comps = get_complete_competitions()
     comp = get_active_competition()
-    return render_template("results/results_list.html", comps=comps, active=comp)
+
+    past_comps = list(map(lambda past_comp: {
+        'id': past_comp[0],
+        'title': past_comp[1],
+        'startDate': past_comp[3],
+        'endDate': past_comp[4]
+    } ,comps))
+
+    current_comp = {
+        'id': comp.id,
+        'title': comp.title
+    }
+
+    result = {
+        'currentComp': current_comp,
+        'pastComps': past_comps
+    }
+
+    return jsonify(result)
 
 # -------------------------------------------------------------------------------------------------
 

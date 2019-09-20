@@ -86,7 +86,7 @@ def get_header_info():
             },
             'all': {
                 'name': 'All competitions',
-                'url': url_for('results_list')
+                'url': '/leaderboards/'
             }
         },
         'userItems': user_items
