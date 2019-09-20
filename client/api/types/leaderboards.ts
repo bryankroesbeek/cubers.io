@@ -22,3 +22,15 @@ export type LeaderboardEvent = {
     name: string,
     slug: string
 }
+
+export type LeaderboardsCollection = {
+    currentComp: LeaderboardsCollectionCompetition,
+    pastComps: LeaderboardsCollectionCompetition[]
+}
+
+export type LeaderboardsCollectionCompetition = {
+    id: number,
+    title: string,
+    startDate: string,
+    endDate: string
+}

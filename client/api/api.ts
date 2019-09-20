@@ -129,3 +129,7 @@ export function getLeaderboardItems(compId: number): Promise<types.LeaderboardEv
 export function getLeaderboardEvent(eventId: number): Promise<types.Leaderboard> {
     return fetchResources<types.Leaderboard>(`/api/leaderboards/event/${eventId}`)
 }
+
+export function getLeaderboardCompetitions(): Promise<types.LeaderboardsCollection> {
+    return fetchResources<types.LeaderboardsCollection>('/api/leaderboards')
+}
