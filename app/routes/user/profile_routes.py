@@ -1,7 +1,9 @@
 """ Routes related to a user's profile. """
 
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, jsonify, session
 from flask_login import current_user
+
+from slugify import slugify
 
 from app import app
 from app.business.user_history import get_user_competition_history
@@ -20,7 +22,8 @@ LOG_PROFILE_VIEW = "{} is viewing {}'s profile"
 
 # -------------------------------------------------------------------------------------------------
 
-@app.route('/u/<username>/')
+# @app.route('/u/<username>/')
+@app.route('/api/user/<username>')
 def profile(username):
     """ A route for showing a user's profile. """
 
@@ -88,13 +91,157 @@ def profile(username):
     # Set a flag indicating if this page view is for a user viewing another user's page
     viewing_other_user = user.username != current_user.username
 
-    return render_template("user/profile.html", user=user, solve_count=solve_count,
-        comp_count=comps_count, history=history, rankings=site_rankings,
-        event_id_name_map=event_id_name_map, rankings_ts=rankings_ts,
-        is_admin_viewing=current_user.is_admin, sor_all=sor_all, sor_wca=sor_wca,
-        sor_non_wca=sor_non_wca, gold_count=gold_count, silver_count=silver_count,
-        bronze_count=bronze_count, viewing_other_user=viewing_other_user,
+    return jsonify(list(rankings))
+
+    return render_template("user/profile.html", 
+        user=user, solve_count=solve_count,
+        comp_count=comps_count, 
+        history=history, rankings=site_rankings,
+        event_id_name_map=event_id_name_map, 
+        rankings_ts=rankings_ts, is_admin_viewing=current_user.is_admin, 
+        sor_all=sor_all, sor_wca=sor_wca, sor_non_wca=sor_non_wca, 
+        gold_count=gold_count, silver_count=silver_count, bronze_count=bronze_count, 
+        viewing_other_user=viewing_other_user,
         kinch_all=kinch_all, kinch_wca=kinch_wca, kinch_non_wca=kinch_non_wca)
+
+
+@app.route('/api/user/<username>/records')
+def get_user_records(username):
+    if not current_user:
+        return "", 401
+
+    user = get_user_by_username(username)
+
+    site_rankings_record = get_site_rankings_for_user(user.id)
+
+    # Get a dictionary of event ID to names, to facilitate rendering some stuff in the template
+    event_id_name_map = get_events_id_name_mapping()
+
+    site_rankings = site_rankings_record.get_site_rankings_and_pbs(event_id_name_map)
+
+    rankings = [x for x in map(lambda key: {
+        'puzzle': event_id_name_map[key],
+        'puzzleSlug': slugify(event_id_name_map[key]),
+        'single': int(site_rankings[key][0]),
+        'singleRank': site_rankings[key][1],
+        'average': int(site_rankings[key][2]),
+        'averageRank': site_rankings[key][3],
+    } if site_rankings[key][0] else None,site_rankings.keys()) if x is not None]
+
+    return jsonify(list(rankings))
+
+@app.route('/api/user/<username>/rankings')
+def get_user_rankings(username):
+    if not current_user:
+        return "", 401
+
+    user = get_user_by_username(username)
+
+    # Accumulate a count of medals this user has for podiuming
+    gold_count, silver_count, bronze_count = get_user_medals_count(user.id)
+
+    # Get some other interesting stats
+    solve_count = get_user_completed_solves_count(user.id)
+    comps_count = get_user_participated_competitions_count(user.id)
+
+    # Get a dictionary of event ID to names, to facilitate rendering some stuff in the template
+    event_id_name_map = get_events_id_name_mapping()
+
+    site_rankings_record = get_site_rankings_for_user(user.id)
+
+    # Get sum of ranks
+    sor_all     = site_rankings_record.get_combined_sum_of_ranks()
+    sor_wca     = site_rankings_record.get_WCA_sum_of_ranks()
+    sor_non_wca = site_rankings_record.get_non_WCA_sum_of_ranks()
+
+    # Get kinch ranks
+    kinch_all     = site_rankings_record.get_combined_kinchrank()
+    kinch_wca     = site_rankings_record.get_WCA_kinchrank()
+    kinch_non_wca = site_rankings_record.get_non_WCA_kinchrank()
+
+    rankings = {
+        'medals': {
+            'gold': gold_count,
+            'silver': silver_count,
+            'bronze': bronze_count
+        },
+        'sumOfRanks': {
+            'all': clean_ranks(sor_all),
+            'wca': clean_ranks(sor_wca),
+            'non_wca': clean_ranks(sor_non_wca)
+        },
+        'kinchRanks': {
+            'all': clean_ranks(kinch_all),
+            'wca': clean_ranks(kinch_wca),
+            'non_wca': clean_ranks(kinch_non_wca)
+        },
+        'solves': solve_count,
+        'competitions': comps_count
+    }
+
+    return jsonify(rankings)
+
+def clean_ranks(rank):
+    return {
+        'single': rank[1],
+        'average': rank[2]
+    }
+
+@app.route('/api/user/<username>/history')
+def get_user_history(username):
+    if not current_user:
+        return "", 401
+
+    include_blacklisted = __should_show_blacklisted_results(username, current_user.is_admin)    
+
+    user = get_user_by_username(username)
+
+    history = get_user_competition_history(user, include_blacklisted=include_blacklisted)
+
+    history_dictionary = map(history_to_dictionary, history.items())
+
+    return jsonify(list(history_dictionary))
+
+def history_to_dictionary(history):
+    event_info, comps = history
+
+    return {
+        'event': event_info.__dict__['name'],
+        'results': list(map(result_to_dictionary, comps.items()))
+    }
+
+
+def result_to_dictionary(thing):
+    comp, results = thing
+
+    c = comp.__dict__
+    r = results.__dict__
+
+    return {
+        'comp': {
+            "title": c["title"],
+            "id": c["id"]
+        },
+        'solves': {
+            "result": int(r["result"]),
+            "single": int(r["single"]),
+            "was_silver_medal": r["was_silver_medal"],
+            "was_gold_medal": r["was_gold_medal"],
+            "is_blacklisted": r["is_blacklisted"],
+            "was_pb_single": r["was_pb_single"],
+            "comment": r["comment"],
+            "average": int(r["average"]),
+            "comp_event_id": r["comp_event_id"],
+            "id": r["id"],
+            "was_bronze_medal": r["was_bronze_medal"],
+            "blacklist_note": r["blacklist_note"],
+            "was_pb_average": r["was_pb_average"],
+            "times_string": r["times_string"].split(', '),
+            "is_fmc": r["is_fmc"],
+            "is_blind": r["is_blind"],
+            "is_mbld": r["is_mbld"]
+        }
+    }
 
 # -------------------------------------------------------------------------------------------------
 
