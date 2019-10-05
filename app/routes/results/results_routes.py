@@ -113,10 +113,10 @@ def comp_event_results(comp_event_id):
         "rank": result[0],
         "visibleRank": result[1],
         "solve": {
-            "times": result[2]['times_string'].split(', '),
-            "best_single": result[2]['single'],
-            "average": result[2]['average'],
-            "user": get_user(result[2]['User'])        
+            "times": result[2].__dict__['times_string'].split(', '),
+            "best_single": result[2].__dict__['single'],
+            "average": result[2].__dict__['average'],
+            "user": get_user(result[2].__dict__['User'])
         }
     },results_with_ranks))
 

@@ -95,7 +95,7 @@ def sort_user_results_with_rankings(results, event_format):
                 ranks_seen.add(rank)
             else:
                 visible_rank = ''
-            ranked_results.append((rank, visible_rank, results[i].__dict__))
+            ranked_results.append((rank, visible_rank, results[i]))
 
     else:
         # Sort by single first, to ensure any ties by overall result (average/mean) are broken by
@@ -128,7 +128,7 @@ def sort_user_results_with_rankings(results, event_format):
                 ranks_seen.add(rank)
             else:
                 visible_rank = ''
-            ranked_results.append((rank, visible_rank, results[i].__dict__))
+            ranked_results.append((rank, visible_rank, results[i]))
 
     return ranked_results
 
