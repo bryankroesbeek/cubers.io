@@ -153,6 +153,8 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             <div className={`dropdown-menu dropdown-menu-right ${show}`}>
                 <Link className="dropdown-item" to={this.state.userItems.profile_url} onClick={this.hideNavigation}>Profile</Link>
                 <div className="dropdown-divider"></div>
+                <Link className="dropdown-item" to={this.state.userItems.versus_url} onClick={this.hideNavigation}>Competitor Showdown</Link>
+                <div className="dropdown-divider"></div>
                 <Link className="dropdown-item" to="/logout" onClick={this.hideNavigation}>Logout</Link>
             </div>
         </>

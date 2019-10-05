@@ -20,6 +20,7 @@ export type LeaderboardHeaderItem = {
 export type UserItems = {
     logout_url: string
     profile_url: string
+    versus_url: string
     settings_url: string
 } | "none"
 

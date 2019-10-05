@@ -53,8 +53,9 @@ def get_header_info():
     user_items = "none"
     if current_user:
         user_items = {
-            'profile_url': url_for('profile', username=current_user.username),
-            'logout_url': url_for('logout'),
+            'profile_url': '/u/{}'.format(current_user.username), ##url_for('profile', username=current_user.username),
+            'logout_url': '/logout', #url_for('logout'),
+            'versus_url': '/versus',
             'settings_url': '/settings'
         }
 
