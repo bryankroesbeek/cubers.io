@@ -13,6 +13,7 @@ import * as Helpers from './api/helpers/settingsHelper'
 import { Records } from './Components/Records/Records'
 import { Leaderboards } from './Components/Leaderboards/Leaderboards'
 import { LeaderboardsCollection } from './Components/Leaderboards/LeaderboardCollection';
+import { Profile } from './Components/Profile/Profile'
 
 type RouterState = {
     user: Types.User | "loading"
@@ -71,6 +72,10 @@ export class MainRouter extends React.Component<RouterProps, RouterState> {
 
                         <Route path="/leaderboards/:compId" component={({ match }: any) =>
                             <Leaderboards key={`leaderboards-${match.params.compId}`} competitionId={match.params.compId} user={user} />
+                        } />
+
+                        <Route exact path="/(u|user)/:username" component={({ match }: any) =>
+                            <Profile key={`profile-${match.params.username}`} username={match.params.username} currentUser={user} />
                         } />
 
                         <Route path="/settings" component={() =>
