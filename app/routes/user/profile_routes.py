@@ -171,9 +171,9 @@ def get_user_rankings(username):
             'non_wca': clean_ranks(sor_non_wca)
         },
         'kinchRanks': {
-            'all': clean_ranks(kinch_all),
-            'wca': clean_ranks(kinch_wca),
-            'non_wca': clean_ranks(kinch_non_wca)
+            'all': kinch_all[2],
+            'wca': kinch_wca[2],
+            'non_wca': kinch_non_wca[2]
         },
         'solves': solve_count,
         'competitions': comps_count
