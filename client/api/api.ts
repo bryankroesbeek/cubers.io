@@ -133,3 +133,15 @@ export function getLeaderboardEvent(eventId: number): Promise<types.Leaderboard>
 export function getLeaderboardCompetitions(): Promise<types.LeaderboardsCollection> {
     return fetchResources<types.LeaderboardsCollection>('/api/leaderboards')
 }
+
+export function getUserRankings(username: string): Promise<types.ProfileRankings> {
+    return fetchResources<types.ProfileRankings>(`/api/user/${username}/rankings`)
+}
+
+export function getUserRecords(username: string): Promise<types.ProfileRecords> {
+    return fetchResources<types.ProfileRecords>(`/api/user/${username}/records`)
+}
+
+export function getUserHistory(username: string): Promise<types.ProfileHistory> {
+    return fetchResources<types.ProfileHistory>(`/api/user/${username}/history`)
+}
