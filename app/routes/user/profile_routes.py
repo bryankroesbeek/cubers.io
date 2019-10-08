@@ -122,10 +122,11 @@ def get_user_records(username):
     rankings = [x for x in map(lambda key: {
         'puzzle': event_id_name_map[key],
         'puzzleSlug': slugify(event_id_name_map[key]),
-        'single': int(site_rankings[key][0]),
+        'single': int(site_rankings[key][0]) if not site_rankings[key][0] == "DNF" else "DNF",
         'singleRank': site_rankings[key][1],
-        'average': int(site_rankings[key][2]),
+        'average': int(site_rankings[key][2]) if not site_rankings[key][2] == "DNF" else "DNF",
         'averageRank': site_rankings[key][3],
+        'kinchRank': site_rankings[key][4]
     } if site_rankings[key][0] else None,site_rankings.keys()) if x is not None]
 
     return jsonify(list(rankings))
@@ -207,6 +208,7 @@ def history_to_dictionary(history):
 
     return {
         'event': event_info.__dict__['name'],
+        'eventSlug': slugify(event_info.__dict__['name']),
         'results': list(map(result_to_dictionary, comps.items()))
     }
 
@@ -217,29 +219,31 @@ def result_to_dictionary(thing):
     c = comp.__dict__
     r = results.__dict__
 
+    medal = "gold" if r["was_gold_medal"] else "silver" if r["was_silver_medal"] \
+        else "bronze" if r["was_bronze_medal"] else "none"
+
+    event_type = "fmc" if r["is_fmc"] else "blind" if r["is_blind"] \
+        else "multi_blind" if r["is_mbld"] else "normal"
+
     return {
         'comp': {
             "title": c["title"],
             "id": c["id"]
         },
         'solves': {
-            "result": int(r["result"]),
-            "single": int(r["single"]),
-            "was_silver_medal": r["was_silver_medal"],
-            "was_gold_medal": r["was_gold_medal"],
-            "is_blacklisted": r["is_blacklisted"],
-            "was_pb_single": r["was_pb_single"],
-            "comment": r["comment"],
-            "average": int(r["average"]),
-            "comp_event_id": r["comp_event_id"],
             "id": r["id"],
-            "was_bronze_medal": r["was_bronze_medal"],
-            "blacklist_note": r["blacklist_note"],
-            "was_pb_average": r["was_pb_average"],
-            "times_string": r["times_string"].split(', '),
-            "is_fmc": r["is_fmc"],
-            "is_blind": r["is_blind"],
-            "is_mbld": r["is_mbld"]
+            "compEventId": r["comp_event_id"],
+            "eventType": event_type,
+            "single": int(r["single"]) if not r["single"] == "DNF" else "DNF",
+            "result": int(r["result"]) if not r["result"] == "DNF" else "DNF",
+            "average": int(r["average"]) if not r["average"] == "DNF" else "DNF",
+            "wasPbSingle": r["was_pb_single"],
+            "wasPbAverage": r["was_pb_average"],
+            "times": r["times_string"].split(', '),
+            "comment": r["comment"],
+            "medal": medal,
+            "isBlacklisted": r["is_blacklisted"],
+            "blacklistNote": r["blacklist_note"],
         }
     }
 
