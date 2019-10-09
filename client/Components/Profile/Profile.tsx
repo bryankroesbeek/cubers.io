@@ -98,6 +98,7 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
             <table className="table-results table table-sm table-striped table-cubersio">
                 <thead className="thead-dark">
                     <tr>
+                        <th>{/* Event image */}</th>
                         <th>Event</th>
                         <th>Site rank</th>
                         <th>Single</th>
@@ -108,7 +109,8 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
                 </thead>
                 <tbody>
                     {records.map(r => <tr>
-                        <td>{r.puzzle}</td>
+                        <td><Link to={`/event/${r.puzzle}`}><img className="profile-record-puzzle" src={`/static/images/cube-${r.puzzleSlug}.png`}/></Link></td>
+                        <td><Link to={`/event/${r.puzzle}`}>{r.puzzle}</Link></td>
                         <td>{r.singleRank}</td>
                         <td>{Helpers.toReadableTime(r.single * 10)}</td>
                         <td>{Helpers.toReadableTime(r.average * 10)}</td>
@@ -125,10 +127,10 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
         if (history === "loading") return null
 
         return <div>
-            <div className="leaderboards-events">
+            <div className="tab-events-header">
                 {history.map(h =>
-                    <button className={`leaderboards-events-item ${h.event === this.state.selectedEvent}`} onClick={() => { }}>
-                        <img className="leaderboards-events-item-image" src={`/static/images/cube-${h.eventSlug}.png`} />
+                    <button className={`tab-events-header-item ${h.event === this.state.selectedEvent}`} onClick={() => { }}>
+                        <img className="tab-events-header-item-image" src={`/static/images/cube-${h.eventSlug}.png`} />
                     </button>
                 )}
 

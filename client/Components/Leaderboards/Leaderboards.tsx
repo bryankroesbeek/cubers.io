@@ -52,12 +52,12 @@ export class Leaderboards extends React.Component<LeaderboardsProps, Leaderboard
 
         if (events === "loading") return null
 
-        return <div className="leaderboards-events">
+        return <div className="tab-events-header">
             {events.map(e => {
                 let active = e.slug === currentEvent.slug ? "active" : ""
 
-                return <button className={`leaderboards-events-item ${active}`} onClick={() => this.loadEvent(e)}>
-                    <img className="leaderboards-events-item-image" src={`/static/images/cube-${e.slug}.png`} />
+                return <button className={`tab-events-header-item ${active}`} onClick={() => this.loadEvent(e)}>
+                    <img className="tab-events-header-item-image" src={`/static/images/cube-${e.slug}.png`} />
                 </button>
             })}
         </div>
