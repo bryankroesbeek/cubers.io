@@ -17,10 +17,7 @@ type ProfileState = {
     records: ProfileRecords | "loading"
     history: ProfileHistory | "loading"
 
-    selectedEvent: {
-        event: string,
-        results: ProfileHistoryResult[]
-    } | "none"
+    selectedEvent: ProfileHistoryEvent | "none"
 }
 
 export class Profile extends React.Component<ProfileProps, ProfileState>{
@@ -41,8 +38,7 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
         let historyRequest = Api.getUserHistory(this.props.username)
 
         let history = await historyRequest
-        let initialEvent = history.find(h => h.event === "3x3")
-        if (!initialEvent) initialEvent = history[0]
+        let initialEvent = this.getInitialEvent(history)
 
         this.setState({
             rankings: await rankingsRequest,
@@ -52,6 +48,14 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
         })
     }
 
+    getInitialEvent(history: ProfileHistoryEvent[]): ProfileHistoryEvent | "none" {
+        if (history.length === 0) return "none"
+        let initialEvent = history.find(h => h.event === "8x8")
+        if (!initialEvent) initialEvent = history[0]
+
+        return initialEvent
+    }
+
     renderRankings() {
         let rankings = this.state.rankings
         if (rankings === "loading") return null
@@ -59,13 +63,13 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
         return <div>
             <table className="table-results table table-sm table-striped table-cubersio">
                 <thead className="thead-dark">
-                    <tr>
+                    <tr className="medium-row">
                         <th rowSpan={2}>Competitions</th>
                         <th rowSpan={2}>Completed Solves</th>
                         <th colSpan={3}>Sum of Ranks (Single, Average)</th>
                         <th colSpan={3}>Kinchranks</th>
                     </tr>
-                    <tr>
+                    <tr className="medium-row">
                         <th>Combined</th>
                         <th>WCA Events</th>
                         <th>Non-WCA Events</th>
@@ -75,7 +79,7 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    <tr className="medium-row">
                         <td>{rankings.competitions}</td>
                         <td>{rankings.solves}</td>
                         <td>{rankings.sumOfRanks.all.single}, {rankings.sumOfRanks.all.average}</td>
@@ -97,8 +101,7 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
         return <div>
             <table className="table-results table table-sm table-striped table-cubersio">
                 <thead className="thead-dark">
-                    <tr>
-                        <th>{/* Event image */}</th>
+                    <tr className="medium-row">
                         <th>Event</th>
                         <th>Site rank</th>
                         <th>Single</th>
@@ -108,9 +111,13 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
                     </tr>
                 </thead>
                 <tbody>
-                    {records.map(r => <tr>
-                        <td><Link to={`/event/${r.puzzle}`}><img className="profile-record-puzzle" src={`/static/images/cube-${r.puzzleSlug}.png`}/></Link></td>
-                        <td><Link to={`/event/${r.puzzle}`}>{r.puzzle}</Link></td>
+                    {records.map(r => <tr className="medium-row">
+                        <td>
+                            <Link className="profile-record-puzzle-link" to={`/event/${r.puzzle}`}>
+                                <img className="profile-record-puzzle-image puzzle-image" src={`/static/images/cube-${r.puzzleSlug}.png`} />
+                                {r.puzzle}
+                            </Link>
+                        </td>
                         <td>{r.singleRank}</td>
                         <td>{Helpers.toReadableTime(r.single * 10)}</td>
                         <td>{Helpers.toReadableTime(r.average * 10)}</td>
@@ -126,27 +133,36 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
         let history = this.state.history
         if (history === "loading") return null
 
+        let selectedEvent = this.state.selectedEvent as ProfileHistoryEvent
+
         return <div>
             <div className="tab-events-header">
-                {history.map(h =>
-                    <button className={`tab-events-header-item ${h.event === this.state.selectedEvent}`} onClick={() => { }}>
-                        <img className="tab-events-header-item-image" src={`/static/images/cube-${h.eventSlug}.png`} />
-                    </button>
-                )}
-
+                {history.map(h => this.renderEventButton(h, selectedEvent))}
             </div>
             {this.renderHistoryTable()}
         </div>
+    }
+
+    renderEventButton(h: ProfileHistoryEvent, selectedEvent: ProfileHistoryEvent) {
+        let buttonClassName = `tab-events-header-item ${h.eventSlug === selectedEvent.eventSlug ? "active" : ""}`
+
+        let onClick = () => {
+            this.setState({ selectedEvent: h })
+        }
+
+        return <button className={buttonClassName} onClick={onClick}>
+            <img className="tab-events-header-item-image" src={`/static/images/cube-${h.eventSlug}.png`} />
+        </button>
     }
 
     renderHistoryTable() {
         let selectedEvent = this.state.selectedEvent
         if (selectedEvent === "none") return null
 
-        return <div className="leaderboards-event">
+        return <div>
             <table className="table-results table table-sm table-striped table-cubersio">
                 <thead className="thead-dark">
-                    <tr>
+                    <tr className="medium-row">
                         <th>{/* Comment */}</th>
                         <th>Competition</th>
                         <th>Single</th>
@@ -155,9 +171,13 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
                     </tr>
                 </thead>
                 <tbody>
-                    {selectedEvent.results.map(r => <tr>
-                        <td><i className="far fa-comment spacer"></i></td>
-                        <td><Link to={`/leaderboards/${r.comp.id}`}>{r.comp.title}</Link></td>
+                    {selectedEvent.results.map(r => <tr className="medium-row">
+                        <td className="table-comment">
+                            <i className="far fa-comment" />
+                        </td>
+                        <td>
+                            <Link to={`/leaderboards/${r.comp.id}`}>{r.comp.title}</Link>
+                        </td>
                         <td>{Helpers.toReadableTime(r.solves.single * 10)}</td>
                         <td>{Helpers.toReadableTime(r.solves.average * 10)}</td>
                         {r.solves.times.map(t => <td>{t}</td>)}
@@ -167,11 +187,26 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
         </div>
     }
 
+    renderComparisonLink() {
+        if (this.props.username === this.props.currentUser.name) return null
+
+        return <Link to={`/versus/${this.props.currentUser.name}/${this.props.username}`}>
+            Compare to my records
+        </Link>
+    }
+
     render() {
-        return <div>
-            <h3>{this.props.username}</h3>
+        return <div className="profile">
+            <h1 className="profile-username">{this.props.username}</h1>
             {this.renderRankings()}
+            <div className="profile-section-title">
+                <h3>Personal Records</h3>
+                {this.renderComparisonLink()}
+            </div>
             {this.renderRecords()}
+            <div className="profile-section-title">
+                <h3>Competition History</h3>
+            </div>
             {this.renderHistory()}
         </div>
     }

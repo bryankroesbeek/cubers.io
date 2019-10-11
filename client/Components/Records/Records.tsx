@@ -66,7 +66,7 @@ export class Records extends React.Component<RecordsProps, RecordsState>{
         return <div className="records-page">
             <div className="records-wrapper">
                 <div className="records-header">
-                    <img className="records-event-image" src={`/static/images/cube-${this.props.event.toLowerCase().split(" ").join("-")}.png`} />
+                    <img className="records-event-image puzzle-image" src={`/static/images/cube-${this.props.event.toLowerCase().split(" ").join("-")}.png`} />
                     <div className="records-navbar">
                         <button
                             className={`records-navbar-button ${this.state.type === "single" ? "active" : ""}`}
