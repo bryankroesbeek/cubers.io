@@ -171,20 +171,26 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
                     </tr>
                 </thead>
                 <tbody>
-                    {selectedEvent.results.map(r => <tr className="medium-row">
-                        <td className="table-comment">
-                            <i className="far fa-comment" />
-                        </td>
-                        <td>
-                            <Link to={`/leaderboards/${r.comp.id}`}>{r.comp.title}</Link>
-                        </td>
-                        <td>{Helpers.toReadableTime(r.solves.single * 10)}</td>
-                        <td>{Helpers.toReadableTime(r.solves.average * 10)}</td>
-                        {r.solves.times.map(t => <td>{t}</td>)}
-                    </tr>)}
+                    {selectedEvent.results.map(r => this.renderHistoryTableRow(r))}
                 </tbody>
             </table>
         </div>
+    }
+
+    renderHistoryTableRow(r: ProfileHistoryResult) {
+        let commentIconStyle = !r.solves.comment ? "empty-comment" : ""
+
+        return <tr className="medium-row">
+            <td className={`table-comment ${commentIconStyle}`}>
+                <i className="far fa-comment" />
+            </td>
+            <td>
+                <Link to={`/leaderboards/${r.comp.id}`}>{r.comp.title}</Link>
+            </td>
+            <td>{Helpers.toReadableTime(r.solves.single * 10)}</td>
+            <td>{Helpers.toReadableTime(r.solves.average * 10)}</td>
+            {r.solves.times.map(t => <td>{t}</td>)}
+        </tr>
     }
 
     renderComparisonLink() {
