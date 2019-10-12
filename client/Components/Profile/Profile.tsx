@@ -185,6 +185,9 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
             <span>{r.solves.comment}</span>
         </div>
 
+        let singleCellStyling = r.solves.wasPbSingle ? "personal-best" : null
+        let averageCellStyling = r.solves.wasPbAverage ? "personal-best" : null
+
         return <tr className="medium-row">
             <td className={`table-comment ${commentIconStyle}`}>
                 <i className="far fa-comment comment-icon">{comment}</i>
@@ -192,8 +195,8 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
             <td>
                 <Link to={`/leaderboards/${r.comp.id}`}>{r.comp.title}</Link>
             </td>
-            <td>{Helpers.toReadableTime(r.solves.single * 10)}</td>
-            <td>{Helpers.toReadableTime(r.solves.average * 10)}</td>
+            <td className={singleCellStyling}>{Helpers.toReadableTime(r.solves.single * 10)}</td>
+            <td className={averageCellStyling}>{Helpers.toReadableTime(r.solves.average * 10)}</td>
             {r.solves.times.map(t => <td>{t}</td>)}
         </tr>
     }
