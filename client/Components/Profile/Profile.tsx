@@ -179,10 +179,15 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
 
     renderHistoryTableRow(r: ProfileHistoryResult) {
         let commentIconStyle = !r.solves.comment ? "empty-comment" : ""
+        let comment = null
+
+        if (r.solves.comment) comment = <div className="comment-tooltip">
+            <span>{r.solves.comment}</span>
+        </div>
 
         return <tr className="medium-row">
             <td className={`table-comment ${commentIconStyle}`}>
-                <i className="far fa-comment" />
+                <i className="far fa-comment comment-icon">{comment}</i>
             </td>
             <td>
                 <Link to={`/leaderboards/${r.comp.id}`}>{r.comp.title}</Link>
