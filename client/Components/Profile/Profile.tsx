@@ -50,7 +50,7 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
 
     getInitialEvent(history: ProfileHistoryEvent[]): ProfileHistoryEvent | "none" {
         if (history.length === 0) return "none"
-        let initialEvent = history.find(h => h.event === "8x8")
+        let initialEvent = history.find(h => h.event === "3x3")
         if (!initialEvent) initialEvent = history[0]
 
         return initialEvent
