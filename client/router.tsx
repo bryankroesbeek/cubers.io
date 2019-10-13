@@ -12,8 +12,10 @@ import * as Types from './api/types'
 import * as Helpers from './api/helpers/settingsHelper'
 import { Records } from './Components/Records/Records'
 import { Leaderboards } from './Components/Leaderboards/Leaderboards'
-import { LeaderboardsCollection } from './Components/Leaderboards/LeaderboardCollection';
+import { LeaderboardsCollection } from './Components/Leaderboards/LeaderboardCollection'
 import { Profile } from './Components/Profile/Profile'
+import { Versus } from './Components/Versus/Versus'
+import { VersusSelect } from './Components/Versus/VersusSelect'
 
 type RouterState = {
     user: Types.User | "loading"
@@ -76,6 +78,17 @@ export class MainRouter extends React.Component<RouterProps, RouterState> {
 
                         <Route exact path="/(u|user)/:username" component={({ match }: any) =>
                             <Profile key={`profile-${match.params.username}`} username={match.params.username} currentUser={user} />
+                        } />
+
+                        <Route exact path="/versus" component={() =>
+                            <VersusSelect />
+                        } />
+
+                        <Route path="/versus/:user1/:user2" component={({ match }: any) =>
+                            <Versus
+                                username1={match.params.user1}
+                                username2={match.params.user2}
+                            />
                         } />
 
                         <Route path="/settings" component={() =>
