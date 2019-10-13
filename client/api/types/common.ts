@@ -3,3 +3,8 @@ export type CommonUser = {
     name: string,
     verified: boolean | "none"
 }
+
+export type EventConstant = {
+    name: string,
+    slug: string
+}
