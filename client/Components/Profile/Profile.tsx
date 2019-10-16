@@ -61,7 +61,7 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
         if (rankings === "loading") return null
 
         return <div>
-            <table className="cubersio-table">
+            <table className="cubersio-table text-center">
                 <thead>
                     <tr className="medium-row">
                         <th rowSpan={2}>Competitions</th>
