@@ -52,27 +52,29 @@ export class Versus extends React.Component<VersusProps, VersusState>{
         let user1Records = this.state.user1Records
         let user2Records = this.state.user2Records
 
-        return <div>
-            <h4>Event Records</h4>
-            <table className="table-results table table-sm table-striped table-cubersio">
-                <thead className="thead-dark">
-                    <tr className="medium-row">
-                        <th></th>
-                        <th colSpan={2}>Single</th>
-                        <th colSpan={2}>Average</th>
-                    </tr>
-                    <tr className="medium-row">
-                        <th>Event</th>
-                        <th>{this.props.username1}</th>
-                        <th>{this.props.username2}</th>
-                        <th>{this.props.username1}</th>
-                        <th>{this.props.username2}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {Constants.events.map(p => this.renderRecordsRow(p, user1Records, user2Records))}
-                </tbody>
-            </table>
+        return <div className="versus-section">
+            <div className="versus-table-wrapper">
+                <h4 className="versus-table-title">Event Records</h4>
+                <table className="cubersio-table">
+                    <thead>
+                        <tr className="medium-row">
+                            <th></th>
+                            <th colSpan={2}>Single</th>
+                            <th colSpan={2}>Average</th>
+                        </tr>
+                        <tr className="medium-row">
+                            <th>Event</th>
+                            <th>{this.props.username1}</th>
+                            <th>{this.props.username2}</th>
+                            <th>{this.props.username1}</th>
+                            <th>{this.props.username2}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {Constants.events.map(p => this.renderRecordsRow(p, user1Records, user2Records))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     }
 
@@ -147,22 +149,20 @@ export class Versus extends React.Component<VersusProps, VersusState>{
             </tr>
         )
 
+        let tables = [
+            { title: "Solve Statistics", table: statisticsTable },
+            { title: "Medals Collection", table: medalsTable },
+            { title: "Kinchranks", table: kinchranksTable },
+            { title: "Sum Of Ranks (Single)", table: singleSumOfRanksTable },
+            { title: "Sum Of Ranks (Average)", table: averageSumOfRanksTable }
+        ]
 
-        return <div>
-            <h4>Solve Statistics</h4>
-            {statisticsTable}
 
-            <h4>Medals Collection</h4>
-            {medalsTable}
-
-            <h4>Kinchranks</h4>
-            {kinchranksTable}
-
-            <h4>Sum Of Rank (Single)</h4>
-            {singleSumOfRanksTable}
-
-            <h4>Sum Of Rank (Average)</h4>
-            {averageSumOfRanksTable}
+        return <div className="versus-section">
+            {tables.map((t, count) => <div key={`stat-table-${count}`} className="versus-table-wrapper">
+                <h4 className="versus-table-title">{t.title}</h4>
+                {t.table}
+            </div>)}
         </div>
     }
 
@@ -245,8 +245,8 @@ export class Versus extends React.Component<VersusProps, VersusState>{
     }
 
     renderComparisonTable(headerRows: JSX.Element[], valuesRows: JSX.Element[]) {
-        return <table className="table-results table table-sm table-striped table-cubersio">
-            <thead className="thead-dark">
+        return <table className="cubersio-table text-center">
+            <thead>
                 {headerRows}
             </thead>
             <tbody>
@@ -256,9 +256,16 @@ export class Versus extends React.Component<VersusProps, VersusState>{
     }
 
     render() {
-        return <div>
-            {this.renderRecords()}
-            {this.renderRankings()}
+        return <div className="versus-page">
+            <h3 className="versus-page-title">
+                <Link to={`/u/${this.props.username1}`}>{this.props.username1}</Link>
+                {" vs "}
+                <Link to={`/u/${this.props.username2}`}>{this.props.username2}</Link>
+            </h3>
+            <div className="versus-wrapper">
+                {this.renderRecords()}
+                {this.renderRankings()}
+            </div>
         </div>
     }
 }
