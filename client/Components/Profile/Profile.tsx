@@ -61,8 +61,8 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
         if (rankings === "loading") return null
 
         return <div>
-            <table className="table-results table table-sm table-striped table-cubersio">
-                <thead className="thead-dark">
+            <table className="cubersio-table">
+                <thead>
                     <tr className="medium-row">
                         <th rowSpan={2}>Competitions</th>
                         <th rowSpan={2}>Completed Solves</th>
@@ -99,8 +99,8 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
         if (records === "loading") return null
 
         return <div>
-            <table className="table-results table table-sm table-striped table-cubersio">
-                <thead className="thead-dark">
+            <table className="cubersio-table">
+                <thead>
                     <tr className="medium-row">
                         <th>Event</th>
                         <th>Site rank</th>
@@ -160,8 +160,8 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
         if (selectedEvent === "none") return null
 
         return <div>
-            <table className="table-results table table-sm table-striped table-cubersio">
-                <thead className="thead-dark">
+            <table className="cubersio-table">
+                <thead>
                     <tr className="medium-row">
                         <th>{/* Comment */}</th>
                         <th>Competition</th>
