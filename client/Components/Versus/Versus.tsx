@@ -104,10 +104,155 @@ export class Versus extends React.Component<VersusProps, VersusState>{
     }
 
     renderRankings() {
-        if (this.state.user1Records === "loading") return null
-        if (this.state.user2Records === "loading") return null
+        if (this.state.user1Rankings === "loading") return null
+        if (this.state.user2Rankings === "loading") return null
 
-        return <div>{/* TODO: Rankings of user1 vs user2 */}</div>
+        let rankings1 = this.state.user1Rankings
+        let rankings2 = this.state.user2Rankings
+
+        let statisticsTable = this.renderStatisticsTable(rankings1, rankings2)
+
+        let medalsTable = this.renderMedalsTable(rankings1, rankings2)
+
+        let singleSumOfRanksTable = this.renderRankingsComparisonTable(
+            <tr className="medium-row">
+                <td>{rankings1.sumOfRanks.all.single}</td>
+                <td>{rankings1.sumOfRanks.wca.single}</td>
+                <td>{rankings1.sumOfRanks.non_wca.single}</td>
+                <td>{rankings2.sumOfRanks.all.single}</td>
+                <td>{rankings2.sumOfRanks.wca.single}</td>
+                <td>{rankings2.sumOfRanks.non_wca.single}</td>
+            </tr>
+        )
+
+        let averageSumOfRanksTable = this.renderRankingsComparisonTable(
+            <tr className="medium-row">
+                <td>{rankings1.sumOfRanks.all.average}</td>
+                <td>{rankings1.sumOfRanks.wca.average}</td>
+                <td>{rankings1.sumOfRanks.non_wca.average}</td>
+                <td>{rankings2.sumOfRanks.all.average}</td>
+                <td>{rankings2.sumOfRanks.wca.average}</td>
+                <td>{rankings2.sumOfRanks.non_wca.average}</td>
+            </tr>
+        )
+
+        let kinchranksTable = this.renderRankingsComparisonTable(
+            <tr className="medium-row">
+                <td>{rankings1.kinchRanks.all}</td>
+                <td>{rankings1.kinchRanks.wca}</td>
+                <td>{rankings1.kinchRanks.non_wca}</td>
+                <td>{rankings2.kinchRanks.all}</td>
+                <td>{rankings2.kinchRanks.wca}</td>
+                <td>{rankings2.kinchRanks.non_wca}</td>
+            </tr>
+        )
+
+
+        return <div>
+            <h4>Solve Statistics</h4>
+            {statisticsTable}
+
+            <h4>Medals Collection</h4>
+            {medalsTable}
+
+            <h4>Kinchranks</h4>
+            {kinchranksTable}
+
+            <h4>Sum Of Rank (Single)</h4>
+            {singleSumOfRanksTable}
+
+            <h4>Sum Of Rank (Average)</h4>
+            {averageSumOfRanksTable}
+        </div>
+    }
+
+    renderStatisticsTable(userRankings1: ProfileRankings, userRankings2: ProfileRankings) {
+        let user1CompCount = userRankings1.competitions
+        let user2CompCount = userRankings2.competitions
+        let user1SolvesCount = userRankings1.solves
+        let user2SolvesCount = userRankings2.solves
+
+        return this.renderComparisonTable([
+            <tr className="medium-row">
+                <th colSpan={2}>Competitions</th>
+                <th colSpan={2}>Total Solves</th>
+            </tr>,
+            <tr className="medium-row">
+                <th>{this.props.username1}</th>
+                <th>{this.props.username2}</th>
+                <th>{this.props.username1}</th>
+                <th>{this.props.username2}</th>
+            </tr>
+        ], [
+            <tr className="medium-row">
+                <td>{user1CompCount}</td>
+                <td>{user2CompCount}</td>
+                <td>{user1SolvesCount}</td>
+                <td>{user2SolvesCount}</td>
+            </tr>
+        ])
+    }
+
+    renderMedalsTable(userRankings1: ProfileRankings, userRankings2: ProfileRankings) {
+        let user1Medals = userRankings1.medals
+        let user2Medals = userRankings2.medals
+
+        return this.renderComparisonTable(
+            [
+                <tr className="medium-row">
+                    <th colSpan={3}>{this.props.username1}</th>
+                    <th colSpan={3}>{this.props.username2}</th>
+                </tr>,
+                <tr className="medium-row">
+                    <th><i className="fas fa-medal bronze" /></th>
+                    <th><i className="fas fa-medal silver" /></th>
+                    <th><i className="fas fa-medal gold" /></th>
+                    <th><i className="fas fa-medal bronze" /></th>
+                    <th><i className="fas fa-medal silver" /></th>
+                    <th><i className="fas fa-medal gold" /></th>
+                </tr>
+            ],
+            [
+                <tr className="medium-row">
+                    <td>{user1Medals.bronze}</td>
+                    <td>{user1Medals.silver}</td>
+                    <td>{user1Medals.gold}</td>
+                    <td>{user2Medals.bronze}</td>
+                    <td>{user2Medals.silver}</td>
+                    <td>{user2Medals.gold}</td>
+                </tr>
+            ]
+        )
+    }
+
+    renderRankingsComparisonTable(rankingRow: JSX.Element) {
+        return this.renderComparisonTable([
+            <tr className="medium-row">
+                <th colSpan={3}>{this.props.username1}</th>
+                <th colSpan={3}>{this.props.username2}</th>
+            </tr>,
+            <tr className="medium-row">
+                <th>Combined</th>
+                <th>WCA</th>
+                <th>Non WCA</th>
+                <th>Combined</th>
+                <th>WCA</th>
+                <th>Non WCA</th>
+            </tr>
+        ], [
+            rankingRow
+        ])
+    }
+
+    renderComparisonTable(headerRows: JSX.Element[], valuesRows: JSX.Element[]) {
+        return <table className="table-results table table-sm table-striped table-cubersio">
+            <thead className="thead-dark">
+                {headerRows}
+            </thead>
+            <tbody>
+                {valuesRows}
+            </tbody>
+        </table>
     }
 
     render() {

@@ -84,7 +84,7 @@ export class MainRouter extends React.Component<RouterProps, RouterState> {
                             <VersusSelect />
                         } />
 
-                        <Route path="/versus/:user1/:user2" component={({ match }: any) =>
+                        <Route path="/(vs|versus)/:user1/:user2" component={({ match }: any) =>
                             <Versus
                                 username1={match.params.user1}
                                 username2={match.params.user2}
