@@ -29,3 +29,84 @@
 .versus-table-wrapper {
     margin: 20px 0;
 }
+
+.versus-search-page {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+}
+
+.versus-search-title {
+    margin: 100px;
+    text-align: center;
+}
+
+.versus-search-inputs {
+    display: flex;
+}
+
+.versus-search-confirm {
+    width: 100px;
+    height: 50px;
+    margin: 100px auto;
+    background: #28a745;
+    border: 0;
+    border-radius: 5px;
+    color: white;
+
+    &:hover {
+        background: darken(#28a745, 10%);
+    }
+
+    transition: 0.25s;
+}
+
+.searchable-input {
+    @input-height: 40px;
+    
+    &-component {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        margin: 0 100px;
+    }
+
+    &-field {
+        height: @input-height;
+        background: white;
+        border: 1px solid darken(white, 30%);
+        border-radius: 5px;
+        padding: 10px;
+    }
+
+    &-suggestions {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        top: @input-height;
+        border: 1px solid darken(white, 20%);
+        border-radius: 4px;
+        padding: 0;
+    }
+
+    &-suggestions-item {
+        display: inline-flex;
+    }
+
+    &-suggestions-button {
+        width: 100%;
+        height: 100%;
+        height: @input-height - 10px;
+        background: white;
+        color: black;
+        border: 0;
+        text-align: left;
+        font-family: 'Roboto';
+        font-size: 11pt;
+
+        &:hover {
+            background: darken(white, 10%);
+        }
+    }
+}
