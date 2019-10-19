@@ -142,6 +142,10 @@ export function getUserRecords(username: string): Promise<types.ProfileRecords> 
     return fetchResources<types.ProfileRecords>(`/api/user/${username}/records`)
 }
 
-export function getUserHistory(username: string): Promise<types.ProfileHistory> {
+export function getUserHistory(username: string) {
     return fetchResources<types.ProfileHistory>(`/api/user/${username}/history`)
+}
+
+export function getUsernames(usernameSection: string) {
+    return fetchResources<string[]>(`/api/matching-usernames?section=${usernameSection}`)
 }
