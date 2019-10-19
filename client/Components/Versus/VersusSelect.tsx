@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { SearchableInput } from './SearchableInput'
 
 type VersusSelectProps = {}
 
@@ -10,6 +11,10 @@ export class VersusSelect extends React.Component<VersusSelectProps, VersusSelec
     }
 
     render() {
-        return <div></div>
+        return <div className="versus-search-page">
+            <SearchableInput
+                onNameChosen={(username) => {/* store chosen username */}}
+            />
+        </div>
     }
 }
