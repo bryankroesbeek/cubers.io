@@ -13,6 +13,7 @@ from app.util.events.resources import sort_comp_events_by_global_sort_order
 from app.persistence.settings_manager import get_setting_for_user, SettingCode, TRUE_STR
 from app.persistence.user_results_manager import get_event_results_for_user
 from app.persistence.comp_manager import get_comp_event_by_id
+from app.persistence.user_manager import get_all_active_usernames
 
 from app.persistence.settings_manager import set_new_settings_for_user, SettingCode, SettingType, FALSE_STR, TRUE_STR, get_color_defaults
 
@@ -262,3 +263,12 @@ def update_settings():
     app.logger.info(LOG_USER_UPDATED_SETTINGS.format(current_user.username), extra=new_settings)
 
     return get_user_settings()
+
+@app.route('/api/matching-usernames', methods=["GET"])
+def get_matching_usernames():
+    username_section = request.args.get('section')
+    if username_section == "": return jsonify([])
+    usernames = get_all_active_usernames()
+    matching_usernames = [name for name in usernames if username_section.lower() in name.lower()]
+
+    return jsonify(matching_usernames[0: 10])
