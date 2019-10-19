@@ -1,4 +1,6 @@
 export function toReadableTime(millisecondTimestamp: number) {
+    if (Number.isNaN(millisecondTimestamp)) return "DNF"
+
     let millis = millisecondTimestamp
 
     let hours = Math.floor(millis / (1000 * 3600))
