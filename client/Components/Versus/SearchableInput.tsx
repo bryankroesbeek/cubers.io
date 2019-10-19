@@ -3,7 +3,7 @@ import * as React from 'react'
 import * as Api from '../../api/api'
 
 type Props = {
-    onNameChosen: (username: string) => void
+    onNameChosen: (user: { username: string } | "none") => void
 }
 
 type State = {
@@ -16,9 +16,12 @@ type State = {
 
 export class SearchableInput extends React.Component<Props, State> {
     intervalId: number
+    componentRef: React.RefObject<HTMLDivElement>
 
     constructor(props: Props) {
         super(props)
+
+        this.componentRef = React.createRef()
 
         this.state = {
             currentUsername: "",
@@ -30,28 +33,39 @@ export class SearchableInput extends React.Component<Props, State> {
     }
 
     componentDidMount() {
+        window.addEventListener('mousedown', this.handleClick)
+
         this.intervalId = setInterval(() => {
             if (this.state.currentUsername === this.state.requestUsername) return
             if (this.state.requestState === "pending") return
             this.setState({ requestUsername: this.state.currentUsername, requestState: "pending" }, async () => {
                 let usernames = await Api.getUsernames(this.state.requestUsername)
+
+                if (usernames.length === 1 && usernames[0].toLowerCase() === this.state.requestUsername.toLowerCase()) this.chooseUser(usernames[0])
+
                 this.setState({ matchingUsernames: usernames, requestState: "idle" })
             })
         }, 200)
     }
 
     componentWillUnmount() {
+        window.removeEventListener('mousedown', this.handleClick)
         clearInterval(this.intervalId)
     }
 
-    renderSuggestions() {
-        if (!this.state.showSuggestions) return null
+    handleClick = (e: MouseEvent) => {
+        if (!this.componentRef.current) return
+        if (!this.componentRef.current.contains(e.target as Element))
+            this.setState({ showSuggestions: false })
+    }
 
-        return this.state.matchingUsernames.map(u =>
-            <button onClick={() => this.props.onNameChosen(u)} className="input-suggestions-item">
-                {this.emphasizeSection(u, this.state.requestUsername)}
-            </button>
-        )
+    chooseUser(username: string) {
+        this.setState({
+            currentUsername: username,
+            requestUsername: username,
+            matchingUsernames: [username],
+            showSuggestions: false
+        }, () => this.props.onNameChosen({ username }))
     }
 
     emphasizeSection(username: string, section: string) {
@@ -65,18 +79,31 @@ export class SearchableInput extends React.Component<Props, State> {
         </span>
     }
 
+    renderSuggestions() {
+        if (!this.state.showSuggestions) return null
+
+        return <ul className="searchable-input-suggestions">
+            {this.state.matchingUsernames.map(u =>
+                <li className="searchable-input-suggestions-item">
+                    <button onClick={() => this.chooseUser(u)} className="searchable-input-suggestions-button">
+                        {this.emphasizeSection(u, this.state.requestUsername)}
+                    </button>
+                </li>
+            )}
+        </ul>
+    }
+
     render() {
-        return <div className="searchable-input-component">
+        return <div ref={this.componentRef} className="searchable-input-component">
             <input
                 className="searchable-input-field"
                 type="text"
                 onFocus={() => { this.setState({ showSuggestions: true }) }}
-                onBlur={() => { this.setState({ showSuggestions: false }) }}
                 onChange={i => this.setState({ currentUsername: i.target.value })}
+                value={this.state.currentUsername}
             />
-            <div className="input-suggestions">
-                {this.renderSuggestions()}
-            </div>
+            {this.renderSuggestions()}
+
         </div>
     }
 }
