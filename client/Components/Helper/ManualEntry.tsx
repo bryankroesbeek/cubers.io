@@ -45,13 +45,17 @@ export class ManualEntry extends React.Component<ManualEntryProps, ManualEntrySt
         return milliSeconds
     }
 
+    submitTime(e: React.FormEvent) {
+        e.preventDefault()
+        if (this.state.value === "") return
+
+        this.props.submit(this.convertToMilliseconds(this.state.value))
+        this.setState({ value: "" })
+    }
+
     render() {
         return <div className="timer-manual-entry">
-            <form className="timer-manual-form" onSubmit={e => {
-                e.preventDefault()
-                if (this.state.value === "") return
-                this.props.submit(this.convertToMilliseconds(this.state.value))
-            }}>
+            <form className="timer-manual-form" onSubmit={e => this.submitTime(e)}>
                 <input
                     className="timer-manual-input"
                     type="text"
