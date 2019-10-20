@@ -73,7 +73,7 @@ export class Leaderboards extends React.Component<LeaderboardsProps, Leaderboard
         return <div className="leaderboards-event">
             <div className="leaderboards-event-header">
                 <Link to={`/event/${currentEvent.name}`}>{currentEvent.name}</Link>
-                <button className="leaderboards-event-header-scrambles-button" onClick={() => {/* TODO: implement prompt */}}>
+                <button className="leaderboards-event-header-scrambles-button" onClick={() => {/* TODO: implement prompt */ }}>
                     <i className="fas fa-dice-five scrambles" />
                 </button>
             </div>
@@ -92,7 +92,7 @@ export class Leaderboards extends React.Component<LeaderboardsProps, Leaderboard
                     <tbody>
                         {results.map(r => <tr>
                             <td>{r.visibleRank}</td>
-                            <td>{r.solve.user.name}</td>
+                            <td><Link to={`/u/${r.solve.user.name}`}>/u/{r.solve.user.name}</Link></td>
                             <td>{Helpers.toReadableTime(r.solve.average * 10)}</td>
                             <td>{Helpers.toReadableTime(r.solve.best_single * 10)}</td>
                             {r.solve.times.map(t => <td>{t}</td>)}
