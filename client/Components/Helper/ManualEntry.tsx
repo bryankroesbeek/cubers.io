@@ -1,5 +1,7 @@
 import * as React from 'react'
 
+import * as Helper from '../../api/helpers/manualEntryHelper'
+
 type ManualEntryProps = {
     disabled: boolean
     submit: (value: number) => void
@@ -18,38 +20,19 @@ export class ManualEntry extends React.Component<ManualEntryProps, ManualEntrySt
     }
 
     processChange(value: string) {
-        let numberValue = Number(this.cleanInput(value))
+        let numberValue = Number(Helper.cleanInput(value))
         if (Number.isNaN(numberValue)) return
         if (numberValue === 0) return this.setState({ value: "" })
 
-        let cleanValue = `${numberValue}`
-
-        let newValue = cleanValue.length < 4 ? ("0000" + cleanValue).slice(-4) : cleanValue
-        if (cleanValue.length > 4) {
-            newValue = newValue.slice(0, -4) + ':' + newValue.slice(-4)
-        }
-        newValue = newValue.slice(0, -2) + '.' + newValue.slice(-2)
+        let newValue = Helper.formatTimeString(numberValue)
         this.setState({ value: newValue })
-    }
-
-    cleanInput(value: string) {
-        return value.replace(".", "").replace(",", "").replace(":", "")
-    }
-
-    convertToMilliseconds(value: string) {
-        if (value.length <= 5) return Number(value) * 1000
-
-        let seconds = Number(value.includes(':') ? value.split(':')[0] : 0) * 60
-        let milliSeconds = Math.round((Number(value.includes(':') ? value.split(':')[1] : value) + seconds) * 1000)
-
-        return milliSeconds
     }
 
     submitTime(e: React.FormEvent) {
         e.preventDefault()
         if (this.state.value === "") return
 
-        this.props.submit(this.convertToMilliseconds(this.state.value))
+        this.props.submit(Helper.convertToMilliseconds(this.state.value))
         this.setState({ value: "" })
     }
 
