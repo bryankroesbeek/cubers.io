@@ -213,6 +213,11 @@ export class Timer extends React.Component<TimerProps, TimerState>{
 
     renderTime() {
         let timeEntryDisabled = this.props.currentScrambleId === "none"
+        let mblind = this.props.eventName.toLowerCase().indexOf("bld") !== -1
+
+        if (mblind)
+            return <ManualEntry disabled={timeEntryDisabled} multiblind={mblind} submit={(value, blindInfo) => this.props.postTime(value, "none", () => { })} />
+
         if (this.props.settings.manual_time_entry_by_default)
             return <ManualEntry disabled={timeEntryDisabled} submit={(value) => this.props.postTime(value, "none", () => { })} />
 

@@ -2,12 +2,20 @@ import * as React from 'react'
 
 import * as Helper from '../../api/helpers/manualEntryHelper'
 
+type BlindInfo = {
+    cubesSolved: number
+    cubesAttempted: number
+}
+
 type ManualEntryProps = {
     disabled: boolean
-    submit: (value: number) => void
+    multiblind?: boolean
+    submit: (value: number, blindInfo?: BlindInfo) => void
 }
 type ManualEntryState = {
     value: string
+    blindSolved: number
+    blindAttempted: number
 }
 
 export class ManualEntry extends React.Component<ManualEntryProps, ManualEntryState>{
@@ -15,7 +23,9 @@ export class ManualEntry extends React.Component<ManualEntryProps, ManualEntrySt
         super(props)
 
         this.state = {
-            value: ""
+            value: "",
+            blindAttempted: 0,
+            blindSolved: 0
         }
     }
 
@@ -36,20 +46,47 @@ export class ManualEntry extends React.Component<ManualEntryProps, ManualEntrySt
         this.setState({ value: "" })
     }
 
+    renderBlindInputs() {
+        if (!this.props.multiblind) return
+
+        return <div className="timer-input-blind">
+            <input
+                className="timer-manual-input"
+                type="number"
+                value={this.state.blindSolved}
+                onChange={e => this.setState({ blindSolved: e.target.valueAsNumber })}
+                placeholder="#"
+                disabled={this.props.disabled}
+            />
+            succesful, out of
+            <input
+                className="timer-manual-input"
+                type="number"
+                value={this.state.blindAttempted}
+                onChange={e => this.setState({ blindAttempted: e.target.valueAsNumber })}
+                placeholder="#"
+                disabled={this.props.disabled}
+            />
+        </div>
+    }
+
     render() {
         return <div className="timer-manual-entry">
             <form className="timer-manual-form" onSubmit={e => this.submitTime(e)}>
-                <input
-                    className="timer-manual-input"
-                    type="text"
-                    value={this.state.value}
-                    onChange={e => this.processChange(e.target.value)}
-                    placeholder="00:00.00"
-                    disabled={this.props.disabled}
-                />
-                <button className="timer-manual-submit" type="submit" disabled={this.props.disabled}>
-                    <i className="fas fa-arrow-right" />
-                </button>
+                {this.renderBlindInputs()}
+                <div className="timer-input-normal">
+                    <input
+                        className="timer-manual-input"
+                        type="text"
+                        value={this.state.value}
+                        onChange={e => this.processChange(e.target.value)}
+                        placeholder="00:00.00"
+                        disabled={this.props.disabled}
+                    />
+                    <button className="timer-manual-submit" type="submit" disabled={this.props.disabled}>
+                        <i className="fas fa-arrow-right" />
+                    </button>
+                </div>
             </form>
         </div>
     }
