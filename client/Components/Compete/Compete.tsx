@@ -1,7 +1,7 @@
 import * as React from 'react'
 
-import * as Api from '../../api/api'
-import * as Types from '../../api/types'
+import * as Api from '../../utils/api'
+import * as Types from '../../utils/types'
 import { Timer } from './Timer';
 import { FitText } from '../Helper/FitText';
 import { ScrambleViewer } from '../Helper/ScrambleViewer'

@@ -1,7 +1,7 @@
 import * as React from 'react'
 
-import * as Api from '../../api/api'
-import * as Types from '../../api/types'
+import * as Api from '../../utils/api'
+import * as Types from '../../utils/types'
 import { Link } from 'react-router-dom';
 
 type SumOfRanksProps = {

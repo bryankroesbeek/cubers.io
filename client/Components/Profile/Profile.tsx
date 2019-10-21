@@ -1,10 +1,10 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 
-import * as Api from '../../api/api'
-import * as Helpers from '../../api/helpers'
-import { ProfileHistory, ProfileRankings, ProfileRecords, User, ProfileHistoryEvent, ProfileHistoryResult } from '../../api/types'
-import { CompetitionEvent } from '../../api/types'
+import * as Api from '../../utils/api'
+import * as Helpers from '../../utils/helpers'
+import { ProfileHistory, ProfileRankings, ProfileRecords, User, ProfileHistoryEvent, ProfileHistoryResult } from '../../utils/types'
+import { CompetitionEvent } from '../../utils/types'
 import { string } from 'prop-types'
 
 type ProfileProps = {

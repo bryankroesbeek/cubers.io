@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import * as Api from '../../api/api'
+import * as Api from '../../utils/api'
 
 type Props = {
     onNameChosen: (user: { username: string }) => void

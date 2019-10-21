@@ -1,10 +1,10 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 
-import * as Api from '../../api/api'
-import * as Constants from '../../api/constants'
-import * as Helpers from '../../api/helpers'
-import { ProfileRankings, ProfileRecords, ProfileRecord, EventConstant } from '../../api/types'
+import * as Api from '../../utils/api'
+import * as Constants from '../../utils/constants'
+import * as Helpers from '../../utils/helpers'
+import { ProfileRankings, ProfileRecords, ProfileRecord, EventConstant } from '../../utils/types'
 
 type VersusProps = {
     username1: string

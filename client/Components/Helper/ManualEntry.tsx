@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import * as Helper from '../../api/helpers/manualEntryHelper'
+import * as Helper from '../../utils/helpers/manualEntryHelper'
 
 type BlindInfo = {
     cubesSolved: number

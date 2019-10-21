@@ -1,10 +1,10 @@
 import * as React from 'react'
 
-import * as Api from '../../api/api'
-import * as Types from '../../api/types'
-import * as Helpers from '../../api/helpers'
+import * as Api from '../../utils/api'
+import * as Types from '../../utils/types'
+import * as Helpers from '../../utils/helpers'
 import { Link } from 'react-router-dom'
-import { User, Leaderboard, LeaderboardEvent } from '../../api/types'
+import { User, Leaderboard, LeaderboardEvent } from '../../utils/types'
 
 type LeaderboardsProps = {
     competitionId: number

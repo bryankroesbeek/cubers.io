@@ -1,8 +1,8 @@
 import * as React from 'react'
 
-import * as Types from '../../api/types'
+import * as Types from '../../utils/types'
 
-import * as ScrambleGenerator from '../../api/helpers/scrambleGenerator/scramble_image_generator';
+import * as ScrambleGenerator from '../../utils/helpers/scrambleGenerator/scramble_image_generator';
 
 
 type ScrambleViewerProps = {

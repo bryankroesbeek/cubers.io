@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import * as Api from '../../api/api'
-import * as Types from '../../api/types'
+import * as Api from '../../utils/api'
+import * as Types from '../../utils/types'
 
 type HeaderProps = {
     user: Types.User

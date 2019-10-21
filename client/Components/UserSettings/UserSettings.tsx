@@ -2,9 +2,9 @@ import * as React from 'react'
 import { SketchPicker } from 'react-color'
 import { cloneDeep } from 'lodash'
 
-import * as Api from '../../api/api'
-import * as Types from '../../api/types'
-import * as Helpers from '../../api/helpers/settingsHelper'
+import * as Api from '../../utils/api'
+import * as Types from '../../utils/types'
+import * as Helpers from '../../utils/helpers/settingsHelper'
 import { SettingsToggle } from './SettingsToggle';
 
 type UserSettingsProps = {
