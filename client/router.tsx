@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Provider } from 'react-redux'
 import { Route, Switch } from 'react-router'
 import { Header } from './Components/Header/Header'
 import { BrowserRouter } from 'react-router-dom'
@@ -7,6 +8,7 @@ import { Compete } from './Components/Compete/Compete'
 import { UserSettings } from './Components/UserSettings/UserSettings'
 import { SumOfRanks } from './Components/Records/SumOfRanks'
 
+import { store } from './utils/store/store'
 import * as Api from './utils/api'
 import * as Types from './utils/types'
 import * as Helpers from './utils/helpers/settingsHelper'
@@ -48,58 +50,60 @@ export class MainRouter extends React.Component<RouterProps, RouterState> {
         let settings = this.state.settings
         let user = this.state.user
 
-        return <BrowserRouter>
-            <Header user={user} />
+        return <Provider store={store}>
+            <BrowserRouter>
+                <Header user={user} />
 
-            <Switch>
-                <Route exact path="/" component={() => <Home />} />
+                <Switch>
+                    <Route exact path="/" component={() => <Home />} />
 
-                <Route path="/compete/:eventType" component={({ match }: any) => {
-                    return <Compete eventType={Number(match.params.eventType)} settings={Helpers.minifyRawSettings(settings)} />
-                }} />
+                    <Route path="/compete/:eventType" component={({ match }: any) => {
+                        return <Compete eventType={Number(match.params.eventType)} settings={Helpers.minifyRawSettings(settings)} />
+                    }} />
 
-                <Route>
-                    <div className="white-container">
-                        <Route path="/event/:eventType" component={({ match }: any) =>
-                            <Records key={`records-${match.params.eventType}`} event={match.params.eventType} user={user} />
-                        } />
+                    <Route>
+                        <div className="white-container">
+                            <Route path="/event/:eventType" component={({ match }: any) =>
+                                <Records key={`records-${match.params.eventType}`} event={match.params.eventType} user={user} />
+                            } />
 
-                        <Route path="/sum-of-ranks/:eventType" component={({ match }: any) =>
-                            <SumOfRanks key={`records-${match.params.eventType}`} type={match.params.eventType} user={user} />
-                        } />
+                            <Route path="/sum-of-ranks/:eventType" component={({ match }: any) =>
+                                <SumOfRanks key={`records-${match.params.eventType}`} type={match.params.eventType} user={user} />
+                            } />
 
-                        <Route exact path="/leaderboards" component={() =>
-                            <LeaderboardsCollection user={user} />
-                        } />
+                            <Route exact path="/leaderboards" component={() =>
+                                <LeaderboardsCollection user={user} />
+                            } />
 
-                        <Route path="/leaderboards/:compId" component={({ match }: any) =>
-                            <Leaderboards key={`leaderboards-${match.params.compId}`} competitionId={match.params.compId} user={user} />
-                        } />
+                            <Route path="/leaderboards/:compId" component={({ match }: any) =>
+                                <Leaderboards key={`leaderboards-${match.params.compId}`} competitionId={match.params.compId} user={user} />
+                            } />
 
-                        <Route exact path="/(u|user)/:username" component={({ match }: any) =>
-                            <Profile key={`profile-${match.params.username}`} username={match.params.username} currentUser={user} />
-                        } />
+                            <Route exact path="/(u|user)/:username" component={({ match }: any) =>
+                                <Profile key={`profile-${match.params.username}`} username={match.params.username} currentUser={user} />
+                            } />
 
-                        <Route exact path="/versus" component={() =>
-                            <VersusSelect />
-                        } />
+                            <Route exact path="/versus" component={() =>
+                                <VersusSelect />
+                            } />
 
-                        <Route path="/(vs|versus)/:user1/:user2" component={({ match }: any) =>
-                            <Versus
-                                username1={match.params.user1}
-                                username2={match.params.user2}
-                            />
-                        } />
+                            <Route path="/(vs|versus)/:user1/:user2" component={({ match }: any) =>
+                                <Versus
+                                    username1={match.params.user1}
+                                    username2={match.params.user2}
+                                />
+                            } />
 
-                        <Route path="/settings" component={() =>
-                            <UserSettings
-                                settings={settings}
-                                updateSettings={settings => this.setState({ settings: settings })}
-                            />
-                        } />
-                    </div>
-                </Route>
-            </Switch>
-        </BrowserRouter>
+                            <Route path="/settings" component={() =>
+                                <UserSettings
+                                    settings={settings}
+                                    updateSettings={settings => this.setState({ settings: settings })}
+                                />
+                            } />
+                        </div>
+                    </Route>
+                </Switch>
+            </BrowserRouter>
+        </Provider>
     }
 }
