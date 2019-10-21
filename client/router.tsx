@@ -55,7 +55,7 @@ export class MainRouter extends React.Component<RouterProps, RouterState> {
                 <Header user={user} />
 
                 <Switch>
-                    <Route exact path="/" component={() => <Home />} />
+                    <Route exact path="/" component={Home} />
 
                     <Route path="/compete/:eventType" component={({ match }: any) => {
                         return <Compete eventType={Number(match.params.eventType)} settings={Helpers.minifyRawSettings(settings)} />

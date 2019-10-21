@@ -1,39 +1,30 @@
 import * as React from 'react'
+import { connect, DispatchProp, MapStateToProps } from 'react-redux'
 
-import * as Api from '../../utils/api'
 import { CompetitionEvent } from '../../utils/types'
+import { HomeState, HomeAction } from '../../utils/store/types/homeTypes'
+import { Store } from '../../utils/store/types/generalTypes'
+import { fetchCompetitionEvents } from '../../utils/store/actions/homeActions'
 import { Link } from 'react-router-dom';
 
-type HomeProps = {
+type HomeProps = HomeState & DispatchProp<HomeAction>
 
-}
-
-type HomeState = {
-    events: CompetitionEvent[] | "loading"
-}
-
-export class Home extends React.Component<HomeProps, HomeState>{
+class HomeComponent extends React.Component<HomeProps, {}> {
     constructor(props: HomeProps) {
         super(props)
-
-        this.state = {
-            events: "loading"
-        }
     }
 
-    async componentDidMount() {
-        let events = await Api.getCompetitionEvents()
-
-        this.setState({ events: events })
+    componentDidMount() {
+        this.props.dispatch(fetchCompetitionEvents(this.props.dispatch))
     }
 
     render() {
-        if (this.state.events === "loading") return null
+        if (this.props.events === "loading") return null
 
         return <div className="container">
             <div className="ultra-hidden"></div>
             <div className="row event-cards">
-                {this.state.events.map(e => this.renderCard(e))}
+                {this.props.events.map(e => this.renderCard(e))}
             </div>
         </div>
     }
@@ -71,3 +62,9 @@ export class Home extends React.Component<HomeProps, HomeState>{
         </Link>
     }
 }
+
+let mapStateToProps = (state: Store) => {
+    return state.home
+}
+
+export let Home = connect(mapStateToProps)(HomeComponent)
