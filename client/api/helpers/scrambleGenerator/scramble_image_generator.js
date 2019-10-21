@@ -62,7 +62,7 @@ export function sig(scramble, eventName, settings) {
     }
 
     var setColors = function () {
-        if (settings.use_custom_cube_colors) {
+        if (settings && settings.use_custom_cube_colors) {
             cube_colors = [
                 settings.custom_cube_color_D,
                 settings.custom_cube_color_L,
@@ -102,7 +102,7 @@ export function sig(scramble, eventName, settings) {
             };
         }
 
-        if (settings.use_custom_pyraminx_colors) {
+        if (settings && settings.use_custom_pyraminx_colors) {
             pyra_colors = [
                 settings.custom_pyraminx_color_F,
                 settings.custom_pyraminx_color_L,
@@ -113,7 +113,7 @@ export function sig(scramble, eventName, settings) {
             pyra_colors = ['#0f0', '#f00', '#00f', '#ff0'];
         }
 
-        if (settings.use_custom_megaminx_colors) {
+        if (settings && settings.use_custom_megaminx_colors) {
             mega_colors = [
                 settings.custom_megaminx_color_1,
                 settings.custom_megaminx_color_2,
