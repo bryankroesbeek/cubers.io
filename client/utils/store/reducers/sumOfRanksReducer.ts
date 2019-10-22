@@ -12,11 +12,11 @@ export const sumOfRanksReducer: Reducer<SumOfRanksState, SumOfRanksAction> = (st
         return { ...state, eventRecords: action.ranks }
     }
 
-    if (action.type === "SET_SINGLE") {
+    if (action.type === "VIEW_SINGLE_SUM_OF_RANKS") {
         return {...state, type: "single"}
     }
 
-    if (action.type === "SET_AVERAGE") {
+    if (action.type === "VIEW_AVERAGE_SUM_OF_RANKS") {
         return {...state, type: "average"}
     }
 

@@ -9,5 +9,5 @@ export type RecordsState = {
 
 export type RecordsAction = Action<"NONE"> |
     Action<"FETCH_RECORDS"> & { payload: EventRecords } |
-    Action<"SET_SINGLE"> |
-    Action<"SET_AVERAGE">
+    Action<"VIEW_SINGLE_RECORDS"> |
+    Action<"VIEW_AVERAGE_RECORDS">

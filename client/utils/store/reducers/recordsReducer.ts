@@ -12,11 +12,11 @@ export const recordsReducer: Reducer<RecordsState, RecordsAction> = (state = ini
         return { ...state, eventRecords: action.payload }
     }
 
-    if (action.type === "SET_SINGLE") {
+    if (action.type === "VIEW_SINGLE_RECORDS") {
         return {...state, type: "single"}
     }
 
-    if (action.type === "SET_AVERAGE") {
+    if (action.type === "VIEW_AVERAGE_RECORDS") {
         return {...state, type: "average"}
     }
 

@@ -9,5 +9,5 @@ export type SumOfRanksState = {
 
 export type SumOfRanksAction = Action<"NONE"> |
     Action<"FETCH_SUM_OF_RANKS"> & { ranks: SumOfRanks } |
-    Action<"SET_SINGLE"> |
-    Action<"SET_AVERAGE">
+    Action<"VIEW_SINGLE_SUM_OF_RANKS"> |
+    Action<"VIEW_AVERAGE_SUM_OF_RANKS">

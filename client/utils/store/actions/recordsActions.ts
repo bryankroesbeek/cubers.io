@@ -11,9 +11,9 @@ export let fetchCompetitionEvents = (dispatch: Dispatch<RecordsAction>, event: s
 }
 
 export let setSingle = (): RecordsAction => {
-    return { type: "SET_SINGLE" }
+    return { type: "VIEW_SINGLE_RECORDS" }
 }
 
 export let setAverage = (): RecordsAction => {
-    return { type: "SET_AVERAGE" }
+    return { type: "VIEW_AVERAGE_RECORDS" }
 }

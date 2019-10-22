@@ -11,9 +11,9 @@ export let fetchSumOfRanks = (dispatch: Dispatch<SumOfRanksAction>, type: string
 }
 
 export let setSingle = (): SumOfRanksAction => {
-    return { type: "SET_SINGLE" }
+    return { type: "VIEW_SINGLE_SUM_OF_RANKS" }
 }
 
 export let setAverage = (): SumOfRanksAction => {
-    return { type: "SET_AVERAGE" }
+    return { type: "VIEW_AVERAGE_SUM_OF_RANKS" }
 }
