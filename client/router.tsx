@@ -54,9 +54,7 @@ class MainRouterComponent extends React.Component<RouterProps, {}> {
                     <div className="white-container">
                         <Route path="/event/:eventType" component={Records} />
 
-                        <Route path="/sum-of-ranks/:eventType" component={({ match }: any) =>
-                            <SumOfRanks key={`records-${match.params.eventType}`} type={match.params.eventType} user={user} />
-                        } />
+                        <Route path="/sum-of-ranks/:eventType" component={SumOfRanks} />
 
                         <Route exact path="/leaderboards" component={() =>
                             <LeaderboardsCollection user={user} />

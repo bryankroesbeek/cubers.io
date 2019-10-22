@@ -2,35 +2,31 @@ import * as React from 'react'
 
 import * as Api from '../../utils/api'
 import * as Types from '../../utils/types'
-import { Link } from 'react-router-dom';
+import { Link, match } from 'react-router-dom';
+import { DispatchProp, connect } from 'react-redux';
+import { SumOfRanksAction, SumOfRanksState } from '../../utils/store/types/sumOfRanksTypes';
+import { fetchSumOfRanks, setAverage, setSingle } from '../../utils/store/actions/sunOfRanksActions';
+import { Store } from '../../utils/store/types/generalTypes';
+import { User } from '../../utils/types';
 
-type SumOfRanksProps = {
+type RemoteProps = {
     type: string
     user: Types.User
+    key: string
 }
+type SumOfRanksProps = DispatchProp<SumOfRanksAction> & SumOfRanksState & RemoteProps
 
-type SumOfRanksState = {
-    eventRecords: Types.SumOfRanks | "loading"
-    type: "single" | "average"
-}
-
-export class SumOfRanks extends React.Component<SumOfRanksProps, SumOfRanksState>{
+class SumOfRanksComponent extends React.Component<SumOfRanksProps, {}>{
     MySolve: React.RefObject<HTMLTableRowElement>
 
     constructor(props: SumOfRanksProps) {
         super(props)
 
-        this.state = {
-            eventRecords: "loading",
-            type: "single"
-        }
-
         this.MySolve = React.createRef()
     }
 
     componentDidMount() {
-        Api.getSumOfRanks(this.props.type)
-            .then(ranks => this.setState({ eventRecords: ranks }))
+        this.props.dispatch(fetchSumOfRanks(this.props.dispatch, this.props.type))
     }
 
     scrollToUser() {
@@ -48,7 +44,7 @@ export class SumOfRanks extends React.Component<SumOfRanksProps, SumOfRanksState
 
             let ref = solve.user.id === this.props.user.id ? this.MySolve : null
 
-            return <tr key={`user-${solve.user.id}-${this.state.type}`} ref={ref} className={this.props.user.id === solve.user.id ? "my-solve" : null}>
+            return <tr key={`user-${solve.user.id}-${this.props.type}`} ref={ref} className={this.props.user.id === solve.user.id ? "my-solve" : null}>
                 <td>{count + 1}</td>
                 <td>{verifiedIcon}<Link to={`/u/${solve.user.name}`}>/u/{solve.user.name}</Link></td>
                 <td>{solve.rank_count}</td>
@@ -57,21 +53,21 @@ export class SumOfRanks extends React.Component<SumOfRanksProps, SumOfRanksState
     }
 
     render() {
-        if (this.state.eventRecords === "loading") return null
+        if (this.props.eventRecords === "loading") return null
 
-        let solves = this.state.type === "single" ? this.state.eventRecords.singles : this.state.eventRecords.averages
+        let solves = this.props.type === "single" ? this.props.eventRecords.singles : this.props.eventRecords.averages
 
         return <div className="records-page">
             <div className="records-wrapper">
                 <div className="records-header">
-                    <h3 className="records-header-title">{this.state.eventRecords.title}</h3>
+                    <h3 className="records-header-title">{this.props.eventRecords.title}</h3>
                     <div className="records-navbar">
                         <button
-                            className={`records-navbar-button ${this.state.type === "single" ? "active" : ""}`}
-                            onClick={() => this.setState({ type: "single" })}>By Single</button>
+                            className={`records-navbar-button ${this.props.type === "single" ? "active" : ""}`}
+                            onClick={() => this.props.dispatch(setSingle())}>By Single</button>
                         <button
-                            className={`records-navbar-button ${this.state.type === "average" ? "active" : ""}`}
-                            onClick={() => this.setState({ type: "average" })}>By Average</button>
+                            className={`records-navbar-button ${this.props.type === "average" ? "active" : ""}`}
+                            onClick={() => this.props.dispatch(setAverage())}>By Average</button>
                     </div>
                 </div>
                 <div className="records-table">
@@ -97,3 +93,14 @@ export class SumOfRanks extends React.Component<SumOfRanksProps, SumOfRanksState
         </div>
     }
 }
+
+let mapStateToProps = (state: Store, ownProps: RemoteProps & { match: match<{ eventType: string }> }): SumOfRanksState & RemoteProps => {
+    return {
+        ...state.sumOfRanks,
+        type: ownProps.match.params.eventType,
+        user: state.routerInfo.user as User,
+        key: `records-${ownProps.match.params.eventType}`,
+    }
+}
+
+export const SumOfRanks = connect(mapStateToProps)(SumOfRanksComponent)
