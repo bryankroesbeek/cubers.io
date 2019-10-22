@@ -15,6 +15,7 @@ import { User } from '../../utils/types'
 type RemoteProps = {
     event: string
     user: Types.User
+    key: string
 }
 
 type RecordsProps = DispatchProp<RecordsAction> & RecordsState & RemoteProps
@@ -111,6 +112,7 @@ let mapStateToProps = (state: Store, ownProps: RemoteProps & { match: match<{ ev
         ...state.records,
         event: ownProps.match.params.eventType,
         user: state.routerInfo.user as User,
+        key: `records-${ownProps.match.params.eventType}`,
     }
 }
 
