@@ -2,6 +2,9 @@ import * as React from 'react'
 import * as ReactDom from 'react-dom'
 import { Header } from './Components/Header/Header';
 import { MainRouter } from './router';
+import { Provider } from 'react-redux';
+
+import { store } from './utils/store/store'
 
 export class App extends React.Component<{}, {}> {
     render() {
@@ -10,6 +13,8 @@ export class App extends React.Component<{}, {}> {
 }
 
 ReactDom.render(
-    <App />,
+    <Provider store={store}>
+        <App />
+    </Provider>,
     document.getElementById("application")
 )

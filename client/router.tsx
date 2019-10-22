@@ -8,7 +8,6 @@ import { Compete } from './Components/Compete/Compete'
 import { UserSettings } from './Components/UserSettings/UserSettings'
 import { SumOfRanks } from './Components/Records/SumOfRanks'
 
-import { store } from './utils/store/store'
 import * as Api from './utils/api'
 import * as Types from './utils/types'
 import * as Helpers from './utils/helpers/settingsHelper'
@@ -19,39 +18,29 @@ import { Profile } from './Components/Profile/Profile'
 import { Versus } from './Components/Versus/Versus'
 import { VersusSelect } from './Components/Versus/VersusSelect'
 
-type RouterState = {
-    user: Types.User | "loading"
-    settings: Types.UserSettings | "loading"
-}
+import { connect, DispatchProp } from 'react-redux'
+import { RouterState, RouterAction } from './utils/store/types/routerTypes'
+import { getRouterInfo } from './utils/store/actions/routerActions'
+import { Store } from './utils/store/types/generalTypes'
 
-type RouterProps = {}
+type RouterProps = DispatchProp<RouterAction> & RouterState
 
-export class MainRouter extends React.Component<RouterProps, RouterState> {
+class MainRouterComponent extends React.Component<RouterProps, {}> {
     constructor(props: RouterProps) {
         super(props)
-
-        this.state = {
-            settings: "loading",
-            user: "loading"
         }
-    }
 
     async componentDidMount() {
-        let userSettings = await Api.getUserSettings()
-
-        let userInfo = await Api.getUserInfo()
-
-        this.setState({ settings: userSettings, user: userInfo })
+        this.props.dispatch(getRouterInfo(this.props.dispatch))
     }
 
     render() {
-        if (this.state.settings === "loading") return null
-        if (this.state.user === "loading") return null
-        let settings = this.state.settings
-        let user = this.state.user
+        if (this.props.settings === "loading") return null
+        if (this.props.user === "loading") return null
+        let settings = this.props.settings
+        let user = this.props.user
 
-        return <Provider store={store}>
-            <BrowserRouter>
+        return <BrowserRouter>
                 <Header user={user} />
 
                 <Switch>
@@ -104,6 +93,11 @@ export class MainRouter extends React.Component<RouterProps, RouterState> {
                     </Route>
                 </Switch>
             </BrowserRouter>
-        </Provider>
     }
 }
+
+let mapStateToProps = (store: Store): RouterState => {
+    return store.routerInfo
+}
+
+export let MainRouter = connect(mapStateToProps)(MainRouterComponent)
