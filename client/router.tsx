@@ -28,7 +28,7 @@ type RouterProps = DispatchProp<RouterAction> & RouterState
 class MainRouterComponent extends React.Component<RouterProps, {}> {
     constructor(props: RouterProps) {
         super(props)
-        }
+    }
 
     async componentDidMount() {
         this.props.dispatch(getRouterInfo(this.props.dispatch))
@@ -41,58 +41,56 @@ class MainRouterComponent extends React.Component<RouterProps, {}> {
         let user = this.props.user
 
         return <BrowserRouter>
-                <Header user={user} />
+            <Header user={user} />
 
-                <Switch>
-                    <Route exact path="/" component={Home} />
+            <Switch>
+                <Route exact path="/" component={Home} />
 
-                    <Route path="/compete/:eventType" component={({ match }: any) => {
-                        return <Compete eventType={Number(match.params.eventType)} settings={Helpers.minifyRawSettings(settings)} />
-                    }} />
+                <Route path="/compete/:eventType" component={({ match }: any) => {
+                    return <Compete eventType={Number(match.params.eventType)} settings={Helpers.minifyRawSettings(settings)} />
+                }} />
 
-                    <Route>
-                        <div className="white-container">
-                            <Route path="/event/:eventType" component={({ match }: any) =>
-                                <Records key={`records-${match.params.eventType}`} event={match.params.eventType} user={user} />
-                            } />
+                <Route>
+                    <div className="white-container">
+                        <Route path="/event/:eventType" component={Records} />
 
-                            <Route path="/sum-of-ranks/:eventType" component={({ match }: any) =>
-                                <SumOfRanks key={`records-${match.params.eventType}`} type={match.params.eventType} user={user} />
-                            } />
+                        <Route path="/sum-of-ranks/:eventType" component={({ match }: any) =>
+                            <SumOfRanks key={`records-${match.params.eventType}`} type={match.params.eventType} user={user} />
+                        } />
 
-                            <Route exact path="/leaderboards" component={() =>
-                                <LeaderboardsCollection user={user} />
-                            } />
+                        <Route exact path="/leaderboards" component={() =>
+                            <LeaderboardsCollection user={user} />
+                        } />
 
-                            <Route path="/leaderboards/:compId" component={({ match }: any) =>
-                                <Leaderboards key={`leaderboards-${match.params.compId}`} competitionId={match.params.compId} user={user} />
-                            } />
+                        <Route path="/leaderboards/:compId" component={({ match }: any) =>
+                            <Leaderboards key={`leaderboards-${match.params.compId}`} competitionId={match.params.compId} user={user} />
+                        } />
 
-                            <Route exact path="/(u|user)/:username" component={({ match }: any) =>
-                                <Profile key={`profile-${match.params.username}`} username={match.params.username} currentUser={user} />
-                            } />
+                        <Route exact path="/(u|user)/:username" component={({ match }: any) =>
+                            <Profile key={`profile-${match.params.username}`} username={match.params.username} currentUser={user} />
+                        } />
 
-                            <Route exact path="/versus" component={() =>
-                                <VersusSelect />
-                            } />
+                        <Route exact path="/versus" component={() =>
+                            <VersusSelect />
+                        } />
 
-                            <Route path="/(vs|versus)/:user1/:user2" component={({ match }: any) =>
-                                <Versus
-                                    username1={match.params.user1}
-                                    username2={match.params.user2}
-                                />
-                            } />
+                        <Route path="/(vs|versus)/:user1/:user2" component={({ match }: any) =>
+                            <Versus
+                                username1={match.params.user1}
+                                username2={match.params.user2}
+                            />
+                        } />
 
-                            <Route path="/settings" component={() =>
-                                <UserSettings
-                                    settings={settings}
-                                    updateSettings={settings => this.setState({ settings: settings })}
-                                />
-                            } />
-                        </div>
-                    </Route>
-                </Switch>
-            </BrowserRouter>
+                        <Route path="/settings" component={() =>
+                            <UserSettings
+                                settings={settings}
+                                updateSettings={settings => this.setState({ settings: settings })}
+                            />
+                        } />
+                    </div>
+                </Route>
+            </Switch>
+        </BrowserRouter>
     }
 }
 

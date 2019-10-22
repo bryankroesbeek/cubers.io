@@ -1,37 +1,35 @@
 import * as React from 'react'
+import { match } from 'react-router'
+import { connect, DispatchProp } from 'react-redux'
 
-import * as Api from '../../utils/api'
+import { Store } from '../../utils/store/types/generalTypes'
 import * as Types from '../../utils/types'
 import * as Helpers from '../../utils/helpers'
-import { Link } from 'react-router-dom';
 
-type RecordsProps = {
+import { RecordsState, RecordsAction } from '../../utils/store/types/recordsTypes'
+import { fetchCompetitionEvents, setAverage, setSingle } from '../../utils/store/actions/recordsActions'
+
+import { Link } from 'react-router-dom'
+import { User } from '../../utils/types'
+
+type RemoteProps = {
     event: string
     user: Types.User
 }
 
-type RecordsState = {
-    eventRecords: Types.EventRecords | "loading"
-    type: "single" | "average"
-}
+type RecordsProps = DispatchProp<RecordsAction> & RecordsState & RemoteProps
 
-export class Records extends React.Component<RecordsProps, RecordsState>{
+class RecordsComponent extends React.Component<RecordsProps, {}>{
     MySolve: React.RefObject<HTMLTableRowElement>
 
     constructor(props: RecordsProps) {
         super(props)
 
-        this.state = {
-            eventRecords: "loading",
-            type: "single"
-        }
-
         this.MySolve = React.createRef()
     }
 
     componentDidMount() {
-        Api.getRecords(this.props.event, "single")
-            .then(records => this.setState({ eventRecords: records }))
+        this.props.dispatch(fetchCompetitionEvents(this.props.dispatch, this.props.event, "single"))
     }
 
     scrollToUser() {
@@ -49,7 +47,7 @@ export class Records extends React.Component<RecordsProps, RecordsState>{
 
             let ref = solve.user_id === this.props.user.id ? this.MySolve : null
 
-            return <tr key={`user-${solve.user_id}-${this.state.type}`} ref={ref} className={this.props.user.id === solve.user_id ? "my-solve" : null}>
+            return <tr key={`user-${solve.user_id}-${this.props.type}`} ref={ref} className={this.props.user.id === solve.user_id ? "my-solve" : null}>
                 <td>{solve.rank}</td>
                 <td>{verifiedIcon}<Link to={`/u/${solve.username}`}>/u/{solve.username}</Link></td>
                 <td>{Helpers.toReadableTime(Number(solve.personal_best) * 10)}</td>
@@ -59,21 +57,24 @@ export class Records extends React.Component<RecordsProps, RecordsState>{
     }
 
     render() {
-        if (this.state.eventRecords === "loading") return null
+        if (this.props.eventRecords === "loading") return null
 
-        let solves = this.state.type === "single" ? this.state.eventRecords.singles : this.state.eventRecords.averages
+        let solves = this.props.type === "single" ? this.props.eventRecords.singles : this.props.eventRecords.averages
 
         return <div className="records-page">
             <div className="records-wrapper">
                 <div className="records-header">
-                    <img className="records-event-image puzzle-image" src={`/static/images/cube-${this.props.event.toLowerCase().split(" ").join("-")}.png`} />
+                    <img
+                        className="records-event-image puzzle-image"
+                        src={`/static/images/cube-${this.props.event.toLowerCase().split(" ").join("-")}.png`}
+                    />
                     <div className="records-navbar">
                         <button
-                            className={`records-navbar-button ${this.state.type === "single" ? "active" : ""}`}
-                            onClick={() => this.setState({ type: "single" })}>Single</button>
+                            className={`records-navbar-button ${this.props.type === "single" ? "active" : ""}`}
+                            onClick={() => this.props.dispatch(setSingle())}>Single</button>
                         <button
-                            className={`records-navbar-button ${this.state.type === "average" ? "active" : ""}`}
-                            onClick={() => this.setState({ type: "average" })}>Average</button>
+                            className={`records-navbar-button ${this.props.type === "average" ? "active" : ""}`}
+                            onClick={() => this.props.dispatch(setAverage())}>Average</button>
 
                         <a className="records-navbar-button export" href={`/event/${this.props.event}/export/`}>Export to CSV</a>
                     </div>
@@ -85,11 +86,11 @@ export class Records extends React.Component<RecordsProps, RecordsState>{
                                 <th>Rank</th>
                                 <th>
                                     User
-                                        <button className="records-table-locate-user" onClick={() => {
-                                            this.scrollToUser()
-                                        }}>
-                                            <i className="fas fa-arrow-down" id="scrollSingle" />
-                                        </button>
+                                    <button className="records-table-locate-user" onClick={() => {
+                                        this.scrollToUser()
+                                    }}>
+                                        <i className="fas fa-arrow-down" id="scrollSingle" />
+                                    </button>
                                 </th>
                                 <th>Time</th>
                                 <th>Competition</th>
@@ -104,3 +105,13 @@ export class Records extends React.Component<RecordsProps, RecordsState>{
         </div>
     }
 }
+
+let mapStateToProps = (state: Store, ownProps: RemoteProps & { match: match<{ eventType: string }> }): RecordsState & RemoteProps => {
+    return {
+        ...state.records,
+        event: ownProps.match.params.eventType,
+        user: state.routerInfo.user as User,
+    }
+}
+
+export const Records = connect(mapStateToProps)(RecordsComponent)
