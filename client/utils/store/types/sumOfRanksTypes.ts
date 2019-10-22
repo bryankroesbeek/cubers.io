@@ -4,7 +4,7 @@ import { SumOfRanks } from '../../types'
 
 export type SumOfRanksState = {
     eventRecords: SumOfRanks | "loading"
-    type: string
+    viewType: "single" | "average"
 }
 
 export type SumOfRanksAction = Action<"NONE"> |

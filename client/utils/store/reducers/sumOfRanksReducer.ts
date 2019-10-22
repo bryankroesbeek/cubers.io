@@ -4,7 +4,7 @@ import { SumOfRanksAction, SumOfRanksState } from '../types/sumOfRanksTypes'
 
 const initialState: SumOfRanksState = {
     eventRecords: "loading",
-    type: "single"
+    viewType: "single"
 }
 
 export const sumOfRanksReducer: Reducer<SumOfRanksState, SumOfRanksAction> = (state = initialState, action): SumOfRanksState => {
@@ -13,11 +13,11 @@ export const sumOfRanksReducer: Reducer<SumOfRanksState, SumOfRanksAction> = (st
     }
 
     if (action.type === "VIEW_SINGLE_SUM_OF_RANKS") {
-        return {...state, type: "single"}
+        return {...state, viewType: "single"}
     }
 
     if (action.type === "VIEW_AVERAGE_SUM_OF_RANKS") {
-        return {...state, type: "average"}
+        return {...state, viewType: "average"}
     }
 
     return state

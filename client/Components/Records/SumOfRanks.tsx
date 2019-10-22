@@ -55,7 +55,7 @@ class SumOfRanksComponent extends React.Component<SumOfRanksProps, {}>{
     render() {
         if (this.props.eventRecords === "loading") return null
 
-        let solves = this.props.type === "single" ? this.props.eventRecords.singles : this.props.eventRecords.averages
+        let solves = this.props.viewType === "single" ? this.props.eventRecords.singles : this.props.eventRecords.averages
 
         return <div className="records-page">
             <div className="records-wrapper">
@@ -63,10 +63,10 @@ class SumOfRanksComponent extends React.Component<SumOfRanksProps, {}>{
                     <h3 className="records-header-title">{this.props.eventRecords.title}</h3>
                     <div className="records-navbar">
                         <button
-                            className={`records-navbar-button ${this.props.type === "single" ? "active" : ""}`}
+                            className={`records-navbar-button ${this.props.viewType === "single" ? "active" : ""}`}
                             onClick={() => this.props.dispatch(setSingle())}>By Single</button>
                         <button
-                            className={`records-navbar-button ${this.props.type === "average" ? "active" : ""}`}
+                            className={`records-navbar-button ${this.props.viewType === "average" ? "active" : ""}`}
                             onClick={() => this.props.dispatch(setAverage())}>By Average</button>
                     </div>
                 </div>
