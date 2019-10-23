@@ -2,7 +2,7 @@ import { HomeState } from './homeTypes'
 import { RecordsState } from './recordsTypes'
 import { RouterState } from './routerTypes'
 import { SumOfRanksState } from './sumOfRanksTypes'
-import { LeaderboardsCollectionState } from './leaderboardTypes'
+import { LeaderboardsCollectionState, LeaderboardState } from './leaderboardTypes'
 
 export type Store = {
     home: HomeState
@@ -10,4 +10,5 @@ export type Store = {
     routerInfo: RouterState
     sumOfRanks: SumOfRanksState
     leaderboardCollection: LeaderboardsCollectionState
+    leaderboard: LeaderboardState
 }
