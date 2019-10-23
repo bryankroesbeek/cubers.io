@@ -1,52 +1,28 @@
 import * as React from 'react'
+import { match } from 'react-router'
+import { DispatchProp, connect, MapStateToProps } from 'react-redux'
 
-import * as Api from '../../utils/api'
-import { User, Leaderboard, LeaderboardEvent } from '../../utils/types'
+import { User, LeaderboardEvent } from '../../utils/types'
 import { LeaderboardTable } from './LeaderboardTable'
+import { LeaderboardState, LeaderboardAction } from '../../utils/store/types/leaderboardTypes'
+import { fetchLeaderboardById, setCurrentActiveEvent } from '../../utils/store/actions/leaderboardActions'
+import { Store } from '../../utils/store/types/generalTypes'
 
-type LeaderboardsProps = {
+type RemoteProps = {
     competitionId: number
     user: User
 }
 
-type LeaderboardsState = {
-    events: LeaderboardEvent[] | "loading"
-    leaderboards: Leaderboard | "loading"
-    currentActiveEvent: LeaderboardEvent | "none"
-}
+type LeaderboardsProps = DispatchProp<LeaderboardAction> & LeaderboardState & RemoteProps
 
-export class Leaderboards extends React.Component<LeaderboardsProps, LeaderboardsState>{
-
-    constructor(props: LeaderboardsProps) {
-        super(props)
-
-        this.state = {
-            events: "loading",
-            leaderboards: "loading",
-            currentActiveEvent: "none"
-        }
-    }
-
-    async componentDidMount() {
-        let events = await Api.getLeaderboardItems(this.props.competitionId)
-
-        let event = events.filter(e => e.slug === "3x3")[0]
-
-        let leaderboardsRequest = Api.getLeaderboardEvent(event.compEventId)
-
-        this.setState({ events: events }, async () => {
-            this.setState({ leaderboards: await leaderboardsRequest, currentActiveEvent: event })
-        })
-    }
-
-    async loadEvent(event: LeaderboardEvent) {
-        let leaderboardEvent = await Api.getLeaderboardEvent(event.compEventId)
-        this.setState({ leaderboards: leaderboardEvent, currentActiveEvent: event })
+export class LeaderboardComponent extends React.Component<LeaderboardsProps>{
+    componentDidMount() {
+        this.props.dispatch(fetchLeaderboardById(this.props.dispatch, this.props.competitionId))
     }
 
     renderEvents() {
-        let events = this.state.events
-        let currentEvent = this.state.currentActiveEvent as LeaderboardEvent
+        let events = this.props.events
+        let currentEvent = this.props.currentActiveEvent as LeaderboardEvent
 
         if (events === "loading") return null
 
@@ -54,7 +30,10 @@ export class Leaderboards extends React.Component<LeaderboardsProps, Leaderboard
             {events.map(e => {
                 let active = e.slug === currentEvent.slug ? "active" : ""
 
-                return <button className={`tab-events-header-item ${active}`} onClick={() => this.loadEvent(e)}>
+                return <button
+                    className={`tab-events-header-item ${active}`}
+                    onClick={() => this.props.dispatch(setCurrentActiveEvent(this.props.dispatch, e))}
+                /* button */>
                     <img className="tab-events-header-item-image" src={`/static/images/cube-${e.slug}.png`} />
                 </button>
             })}
@@ -62,15 +41,27 @@ export class Leaderboards extends React.Component<LeaderboardsProps, Leaderboard
     }
 
     render() {
-        if (this.state.leaderboards === "loading") return null
-        if (this.state.currentActiveEvent === "none") return null
+        if (this.props.leaderboard === "loading") return null
+        if (this.props.currentActiveEvent === "none") return null
 
         return <div className="leaderboards">
             {this.renderEvents()}
             <LeaderboardTable
-                currentEvent={this.state.currentActiveEvent}
-                leaderboard={this.state.leaderboards}
+                currentEvent={this.props.currentActiveEvent}
+                leaderboard={this.props.leaderboard}
             />
         </div>
     }
 }
+
+export let mapStateToProps:
+    MapStateToProps<LeaderboardState & RemoteProps, RemoteProps & { match: match<{ compId: string }> }, Store> =
+    (store, ownProps) => {
+        return {
+            ...store.leaderboard,
+            user: ownProps.user,
+            competitionId: Number(ownProps.match.params.compId),
+        }
+    }
+
+export let Leaderboards = connect(mapStateToProps)(LeaderboardComponent)
