@@ -1,37 +1,22 @@
 import * as React from 'react'
 
-import * as Api from '../../utils/api'
-import * as Types from '../../utils/types'
-import * as Helpers from '../../utils/helpers'
 import { Link } from 'react-router-dom'
-import { User, Leaderboard, LeaderboardEvent } from '../../utils/types'
+import { DispatchProp, connect } from 'react-redux'
+import { LeaderboardCollectionAction, LeaderboardsCollectionState } from '../../utils/store/types/leaderboardTypes'
+import { fetchLeaderboardCollection } from '../../utils/store/actions/leaderboardActions'
+import { Store } from '../../utils/store/types/generalTypes'
 
-type LeaderboardsCollectionProps = {
-    user: User
-}
+type RemoteProps = {}
 
-type LeaderboardsCollectionState = {
-    collection: Types.LeaderboardsCollection | "loading"
-}
+type LeaderboardsCollectionProps = DispatchProp<LeaderboardCollectionAction> & LeaderboardsCollectionState & RemoteProps
 
-export class LeaderboardsCollection extends React.Component<LeaderboardsCollectionProps, LeaderboardsCollectionState>{
-
-    constructor(props: LeaderboardsCollectionProps) {
-        super(props)
-
-        this.state = {
-            collection: "loading"
-        }
-    }
-
-    async componentDidMount() {
-        let collection = await Api.getLeaderboardCompetitions()
-
-        this.setState({ collection: collection })
+export class LeaderboardsCollectionComponent extends React.Component<LeaderboardsCollectionProps>{
+    componentDidMount() {
+        this.props.dispatch(fetchLeaderboardCollection(this.props.dispatch))
     }
 
     render() {
-        let collection = this.state.collection
+        let collection = this.props.collection
         if (collection === "loading") return null
 
         return <div className="leaderboards-collection">
@@ -52,9 +37,17 @@ export class LeaderboardsCollection extends React.Component<LeaderboardsCollecti
                         <td><Link to={`/leaderboards/${c.id}`} ></Link>{c.title}</td>
                         <td>{new Date(c.startDate).toDateString()}</td>
                         <td>{new Date(c.endDate).toDateString()}</td>
-                    </tr> )}
+                    </tr>)}
                 </tbody>
             </table>
         </div>
     }
 }
+
+let mapStateToProps = (store: Store): LeaderboardsCollectionState & RemoteProps => {
+    return {
+        ...store.leaderboardCollection,
+    }
+}
+
+export let LeaderboardsCollection = connect(mapStateToProps)(LeaderboardsCollectionComponent)

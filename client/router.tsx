@@ -56,9 +56,7 @@ class MainRouterComponent extends React.Component<RouterProps, {}> {
 
                         <Route path="/sum-of-ranks/:eventType" component={SumOfRanks} />
 
-                        <Route exact path="/leaderboards" component={() =>
-                            <LeaderboardsCollection user={user} />
-                        } />
+                        <Route exact path="/leaderboards" component={LeaderboardsCollection} />
 
                         <Route path="/leaderboards/:compId" component={({ match }: any) =>
                             <Leaderboards key={`leaderboards-${match.params.compId}`} competitionId={match.params.compId} user={user} />
