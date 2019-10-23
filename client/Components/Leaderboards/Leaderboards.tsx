@@ -1,10 +1,8 @@
 import * as React from 'react'
 
 import * as Api from '../../utils/api'
-import * as Types from '../../utils/types'
-import * as Helpers from '../../utils/helpers'
-import { Link } from 'react-router-dom'
 import { User, Leaderboard, LeaderboardEvent } from '../../utils/types'
+import { LeaderboardTable } from './LeaderboardTable'
 
 type LeaderboardsProps = {
     competitionId: number
@@ -63,51 +61,16 @@ export class Leaderboards extends React.Component<LeaderboardsProps, Leaderboard
         </div>
     }
 
-    renderLeaderboardTable() {
-        let leaderboard = this.state.leaderboards
-        if (leaderboard === "loading") return null
-
-        let results = leaderboard.results
-        let currentEvent = this.state.currentActiveEvent as LeaderboardEvent
-
-        return <div className="leaderboards-event">
-            <div className="leaderboards-event-header">
-                <Link to={`/event/${currentEvent.name}`}>{currentEvent.name}</Link>
-                <button className="leaderboards-event-header-scrambles-button" onClick={() => {/* TODO: implement prompt */ }}>
-                    <i className="fas fa-dice-five scrambles" />
-                </button>
-            </div>
-
-            <div className="leaderboards-event-table">
-                <table className="table-results table table-sm table-striped table-cubersio">
-                    <thead className="thead-dark">
-                        <tr>
-                            <th>Rank</th>
-                            <th>User</th>
-                            <th>Average</th>
-                            <th>Best</th>
-                            <th colSpan={5}>Solves</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {results.map(r => <tr>
-                            <td>{r.visibleRank}</td>
-                            <td><Link to={`/u/${r.solve.user.name}`}>/u/{r.solve.user.name}</Link></td>
-                            <td>{Helpers.toReadableTime(r.solve.average * 10)}</td>
-                            <td>{Helpers.toReadableTime(r.solve.best_single * 10)}</td>
-                            {r.solve.times.map(t => <td>{t}</td>)}
-                        </tr>)}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-    }
-
     render() {
+        if (this.state.leaderboards === "loading") return null
+        if (this.state.currentActiveEvent === "none") return null
+
         return <div className="leaderboards">
             {this.renderEvents()}
-            {this.renderLeaderboardTable()}
+            <LeaderboardTable
+                currentEvent={this.state.currentActiveEvent}
+                leaderboard={this.state.leaderboards}
+            />
         </div>
     }
 }
