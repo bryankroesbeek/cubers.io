@@ -12,7 +12,7 @@ import * as Api from './utils/api'
 import * as Types from './utils/types'
 import * as Helpers from './utils/helpers/settingsHelper'
 import { Records } from './Components/Records/Records'
-import { Leaderboards } from './Components/Leaderboards/Leaderboards'
+import { Leaderboard } from './Components/Leaderboards/Leaderboard'
 import { LeaderboardsCollection } from './Components/Leaderboards/LeaderboardCollection'
 import { Profile } from './Components/Profile/Profile'
 import { Versus } from './Components/Versus/Versus'
@@ -58,7 +58,7 @@ class MainRouterComponent extends React.Component<RouterProps, {}> {
 
                         <Route exact path="/leaderboards" component={LeaderboardsCollection} />
 
-                        <Route path="/leaderboards/:compId" component={Leaderboards} />
+                        <Route path="/leaderboards/:compId" component={Leaderboard} />
 
                         <Route exact path="/(u|user)/:username" component={({ match }: any) =>
                             <Profile key={`profile-${match.params.username}`} username={match.params.username} currentUser={user} />

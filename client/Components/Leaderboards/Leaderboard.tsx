@@ -64,4 +64,4 @@ export let mapStateToProps:
         }
     }
 
-export let Leaderboards = connect(mapStateToProps)(LeaderboardComponent)
+export let Leaderboard = connect(mapStateToProps)(LeaderboardComponent)
