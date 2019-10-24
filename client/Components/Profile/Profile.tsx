@@ -1,18 +1,19 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, match } from 'react-router-dom'
+import { DispatchProp, MapStateToProps, connect } from 'react-redux'
 
-import * as Api from '../../utils/api'
 import * as Helpers from '../../utils/helpers'
 import { ProfileHistory, ProfileRankings, ProfileRecords, User, ProfileHistoryEvent, ProfileHistoryResult } from '../../utils/types'
-import { CompetitionEvent } from '../../utils/types'
-import { string } from 'prop-types'
+import { ProfileAction } from '../../utils/store/types/profileTypes'
+import { fetchUserRankings, fetchUserRecords, fetchUserHistory, setActiveHistoryItem } from '../../utils/store/actions/profileActions'
+import { Store } from '../../utils/store/types/generalTypes'
 
-type ProfileProps = {
+type RemoteProps = {
     username: string
     currentUser: User
 }
 
-type ProfileState = {
+type ProfileProps = {
     rankings: ProfileRankings | "loading"
     records: ProfileRecords | "loading"
     history: ProfileHistory | "loading"
@@ -20,44 +21,15 @@ type ProfileState = {
     selectedEvent: ProfileHistoryEvent | "none"
 }
 
-export class Profile extends React.Component<ProfileProps, ProfileState>{
-    constructor(props: ProfileProps) {
-        super(props)
-
-        this.state = {
-            history: "loading",
-            rankings: "loading",
-            records: "loading",
-            selectedEvent: "none"
-        }
-    }
-
+class ProfileComponent extends React.Component<ProfileProps & RemoteProps & DispatchProp<ProfileAction>>{
     async componentDidMount() {
-        let rankingsRequest = Api.getUserRankings(this.props.username)
-        let recordsRequest = Api.getUserRecords(this.props.username)
-        let historyRequest = Api.getUserHistory(this.props.username)
-
-        let history = await historyRequest
-        let initialEvent = this.getInitialEvent(history)
-
-        this.setState({
-            rankings: await rankingsRequest,
-            records: await recordsRequest,
-            history: history,
-            selectedEvent: initialEvent
-        })
-    }
-
-    getInitialEvent(history: ProfileHistoryEvent[]): ProfileHistoryEvent | "none" {
-        if (history.length === 0) return "none"
-        let initialEvent = history.find(h => h.event === "3x3")
-        if (!initialEvent) initialEvent = history[0]
-
-        return initialEvent
+        this.props.dispatch(fetchUserRankings(this.props.dispatch, this.props.username))
+        this.props.dispatch(fetchUserRecords(this.props.dispatch, this.props.username))
+        this.props.dispatch(fetchUserHistory(this.props.dispatch, this.props.username))
     }
 
     renderRankings() {
-        let rankings = this.state.rankings
+        let rankings = this.props.rankings
         if (rankings === "loading") return null
 
         return <div>
@@ -95,7 +67,7 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
     }
 
     renderRecords() {
-        let records = this.state.records
+        let records = this.props.records
         if (records === "loading") return null
 
         return <div>
@@ -130,10 +102,10 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
     }
 
     renderHistory() {
-        let history = this.state.history
+        let history = this.props.history
         if (history === "loading") return null
 
-        let selectedEvent = this.state.selectedEvent as ProfileHistoryEvent
+        let selectedEvent = this.props.selectedEvent as ProfileHistoryEvent
 
         return <div>
             <div className="tab-events-header">
@@ -147,7 +119,7 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
         let buttonClassName = `tab-events-header-item ${h.eventSlug === selectedEvent.eventSlug ? "active" : ""}`
 
         let onClick = () => {
-            this.setState({ selectedEvent: h })
+            this.props.dispatch(setActiveHistoryItem(h))
         }
 
         return <button className={buttonClassName} onClick={onClick}>
@@ -156,7 +128,7 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
     }
 
     renderHistoryTable() {
-        let selectedEvent = this.state.selectedEvent
+        let selectedEvent = this.props.selectedEvent
         if (selectedEvent === "none") return null
 
         return <div>
@@ -225,3 +197,15 @@ export class Profile extends React.Component<ProfileProps, ProfileState>{
         </div>
     }
 }
+
+let mapStateToProps:
+    MapStateToProps<ProfileProps & RemoteProps, { match: match<{ username: string }> } & RemoteProps, Store> =
+    (store, ownProps) => {
+        return {
+            ...store.profile,
+            username: ownProps.match.params.username,
+            currentUser: store.routerInfo.user as User
+        }
+    }
+
+export const Profile = connect(mapStateToProps)(ProfileComponent)
