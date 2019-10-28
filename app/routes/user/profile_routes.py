@@ -213,8 +213,8 @@ def history_to_dictionary(history):
     }
 
 
-def result_to_dictionary(thing):
-    comp, results = thing
+def result_to_dictionary(item):
+    comp, results = item
 
     c = comp.__dict__
     r = results.__dict__
@@ -224,6 +224,8 @@ def result_to_dictionary(thing):
 
     event_type = "fmc" if r["is_fmc"] else "blind" if r["is_blind"] \
         else "multi_blind" if r["is_mbld"] else "normal"
+
+    average = "DNF" if r["average"] == "DNF" else None if r["average"] == "" else int(r["average"])
 
     return {
         'comp': {
@@ -236,7 +238,7 @@ def result_to_dictionary(thing):
             "eventType": event_type,
             "single": int(r["single"]) if not r["single"] == "DNF" else "DNF",
             "result": int(r["result"]) if not r["result"] == "DNF" else "DNF",
-            "average": int(r["average"]) if not r["average"] == "DNF" else "DNF",
+            "average": average,
             "wasPbSingle": r["was_pb_single"],
             "wasPbAverage": r["was_pb_average"],
             "times": r["times_string"].split(', '),
