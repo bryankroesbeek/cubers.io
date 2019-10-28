@@ -3,22 +3,6 @@ import { ProfileAction } from "../types/profileTypes"
 import { Dispatch } from "react"
 import { ProfileHistoryEvent } from "../../types/profile"
 
-async function componentDidMount() {
-    let rankingsRequest = getUserRankings(this.props.username)
-    let recordsRequest = getUserRecords(this.props.username)
-    let historyRequest = getUserHistory(this.props.username)
-
-    let history = await historyRequest
-    let initialEvent = this.getInitialEvent(history)
-
-    this.setState({
-        rankings: await rankingsRequest,
-        records: await recordsRequest,
-        history: history,
-        selectedEvent: initialEvent
-    })
-}
-
 export let fetchUserRankings = (dispatch: Dispatch<ProfileAction>, username: string): ProfileAction => {
     getUserRankings(username)
         .then(result => dispatch({ type: "FETCH_PROFILE_STATISTICS", statistics: result }))
