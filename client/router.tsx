@@ -62,16 +62,9 @@ class MainRouterComponent extends React.Component<RouterProps, {}> {
 
                         <Route exact path="/(u|user)/:username" component={Profile} />
 
-                        <Route exact path="/versus" component={() =>
-                            <VersusSelect />
-                        } />
+                        <Route exact path="/versus" component={VersusSelect} />
 
-                        <Route path="/(vs|versus)/:user1/:user2" component={({ match }: any) =>
-                            <Versus
-                                username1={match.params.user1}
-                                username2={match.params.user2}
-                            />
-                        } />
+                        <Route path="/(vs|versus)/:user1/:user2" component={Versus} />
 
                         <Route path="/settings" component={() =>
                             <UserSettings

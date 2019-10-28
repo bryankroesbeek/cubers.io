@@ -1,56 +1,36 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, match } from 'react-router-dom'
 
 import * as Api from '../../utils/api'
 import * as Constants from '../../utils/constants'
 import * as Helpers from '../../utils/helpers'
 import { ProfileRankings, ProfileRecords, ProfileRecord, EventConstant } from '../../utils/types'
+import { DispatchProp, MapStateToProps, connect } from 'react-redux'
+import { VersusAction, VersusState } from '../../utils/store/types/versusTypes'
+import { fetchUser1Rankings, fetchUser1Records, fetchUser2Rankings, fetchUser2Records } from '../../utils/store/actions/versusActions'
+import { Store } from '../../utils/store/types/generalTypes'
 
-type VersusProps = {
+type RemoteProps = {
     username1: string
     username2: string
 }
 
-type VersusState = {
-    user1Rankings: ProfileRankings | "loading"
-    user2Rankings: ProfileRankings | "loading"
+type VersusProps = VersusState
 
-    user1Records: ProfileRecords | "loading"
-    user2Records: ProfileRecords | "loading"
-}
-
-export class Versus extends React.Component<VersusProps, VersusState>{
-    constructor(props: VersusProps) {
-        super(props)
-
-        this.state = {
-            user1Rankings: "loading",
-            user1Records: "loading",
-            user2Rankings: "loading",
-            user2Records: "loading"
-        }
-    }
-
-    async componentDidMount() {
-        let user1RankingsRequest = Api.getUserRankings(this.props.username1)
-        let user1RecordsRequest = Api.getUserRecords(this.props.username1)
-        let user2RankingsRequest = Api.getUserRankings(this.props.username2)
-        let user2RecordsRequest = Api.getUserRecords(this.props.username2)
-
-        this.setState({
-            user1Rankings: await user1RankingsRequest,
-            user1Records: await user1RecordsRequest,
-            user2Rankings: await user2RankingsRequest,
-            user2Records: await user2RecordsRequest
-        })
+class VersusComponent extends React.Component<VersusProps & RemoteProps & DispatchProp<VersusAction>>{
+    componentDidMount() {
+        this.props.dispatch(fetchUser1Rankings(this.props.dispatch, this.props.username1))
+        this.props.dispatch(fetchUser1Records(this.props.dispatch, this.props.username1))
+        this.props.dispatch(fetchUser2Rankings(this.props.dispatch, this.props.username2))
+        this.props.dispatch(fetchUser2Records(this.props.dispatch, this.props.username2))
     }
 
     renderRecords() {
-        if (this.state.user1Records === "loading") return null
-        if (this.state.user2Records === "loading") return null
+        if (this.props.user1Records === "loading") return null
+        if (this.props.user2Records === "loading") return null
 
-        let user1Records = this.state.user1Records
-        let user2Records = this.state.user2Records
+        let user1Records = this.props.user1Records
+        let user2Records = this.props.user2Records
 
         return <div className="versus-section">
             <div className="versus-table-wrapper">
@@ -106,11 +86,11 @@ export class Versus extends React.Component<VersusProps, VersusState>{
     }
 
     renderRankings() {
-        if (this.state.user1Rankings === "loading") return null
-        if (this.state.user2Rankings === "loading") return null
+        if (this.props.user1Rankings === "loading") return null
+        if (this.props.user2Rankings === "loading") return null
 
-        let rankings1 = this.state.user1Rankings
-        let rankings2 = this.state.user2Rankings
+        let rankings1 = this.props.user1Rankings
+        let rankings2 = this.props.user2Rankings
 
         let statisticsTable = this.renderStatisticsTable(rankings1, rankings2)
 
@@ -269,3 +249,15 @@ export class Versus extends React.Component<VersusProps, VersusState>{
         </div>
     }
 }
+
+let mapStateToProps:
+    MapStateToProps<VersusProps & RemoteProps, RemoteProps & { match: match<{ user1: string, user2: string }> }, Store> =
+    (store, ownProps) => {
+        return {
+            ...store.versus,
+            username1: ownProps.match.params.user1,
+            username2: ownProps.match.params.user2
+        }
+    }
+
+export let Versus = connect(mapStateToProps)(VersusComponent)
