@@ -1,4 +1,6 @@
-export function sig<T>(scramble: string, eventName: string, settings: T): {
+import { UserSettingsMinified } from "../../types/userSettings"
+
+export function sig(scramble: string, eventName: string, settings: UserSettingsMinified): {
     showNormalImage: () => void
     showLargeImage: () => void
 }

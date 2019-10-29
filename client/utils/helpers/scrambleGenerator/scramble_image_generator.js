@@ -104,10 +104,10 @@ export function sig(scramble, eventName, settings) {
 
         if (settings && settings.use_custom_pyraminx_colors) {
             pyra_colors = [
-                settings.custom_pyraminx_color_F,
-                settings.custom_pyraminx_color_L,
-                settings.custom_pyraminx_color_R,
-                settings.custom_pyraminx_color_D
+                settings.custom_pyra_color_F,
+                settings.custom_pyra_color_L,
+                settings.custom_pyra_color_R,
+                settings.custom_pyra_color_D
             ];
         } else {
             pyra_colors = ['#0f0', '#f00', '#00f', '#ff0'];
@@ -115,18 +115,18 @@ export function sig(scramble, eventName, settings) {
 
         if (settings && settings.use_custom_megaminx_colors) {
             mega_colors = [
-                settings.custom_megaminx_color_1,
-                settings.custom_megaminx_color_2,
-                settings.custom_megaminx_color_3,
-                settings.custom_megaminx_color_4,
-                settings.custom_megaminx_color_5,
-                settings.custom_megaminx_color_6,
-                settings.custom_megaminx_color_7,
-                settings.custom_megaminx_color_8,
-                settings.custom_megaminx_color_9,
-                settings.custom_megaminx_color_10,
-                settings.custom_megaminx_color_11,
-                settings.custom_megaminx_color_12,
+                settings.custom_mega_color_1,
+                settings.custom_mega_color_2,
+                settings.custom_mega_color_3,
+                settings.custom_mega_color_4,
+                settings.custom_mega_color_5,
+                settings.custom_mega_color_6,
+                settings.custom_mega_color_7,
+                settings.custom_mega_color_8,
+                settings.custom_mega_color_9,
+                settings.custom_mega_color_10,
+                settings.custom_mega_color_11,
+                settings.custom_mega_color_12,
             ];
         } else {
             mega_colors = ['#fff', '#d00', '#060', '#81f', '#fc0', '#00b', '#ffb', '#8df', '#f83', '#7e0', '#f9f', '#999'];
