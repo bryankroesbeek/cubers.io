@@ -7,6 +7,7 @@ import { sumOfRanksReducer } from './reducers/sumOfRanksReducer'
 import { leaderboardCollectionReducer, leaderboardReducer } from './reducers/leaderboardReducer'
 import { profileReducer } from './reducers/profileReducer'
 import { versusReducer } from './reducers/versusReducer'
+import { settingsReducer } from './reducers/settingsReducer'
 
 const reducers: ReducersMapObject = {
     home: homeReducer,
@@ -16,7 +17,8 @@ const reducers: ReducersMapObject = {
     leaderboardCollection: leaderboardCollectionReducer,
     leaderboard: leaderboardReducer,
     profile: profileReducer,
-    versus: versusReducer
+    versus: versusReducer,
+    settings: settingsReducer
 }
 
 export let combineReducer = combineReducers(reducers)
