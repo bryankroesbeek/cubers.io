@@ -19,11 +19,11 @@ import { Versus } from './Components/Versus/Versus'
 import { VersusSelect } from './Components/Versus/VersusSelect'
 
 import { connect, DispatchProp } from 'react-redux'
-import { RouterState, RouterAction } from './utils/store/types/routerTypes'
-import { getRouterInfo } from './utils/store/actions/routerActions'
+import { BaseState, BaseAction } from './utils/store/types/baseTypes'
+import { getBaseInfo } from './utils/store/actions/baseActions'
 import { Store } from './utils/store/types/generalTypes'
 
-type RouterProps = DispatchProp<RouterAction> & RouterState
+type RouterProps = DispatchProp<BaseAction> & BaseState
 
 class MainRouterComponent extends React.Component<RouterProps, {}> {
     constructor(props: RouterProps) {
@@ -31,7 +31,7 @@ class MainRouterComponent extends React.Component<RouterProps, {}> {
     }
 
     async componentDidMount() {
-        this.props.dispatch(getRouterInfo(this.props.dispatch))
+        this.props.dispatch(getBaseInfo(this.props.dispatch))
     }
 
     render() {
@@ -79,8 +79,8 @@ class MainRouterComponent extends React.Component<RouterProps, {}> {
     }
 }
 
-let mapStateToProps = (store: Store): RouterState => {
-    return store.routerInfo
+let mapStateToProps = (store: Store): BaseState => {
+    return store.baseInfo
 }
 
 export let MainRouter = connect(mapStateToProps)(MainRouterComponent)

@@ -111,7 +111,7 @@ let mapStateToProps = (state: Store, ownProps: RemoteProps & { match: match<{ ev
     return {
         ...state.records,
         event: ownProps.match.params.eventType,
-        user: state.routerInfo.user as User,
+        user: state.baseInfo.user as User,
         key: `records-${ownProps.match.params.eventType}`,
     }
 }

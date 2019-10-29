@@ -1,19 +1,19 @@
 import { Reducer, Action } from 'redux'
 
-import { RouterAction, RouterState } from '../types/routerTypes'
+import { BaseAction, BaseState } from '../types/baseTypes'
 
-const initialState: RouterState = {
+const initialState: BaseState = {
     user: "loading",
     settings: "loading"
 }
 
-export const routerReducer: Reducer<RouterState, RouterAction> = (state = initialState, action): RouterState => {
+export const baseReducer: Reducer<BaseState, BaseAction> = (state = initialState, action): BaseState => {
     if (action.type === "FETCH_USER_INFO") {
         return { ...state, user: action.user }
     }
-    if (action.type === "FETCH_USER_SETTINGS") {
+    if (action.type === "GET_USER_SETTINGS") {
         return { ...state, settings: action.settings }
     }
-
+    
     return state
 }

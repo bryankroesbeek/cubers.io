@@ -204,7 +204,7 @@ let mapStateToProps:
         return {
             ...store.profile,
             username: ownProps.match.params.username,
-            currentUser: store.routerInfo.user as User
+            currentUser: store.baseInfo.user as User
         }
     }
 
