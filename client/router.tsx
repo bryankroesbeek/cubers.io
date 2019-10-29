@@ -22,8 +22,9 @@ import { connect, DispatchProp } from 'react-redux'
 import { BaseState, BaseAction } from './utils/store/types/baseTypes'
 import { getBaseInfo } from './utils/store/actions/baseActions'
 import { Store } from './utils/store/types/generalTypes'
+import { SettingsAction } from './utils/store/types/settingsTypes'
 
-type RouterProps = DispatchProp<BaseAction> & BaseState
+type RouterProps = DispatchProp<BaseAction | SettingsAction> & BaseState
 
 class MainRouterComponent extends React.Component<RouterProps, {}> {
     constructor(props: RouterProps) {
@@ -66,12 +67,7 @@ class MainRouterComponent extends React.Component<RouterProps, {}> {
 
                         <Route path="/(vs|versus)/:user1/:user2" component={Versus} />
 
-                        <Route path="/settings" component={() =>
-                            <UserSettings
-                                settings={settings}
-                                updateSettings={settings => this.setState({ settings: settings })}
-                            />
-                        } />
+                        <Route path="/settings" component={UserSettings} />
                     </div>
                 </Route>
             </Switch>

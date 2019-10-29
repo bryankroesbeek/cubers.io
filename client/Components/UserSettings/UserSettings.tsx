@@ -2,31 +2,24 @@ import * as React from 'react'
 import { SketchPicker } from 'react-color'
 import { cloneDeep } from 'lodash'
 
-import * as Api from '../../utils/api'
 import * as Types from '../../utils/types'
 import * as Helpers from '../../utils/helpers/settingsHelper'
-import { SettingsToggle } from './SettingsToggle';
+import { SettingsToggle } from './SettingsToggle'
+import { UserSettingsState, SettingsAction } from '../../utils/store/types/settingsTypes'
+import { DispatchProp, MapStateToProps, connect } from 'react-redux'
+import { updateSettingsState, updateExpandedPicker } from '../../utils/store/actions/settingsActions'
+import { CleanUserSettings } from '../../utils/types'
+import { Store } from '../../utils/store/types/generalTypes'
+import { BaseAction } from '../../utils/store/types/baseTypes'
+import { submitNewSettings } from '../../utils/store/actions/baseActions'
 
-type UserSettingsProps = {
-    settings: Types.UserSettings
-    updateSettings: (settings: Types.UserSettings) => void
-}
+type UserSettingsProps = UserSettingsState & DispatchProp<SettingsAction | BaseAction>
 
-type UserSettingsState = {
-    settings: Types.CleanUserSettings
-    expandedOption: string
-}
-
-export class UserSettings extends React.Component<UserSettingsProps, UserSettingsState>{
+class UserSettingsComponent extends React.Component<UserSettingsProps>{
     colorPickerRef: React.RefObject<HTMLSpanElement>
 
     constructor(props: UserSettingsProps) {
         super(props)
-
-        this.state = {
-            settings: Helpers.cleanSettings(props.settings),
-            expandedOption: null
-        }
 
         this.colorPickerRef = React.createRef()
     }
@@ -34,7 +27,7 @@ export class UserSettings extends React.Component<UserSettingsProps, UserSetting
     handleClick = (e: MouseEvent) => {
         if (!this.colorPickerRef.current) return
         if (!this.colorPickerRef.current.contains(e.target as Element))
-            this.setState({ expandedOption: null })
+            this.props.dispatch(updateExpandedPicker(null))
     }
 
     componentDidMount() {
@@ -43,28 +36,27 @@ export class UserSettings extends React.Component<UserSettingsProps, UserSetting
 
     componentWillUnmount() {
         window.removeEventListener('mousedown', this.handleClick)
+        this.props.dispatch(updateSettingsState(null))
     }
 
-    submitSettings() {
-        let settings = Helpers.minifySettings(this.state.settings)
-        Api.updateSettings(settings)
-            .then(s => this.props.updateSettings(s))
+    submitSettings(settings: CleanUserSettings) {
+        this.props.dispatch(submitNewSettings(this.props.dispatch, settings))
     }
 
     renderGeneralSettings() {
-        let generalSettings = this.state.settings.generalSettings
+        let generalSettings = this.props.settings.generalSettings
 
         return <div className="settings-block">
             <label className="block-title">General Settings</label>
-            {Object.keys(this.state.settings.generalSettings).map(s => {
-                let setting = this.state.settings.generalSettings[s]
+            {Object.keys(this.props.settings.generalSettings).map(s => {
+                let setting = this.props.settings.generalSettings[s]
                 return <div className="settings-block-field">
                     <span className="field-title">{setting.title}</span>
                     <span className="guide"></span>
                     <SettingsToggle toggled={setting.value} setSwitch={(value) => {
-                        let newState = cloneDeep(this.state)
-                        newState.settings.generalSettings[s].value = value
-                        this.setState(newState)
+                        let settings = cloneDeep(this.props.settings)
+                        settings.generalSettings[s].value = value
+                        this.props.dispatch(updateSettingsState(settings))
                     }} />
                 </div>
             })}
@@ -72,25 +64,25 @@ export class UserSettings extends React.Component<UserSettingsProps, UserSetting
     }
 
     renderRedditSettings() {
-        let settings = this.state.settings.redditSettings
+        let settings = this.props.settings.redditSettings
         return <div className="settings-block">
             <label className="block-title">Reddit Settings</label>
             <div className="settings-block-field">
                 <span className="field-title">{settings.reddit_comp_notify.title}</span>
                 <span className="guide"></span>
                 <SettingsToggle toggled={settings.reddit_comp_notify.value} setSwitch={(value) => {
-                    let newState = cloneDeep(this.state)
-                    newState.settings.redditSettings.reddit_comp_notify.value = value
-                    this.setState(newState)
+                    let settings = cloneDeep(this.props.settings)
+                    settings.redditSettings.reddit_comp_notify.value = value
+                    this.props.dispatch(updateSettingsState(settings))
                 }} />
             </div>
             <div className="settings-block-field">
                 <span className="field-title">{settings.reddit_results_notify.title}</span>
                 <span className="guide"></span>
                 <SettingsToggle toggled={settings.reddit_results_notify.value} setSwitch={(value) => {
-                    let newState = cloneDeep(this.state)
-                    newState.settings.redditSettings.reddit_results_notify.value = value
-                    this.setState(newState)
+                    let settings = cloneDeep(this.props.settings)
+                    settings.redditSettings.reddit_results_notify.value = value
+                    this.props.dispatch(updateSettingsState(settings))
                 }} />
             </div>
         </div>
@@ -107,40 +99,40 @@ export class UserSettings extends React.Component<UserSettingsProps, UserSetting
                 <label className="field-title">Use Custom {puzzleType} Colors</label>
                 <span className="guide"></span>
                 <SettingsToggle toggled={useCustomColors} setSwitch={(value) => {
-                    let newState = cloneDeep(this.state)
-                    if (puzzleType === "Megaminx") newState.settings.megaminxSettings.use_custom_megaminx_colors = value
-                    if (puzzleType === "Pyraminx") newState.settings.pyraminxSettings.use_custom_pyraminx_colors = value
-                    if (puzzleType === "Cube") newState.settings.cubeSettings.use_custom_cube_colors = value
-                    this.setState(newState)
+                    let settings = cloneDeep(this.props.settings)
+                    if (puzzleType === "Megaminx") settings.megaminxSettings.use_custom_megaminx_colors = value
+                    if (puzzleType === "Pyraminx") settings.pyraminxSettings.use_custom_pyraminx_colors = value
+                    if (puzzleType === "Cube") settings.cubeSettings.use_custom_cube_colors = value
+                    this.props.dispatch(updateSettingsState(settings))
                 }} />
             </span>
             {puzzleSettings.map((setting, count) =>
                 <div key={setting.key} className="settings-block-field">
                     <span className="field-title">{setting.title}</span>
                     <span className="guide"></span>
-                    {this.state.expandedOption === setting.key ?
+                    {this.props.expandedOption === setting.key ?
                         <span className="color-setting-picker-align">
                             <span ref={this.colorPickerRef} className="color-setting-picker">
-                                <SketchPicker disableAlpha={true} color={setting.value} onChangeComplete={e => {
-                                    let newState = cloneDeep(this.state)
+                                <SketchPicker disableAlpha color={setting.value} onChangeComplete={e => {
+                                    let settings = cloneDeep(this.props.settings)
                                     let colors = cloneDeep(puzzleSettings)
                                     colors[count].value = e.hex
 
-                                    if (puzzleType === "Megaminx") newState.settings.megaminxSettings.values = colors
-                                    if (puzzleType === "Pyraminx") newState.settings.pyraminxSettings.values = colors
-                                    if (puzzleType === "Cube") newState.settings.cubeSettings.values = colors
+                                    if (puzzleType === "Megaminx") settings.megaminxSettings.values = colors
+                                    if (puzzleType === "Pyraminx") settings.pyraminxSettings.values = colors
+                                    if (puzzleType === "Cube") settings.cubeSettings.values = colors
 
-                                    this.setState(newState)
+                                    this.props.dispatch(updateSettingsState(settings))
                                 }} />
                             </span>
                         </span> : null
                     }
                     <button className="color-picker-toggle" disabled={!useCustomColors} onClick={e => {
                         e.preventDefault()
-                        if (this.state.expandedOption === setting.key) return this.setState({ expandedOption: null })
-                        this.setState({ expandedOption: setting.key })
+                        if (this.props.expandedOption === setting.key) return this.props.dispatch(updateExpandedPicker(null))
+                        this.props.dispatch(updateExpandedPicker(setting.key))
                     }}>
-                        <div className="color-preview-block" style={{ background: setting.value }}></div>
+                        <div className="color-preview-block" style={{ background: setting.value }} />
                     </button>
                 </div>
             )}
@@ -151,7 +143,7 @@ export class UserSettings extends React.Component<UserSettingsProps, UserSetting
         return <div className="settings-wrapper">
             <form className="settings-form" onSubmit={e => {
                 e.preventDefault()
-                this.submitSettings()
+                this.submitSettings(this.props.settings)
             }}>
                 {this.renderGeneralSettings()}
                 <hr />
@@ -159,23 +151,32 @@ export class UserSettings extends React.Component<UserSettingsProps, UserSetting
                 <hr />
                 {this.renderCubeColors(
                     "Cube",
-                    this.state.settings.cubeSettings.values,
-                    this.state.settings.cubeSettings.use_custom_cube_colors
+                    this.props.settings.cubeSettings.values,
+                    this.props.settings.cubeSettings.use_custom_cube_colors
                 )}
                 <hr />
                 {this.renderCubeColors(
                     "Pyraminx",
-                    this.state.settings.pyraminxSettings.values,
-                    this.state.settings.pyraminxSettings.use_custom_pyraminx_colors
+                    this.props.settings.pyraminxSettings.values,
+                    this.props.settings.pyraminxSettings.use_custom_pyraminx_colors
                 )}
                 <hr />
                 {this.renderCubeColors(
                     "Megaminx",
-                    this.state.settings.megaminxSettings.values,
-                    this.state.settings.megaminxSettings.use_custom_megaminx_colors
+                    this.props.settings.megaminxSettings.values,
+                    this.props.settings.megaminxSettings.use_custom_megaminx_colors
                 )}
                 <button className="settings-submit-button" type="submit">Save Changes</button>
             </form>
         </div>
     }
 }
+
+let mapStateToProps: MapStateToProps<UserSettingsState, {}, Store> = (store, _) => {
+    return {
+        ...store.settings,
+        settings: store.settings.settings || Helpers.cleanSettings(store.baseInfo.settings as Types.UserSettings)
+    }
+}
+
+export let UserSettings = connect(mapStateToProps)(UserSettingsComponent)
