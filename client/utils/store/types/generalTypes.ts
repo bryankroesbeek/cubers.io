@@ -6,6 +6,7 @@ import { LeaderboardsCollectionState, LeaderboardState } from './leaderboardType
 import { ProfileState } from './profileTypes'
 import { VersusState } from './versusTypes'
 import { UserSettingsState } from './settingsTypes'
+import { CompeteState } from './competeTypes'
 
 export type Store = {
     home: HomeState
@@ -17,4 +18,5 @@ export type Store = {
     profile: ProfileState
     versus: VersusState
     settings: UserSettingsState
+    compete: CompeteState
 }
