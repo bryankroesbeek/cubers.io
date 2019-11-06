@@ -47,9 +47,7 @@ class MainRouterComponent extends React.Component<RouterProps, {}> {
             <Switch>
                 <Route exact path="/" component={Home} />
 
-                <Route path="/compete/:eventType" component={({ match }: any) => {
-                    return <Compete eventType={Number(match.params.eventType)} settings={Helpers.minifyRawSettings(settings)} />
-                }} />
+                <Route path="/compete/:eventType" component={Compete} />
 
                 <Route>
                     <div className="white-container">

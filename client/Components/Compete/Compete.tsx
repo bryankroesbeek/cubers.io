@@ -1,72 +1,80 @@
 import * as React from 'react'
+import { DispatchProp, MapStateToProps, connect } from 'react-redux'
+import { match } from 'react-router'
 
 import * as Api from '../../utils/api'
 import * as Types from '../../utils/types'
-import { Timer } from './Timer';
-import { FitText } from '../Helper/FitText';
+import { CompeteAction, CompeteState } from '../../utils/store/types/competeTypes'
+import { fetchEvent, submitSolve, submitPenalty, deleteSolveAction } from '../../utils/store/actions/competeActions'
+import { Store } from '../../utils/store/types/generalTypes'
+import { minifyRawSettings } from '../../utils/helpers/settingsHelper'
+import { UserSettings } from '../../utils/types'
+
+import { Timer } from './Timer'
+import { FitText } from '../Helper/FitText'
 import { ScrambleViewer } from '../Helper/ScrambleViewer'
 
-type CompeteProps = {
+type RemoteProps = {
     eventType: number
     settings: Types.UserSettingsMinified
 }
 
-type CompeteState = {
-    event: Types.Event | "loading"
-}
+type CompeteProps = CompeteState
 
-export class Compete extends React.Component<CompeteProps, CompeteState>{
+type Props = CompeteProps & RemoteProps & DispatchProp<CompeteAction>
+
+export class CompeteComponent extends React.Component<Props>{
     scrambleRef: React.RefObject<HTMLDivElement>
 
-    constructor(props: CompeteProps) {
+    constructor(props: Props) {
         super(props)
-
-        this.state = {
-            event: "loading"
-        }
 
         this.scrambleRef = React.createRef()
     }
 
     componentDidMount() {
         Api.getEventInfo(this.props.eventType)
-            .then(event => this.setState({ event: event }))
+            .then(event => this.props.dispatch(fetchEvent(event)))
     }
 
     postTime(time: number, penalty: "none" | "+2" | "DNF", callback: () => void) {
-        let event = this.state.event as Types.Event
-        Api.postSolve({
-            comp_event_id: event.event.id,
-            elapsed_centiseconds: parseInt(`${time / 10}`),
-            is_inspection_dnf: penalty === "DNF",
-            is_dnf: penalty === "DNF",
-            is_plus_two: penalty === "+2",
-            scramble_id: event.currentScramble.id
-        }).then(newEvent => this.setState({ event: newEvent }, () => callback()))
+        let event = this.props.event as Types.Event
+        submitSolve(this.props.dispatch, event, time, penalty)
+        callback()
+        // Api.postSolve({
+        //     comp_event_id: event.event.id,
+        //     elapsed_centiseconds: parseInt(`${time / 10}`),
+        //     is_inspection_dnf: penalty === "DNF",
+        //     is_dnf: penalty === "DNF",
+        //     is_plus_two: penalty === "+2",
+        //     scramble_id: event.currentScramble.id
+        // }).then(newEvent => this.setState({ event: newEvent }, () => callback()))
     }
 
     postPenalty(id: number, penalty: "none" | "+2" | "DNF") {
-        let event = this.state.event as Types.Event
-        if (penalty === "+2") {
-            Api.putPlusTwo(id, event.event.id)
-                .then(newEvent => this.setState({ event: newEvent }))
-            return
-        }
-        if (penalty === "DNF") {
-            Api.putDnf(id, event.event.id)
-                .then(newEvent => this.setState({ event: newEvent }))
-            return
-        }
+        let event = this.props.event as Types.Event
+        submitPenalty(this.props.dispatch, event, id, penalty)
+        // if (penalty === "+2") {
+        //     Api.putPlusTwo(id, event.event.id)
+        //         .then(newEvent => this.setState({ event: newEvent }))
+        //     return
+        // }
+        // if (penalty === "DNF") {
+        //     Api.putDnf(id, event.event.id)
+        //         .then(newEvent => this.setState({ event: newEvent }))
+        //     return
+        // }
     }
 
     deleteTime(id: number) {
-        let event = this.state.event as Types.Event
-        Api.deleteSolve(id, event.event.id)
-            .then(newEvent => this.setState({ event: newEvent }))
+        let event = this.props.event as Types.Event
+        deleteSolveAction(this.props.dispatch, event, id)
+        // Api.deleteSolve(id, event.event.id)
+        //     .then(newEvent => this.setState({ event: newEvent }))
     }
 
     updateComment(text: string) {
-        let event = this.state.event as Types.Event
+        let event = this.props.event as Types.Event
         Api.submitComment(event.event.id, text)
             .then(newEvent => this.setState({ event: newEvent }))
     }
@@ -111,11 +119,23 @@ export class Compete extends React.Component<CompeteProps, CompeteState>{
     }
 
     render() {
-        if (this.state.event === "loading") return null
+        if (this.props.event === "loading") return null
 
         return <div className="compete-container">
-            {this.renderSidebar(this.state.event)}
-            {this.renderTimer(this.state.event)}
+            {this.renderSidebar(this.props.event)}
+            {this.renderTimer(this.props.event)}
         </div>
     }
 }
+
+let mapStateToProps:
+    MapStateToProps<CompeteProps & RemoteProps, RemoteProps & { match: match<{ eventType: string }> }, Store> =
+    (store, ownProps) => {
+        return {
+            ...store.compete,
+            settings: minifyRawSettings(store.baseInfo.settings as UserSettings),
+            eventType: Number(ownProps.match.params.eventType)
+        }
+    }
+
+export let Compete = connect(mapStateToProps)(CompeteComponent)
