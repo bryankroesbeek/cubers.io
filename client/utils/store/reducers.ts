@@ -9,6 +9,7 @@ import { profileReducer } from './reducers/profileReducer'
 import { versusReducer } from './reducers/versusReducer'
 import { settingsReducer } from './reducers/settingsReducer'
 import { competeReducer } from './reducers/competeReducer'
+import { promptReducer } from './reducers/promptReducer'
 
 const reducers: ReducersMapObject = {
     home: homeReducer,
@@ -20,7 +21,8 @@ const reducers: ReducersMapObject = {
     profile: profileReducer,
     versus: versusReducer,
     settings: settingsReducer,
-    compete: competeReducer
+    compete: competeReducer,
+    prompt: promptReducer
 }
 
 export let combineReducer = combineReducers(reducers)
