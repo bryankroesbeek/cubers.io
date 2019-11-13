@@ -112,7 +112,7 @@ export class PromptComponent extends React.Component<PromptProps & DispatchProp<
         let { buttons, body } = this.getBody()
 
         return <div className={`prompt-background ${visibility}`}>
-            <div className="timer-prompt">
+            <div className="prompt">
                 <div className="prompt-message-bar">
                     <span className="prompt-message">{this.props.title}</span>
                     <button className="prompt-blank" onClick={this.closeCurrentPrompt}>×</button>
