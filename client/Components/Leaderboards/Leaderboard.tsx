@@ -7,13 +7,15 @@ import { LeaderboardTable } from './LeaderboardTable'
 import { LeaderboardState, LeaderboardAction } from '../../utils/store/types/leaderboardTypes'
 import { fetchLeaderboardById, setCurrentActiveEvent } from '../../utils/store/actions/leaderboardActions'
 import { Store } from '../../utils/store/types/generalTypes'
+import { showListViewPrompt } from '../../utils/store/actions/promptActions'
+import { PromptAction } from '../../utils/store/types/promptTypes'
 
 type RemoteProps = {
     competitionId: number
     user: User
 }
 
-type LeaderboardsProps = DispatchProp<LeaderboardAction> & LeaderboardState & RemoteProps
+type LeaderboardsProps = DispatchProp<LeaderboardAction | PromptAction> & LeaderboardState & RemoteProps
 
 export class LeaderboardComponent extends React.Component<LeaderboardsProps>{
     componentDidMount() {
@@ -43,12 +45,17 @@ export class LeaderboardComponent extends React.Component<LeaderboardsProps>{
     render() {
         if (this.props.leaderboard === "loading") return null
         if (this.props.currentActiveEvent === "none") return null
+        let { leaderboard, currentActiveEvent, dispatch } = this.props
 
         return <div className="leaderboards">
             {this.renderEvents()}
             <LeaderboardTable
-                currentEvent={this.props.currentActiveEvent}
-                leaderboard={this.props.leaderboard}
+                currentEvent={currentActiveEvent}
+                leaderboard={leaderboard}
+                showScrambles={() => { dispatch(showListViewPrompt(
+                    `Scrambles for ${currentActiveEvent.name}`,
+                    leaderboard.scrambles
+                )) }}
             />
         </div>
     }

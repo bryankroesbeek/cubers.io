@@ -13,6 +13,8 @@ import { UserSettings } from '../../utils/types'
 import { Timer } from './Timer'
 import { FitText } from '../Helper/FitText'
 import { ScrambleViewer } from '../Helper/ScrambleViewer'
+import { PromptAction } from '../../utils/store/types/promptTypes'
+import { showCommentInputPrompt, showConfirmationPrompt } from '../../utils/store/actions/promptActions'
 
 type RemoteProps = {
     eventType: number
@@ -21,7 +23,7 @@ type RemoteProps = {
 
 type CompeteProps = CompeteState
 
-type Props = CompeteProps & RemoteProps & DispatchProp<CompeteAction>
+type Props = CompeteProps & RemoteProps & DispatchProp<CompeteAction | PromptAction>
 
 export class CompeteComponent extends React.Component<Props>{
     scrambleRef: React.RefObject<HTMLDivElement>
@@ -68,15 +70,22 @@ export class CompeteComponent extends React.Component<Props>{
 
     deleteTime(id: number) {
         let event = this.props.event as Types.Event
-        deleteSolveAction(this.props.dispatch, event, id)
-        // Api.deleteSolve(id, event.event.id)
-        //     .then(newEvent => this.setState({ event: newEvent }))
+        this.props.dispatch(showConfirmationPrompt(
+            `Are you sure you want to delete your last solve? (${event.previousSolve.time})`,
+            () => deleteSolveAction(this.props.dispatch, event, id)
+        ))
     }
 
     updateComment(text: string) {
         let event = this.props.event as Types.Event
-        Api.submitComment(event.event.id, text)
-            .then(newEvent => this.setState({ event: newEvent }))
+        this.props.dispatch(showCommentInputPrompt(
+            `Comment for ${event.event.name}`,
+            text,
+            (comment) => {
+                Api.submitComment(event.event.id, comment)
+                    .then(newEvent => this.props.dispatch(fetchEvent(newEvent)))
+            }
+        ))
     }
 
     renderSidebar(event: Types.Event) {

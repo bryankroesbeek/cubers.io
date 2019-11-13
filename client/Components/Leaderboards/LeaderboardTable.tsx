@@ -7,6 +7,7 @@ import { Leaderboard, LeaderboardItem, LeaderboardEvent } from '../../utils/type
 type LeaderboardTableProps = {
     leaderboard: Leaderboard
     currentEvent: LeaderboardEvent
+    showScrambles: () => void
 }
 
 export class LeaderboardTable extends React.Component<LeaderboardTableProps> {
@@ -36,7 +37,7 @@ export class LeaderboardTable extends React.Component<LeaderboardTableProps> {
         return <div className="leaderboards-event">
             <div className="leaderboards-event-header">
                 <Link to={`/event/${this.props.currentEvent.name}`}>{this.props.currentEvent.name}</Link>
-                <button className="leaderboards-event-header-scrambles-button" onClick={() => {/* TODO: implement prompt */ }}>
+                <button className="leaderboards-event-header-scrambles-button" onClick={() => this.props.showScrambles()}>
                     <i className="fas fa-dice-five scrambles" />
                 </button>
             </div>

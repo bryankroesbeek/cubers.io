@@ -4,6 +4,7 @@ import * as Api from '../../utils/api'
 import * as Types from '../../utils/types'
 import * as Helpers from '../../utils/helpers'
 import { ManualEntry } from '../Helper/ManualEntry';
+import { PreviousSolve } from '../../utils/types';
 
 type TimerProps = {
     settings: Types.UserSettingsMinified
@@ -19,8 +20,6 @@ type TimerProps = {
 
 type TimerState = {
     timer: TimerInfo
-    prompt: "delete" | "comment" | "none"
-    promptVisibility: "invisible" | "visible" | "fade-in"
     comment: string
 }
 
@@ -56,8 +55,6 @@ export class Timer extends React.Component<TimerProps, TimerState>{
 
         this.state = {
             timer: initialTimerInfo,
-            prompt: "none",
-            promptVisibility: "invisible",
             comment: props.comment
         }
     }
@@ -75,7 +72,6 @@ export class Timer extends React.Component<TimerProps, TimerState>{
     }
 
     onKeyDown = (event: KeyboardEvent) => {
-        if (this.state.prompt !== "none") return
         if (this.props.currentScrambleId === "none") return
         if (this.state.timer.state === "timing") {
             if (this.state.timer.start === "none") throw "impossible"
@@ -130,11 +126,11 @@ export class Timer extends React.Component<TimerProps, TimerState>{
         if (this.state.timer.state === "starting-inspection") {
             this.setState({ timer: { ...this.state.timer, state: "inspecting", inspectionStart: Date.now() } }, () => {
                 let interval = setInterval(() => {
-                    let inspec = this.state.timer.inspectionStart as number
-                    let inst = parseInt(`${(Date.now() - inspec) / 1000}`)
+                    let inspectionStart = this.state.timer.inspectionStart as number
+                    let inspectionDuration = parseInt(`${(Date.now() - inspectionStart) / 1000}`)
 
                     if (this.state.timer.state === "inspecting" || this.state.timer.state === "starting" || this.state.timer.state === "ready") {
-                        this.setState({ timer: { ...this.state.timer, inspectionTime: 15 - inst } }, () => {
+                        this.setState({ timer: { ...this.state.timer, inspectionTime: 15 - inspectionDuration } }, () => {
                             if (this.state.timer.inspectionTime <= 0)
                                 this.setState({ timer: { ...this.state.timer, inspectionPenalty: "+2" } })
                             if (this.state.timer.inspectionTime <= -2)
@@ -226,71 +222,19 @@ export class Timer extends React.Component<TimerProps, TimerState>{
         </span>
     }
 
-    renderPrompt() {
-        if (this.props.previousSolve === "none") return null
-        if (this.state.prompt === "none") return <div className={`prompt-background hide invisible`}></div>
-
-        let previousSolve = this.props.previousSolve as Types.PreviousSolve
-        let visibility = this.state.promptVisibility === "invisible" ? "hide" : ""
-
-        let title = this.state.prompt === "comment" ? `Comment for ${this.props.eventName}` :
-            `Are you sure you want to delete your last solve? (${this.props.previousSolve.time})`
-
-        let buttonText = this.state.prompt === "comment" ? "Update Comment" : "Yes"
-        let submitButtonAction = this.state.prompt === "comment" ? () => this.props.updateComment(this.state.comment) :
-            () => this.props.deleteTime(previousSolve.id)
-
-        let textbox = this.state.prompt === "comment" ? <div className="prompt-textbox">
-            <textarea
-                className="prompt-textbox-input"
-                onChange={e => this.setState({ comment: e.target.value })}
-                value={this.state.comment}
-                autoFocus={true}
-            />
-        </div> : null
-
-        let setInvisible = (callback: () => void) => this.setState({ promptVisibility: "invisible" }, () => {
-            setTimeout(() => { callback() }, 500)
-        })
-
-        return <div className={`prompt-background ${visibility}`}>
-            <div className="timer-prompt">
-                <div className="prompt-message-bar">
-                    <span className="prompt-message">{title}</span>
-                    <button className="prompt-blank" onClick={() => setInvisible(() => {
-                        this.setState({ prompt: "none" })
-                    })}>×</button>
-                </div>
-                {textbox}
-                <div className="prompt-buttons">
-                    <button className="prompt-button cancel" onClick={() => setInvisible(() => {
-                        this.setState({ prompt: "none" })
-                    })}>Cancel</button>
-                    <button className="prompt-button" onClick={() => {
-                        setInvisible(() => {
-                            this.setState({ prompt: "none" }, () => {
-                                submitButtonAction()
-                            })
-                        })
-                    }
-                    }>{buttonText}</button>
-                </div>
-            </div>
-        </div>
-    }
-
     render() {
         let disabled = this.props.previousSolve === "none" || this.state.timer.state !== "idle"
         let penaltyDisabled = this.props.previousSolve === "none" || this.state.timer.state !== "idle" || this.props.previousSolve.is_inspection_dnf
         let buttonStyle = disabled ? "disabled" : "enabled"
         let penaltyButtonStyle = penaltyDisabled ? "disabled" : "enabled"
 
+        let { id } = this.props.previousSolve as PreviousSolve
+
         return <div className="timer-wrapper">
-            {this.renderPrompt()}
             {this.renderTime()}
             <div className="timer-buttons">
                 <button className={`timer-modifier-button ${buttonStyle}`} disabled={disabled} onClick={e => {
-                    this.setState({ prompt: "delete", promptVisibility: "visible" })
+                    this.props.deleteTime(id)
                 }}>
                     <i className="fas fa-undo"></i>
                 </button>
@@ -307,7 +251,7 @@ export class Timer extends React.Component<TimerProps, TimerState>{
                     <span>DNF</span>
                 </button>
                 <button className={`timer-modifier-button ${buttonStyle}`} disabled={disabled} onClick={e => {
-                    this.setState({ prompt: "comment", promptVisibility: "visible" })
+                    this.props.updateComment(this.props.comment)
                 }}>
                     <i className="far fa-comment"></i>
                 </button>
