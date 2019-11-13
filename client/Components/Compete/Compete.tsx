@@ -41,8 +41,7 @@ export class CompeteComponent extends React.Component<Props>{
 
     postTime(time: number, penalty: "none" | "+2" | "DNF", callback: () => void) {
         let event = this.props.event as Types.Event
-        submitSolve(this.props.dispatch, event, time, penalty)
-        callback()
+        submitSolve(this.props.dispatch, event, time, penalty, callback)
         // Api.postSolve({
         //     comp_event_id: event.event.id,
         //     elapsed_centiseconds: parseInt(`${time / 10}`),

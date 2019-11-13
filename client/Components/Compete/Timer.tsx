@@ -80,7 +80,7 @@ export class Timer extends React.Component<TimerProps, TimerState>{
             let delta = time - this.state.timer.start
             this.setState({ timer: { ...this.state.timer, state: "finished", end: time, delta: delta } }, () => {
                 this.props.postTime(delta, this.state.timer.inspectionPenalty, () => {
-                    this.setState({ timer: initialTimerInfo })
+                    this.setState({ timer: { ...initialTimerInfo, state: this.state.timer.state } })
                 })
             })
         }
