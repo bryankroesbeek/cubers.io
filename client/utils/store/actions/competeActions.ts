@@ -9,10 +9,10 @@ export function fetchEvent(event: Event): CompeteAction {
     return { type: "FETCH_EVENT", event: event }
 }
 
-export function submitSolve(dispatch: Dispatch<CompeteAction>, event: Event, timeInMilliseconds: number, penalty: "none" | "+2" | "DNF", callback: () => void) {
+export function submitSolve(dispatch: Dispatch<CompeteAction>, event: Event, timeInCentiseconds: number, penalty: "none" | "+2" | "DNF", callback: () => void) {
     postSolve({
         comp_event_id: event.event.id,
-        elapsed_centiseconds: parseInt(`${timeInMilliseconds / 10}`),
+        elapsed_centiseconds: parseInt(`${timeInCentiseconds}`),
         is_inspection_dnf: penalty === "DNF",
         is_dnf: penalty === "DNF",
         is_plus_two: penalty === "+2",

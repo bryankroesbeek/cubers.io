@@ -79,7 +79,7 @@ export class Timer extends React.Component<TimerProps, TimerState>{
             let time = Date.now()
             let delta = time - this.state.timer.start
             this.setState({ timer: { ...this.state.timer, state: "finished", end: time, delta: delta } }, () => {
-                this.props.postTime(delta, this.state.timer.inspectionPenalty, () => {
+                this.props.postTime(delta / 10, this.state.timer.inspectionPenalty, () => {
                     this.setState({ timer: { ...initialTimerInfo, state: this.state.timer.state } })
                 })
             })
@@ -215,7 +215,7 @@ export class Timer extends React.Component<TimerProps, TimerState>{
             return <ManualEntry disabled={timeEntryDisabled} multiblind={mblind} submit={(value, blindInfo) => this.props.postTime(value, "none", () => { })} />
 
         if (this.props.settings.manual_time_entry_by_default)
-            return <ManualEntry disabled={timeEntryDisabled} submit={(value) => this.props.postTime(value, "none", () => { })} />
+            return <ManualEntry disabled={timeEntryDisabled} submit={(value) => this.props.postTime(value / 10, "none", () => { })} />
 
         return <span className={`timer-time ${this.getTimerState(this.state.timer.state)} ${this.getInspectionState()}`}>
             {this.getTime()}

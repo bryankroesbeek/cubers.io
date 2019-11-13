@@ -11,6 +11,10 @@ export function convertToMilliseconds(value: string) {
     return milliSeconds
 }
 
+export function convertToSeconds(value: string) {    
+    return Math.trunc(convertToMilliseconds(value) / 1000)
+}
+
 export function formatTimeString(value: number) {
     let cleanValue = `${value}`
 
@@ -21,4 +25,14 @@ export function formatTimeString(value: number) {
     newValue = newValue.slice(0, -2) + '.' + newValue.slice(-2)
 
     return newValue
+}
+
+export function getEncodedMbldNumber(attempted: number, solved: number, seconds: number): number | "invalid" {
+    if (attempted < 2) return "invalid"
+    if (solved > attempted) return "invalid"
+
+    let points = 99 - (solved - (attempted - solved))
+    let time = `0000${seconds}`.slice(-4)
+    let unsolved = `00${attempted - solved}`.slice(-2)
+    return Number(`${points}${time}${unsolved}`)
 }

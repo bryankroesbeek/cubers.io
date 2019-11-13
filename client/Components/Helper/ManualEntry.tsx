@@ -42,6 +42,17 @@ export class ManualEntry extends React.Component<ManualEntryProps, ManualEntrySt
         e.preventDefault()
         if (this.state.value === "") return
 
+        if (this.props.multiblind) {
+            let value = Helper.getEncodedMbldNumber(
+                this.state.blindAttempted,
+                this.state.blindSolved,
+                Helper.convertToSeconds(this.state.value)
+            )
+            if (value === "invalid") return
+            this.props.submit(value)
+            return this.setState({ value: "" })
+        }
+
         this.props.submit(Helper.convertToMilliseconds(this.state.value))
         this.setState({ value: "" })
     }
