@@ -17,6 +17,7 @@ import { LeaderboardsCollection } from './Components/Leaderboards/LeaderboardCol
 import { Profile } from './Components/Profile/Profile'
 import { Versus } from './Components/Versus/Versus'
 import { VersusSelect } from './Components/Versus/VersusSelect'
+import { Prompt } from './Components/Prompt/Prompt'
 
 import { connect, DispatchProp } from 'react-redux'
 import { BaseState, BaseAction } from './utils/store/types/baseTypes'
@@ -69,6 +70,7 @@ class MainRouterComponent extends React.Component<RouterProps, {}> {
                     </div>
                 </Route>
             </Switch>
+            <Route component={Prompt} />
         </BrowserRouter>
     }
 }
