@@ -7,7 +7,8 @@ export function postSolve(time: {
     is_plus_two: boolean
     scramble_id: number
     comp_event_id: number
-    elapsed_centiseconds: number
+    elapsed_centiseconds: number,
+    fmc_comment?: string
 }): Promise<Event> {
     return postResources('/api/submit-solve', time)
 }
