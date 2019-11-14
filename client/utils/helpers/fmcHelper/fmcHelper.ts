@@ -40,7 +40,7 @@ export function doesSolutionSolveScramble(solution: string, scramble: string) {
 //       R2 F2 L' D'  \\ does a thing
 //       R2 F2 L' D'  # does a thing
 //       R2 F2 L' D'  - does a thing
-export function stripComments(line: string) {
+function stripComments(line: string) {
     var commentStartIndex = -1;
 
     commentStartIndex = line.indexOf("/");
@@ -67,7 +67,7 @@ export function stripComments(line: string) {
 };
 
 // Ensures the solution is written with the casing that the scramble preview generator expects
-export function ensureCorrectCasing(line: string) {
+function ensureCorrectCasing(line: string) {
     // face moves and slices should be capitals
     line = line.replace(/r/g, "R");
     line = line.replace(/f/g, "F");
