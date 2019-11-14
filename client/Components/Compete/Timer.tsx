@@ -5,22 +5,27 @@ import * as Types from '../../utils/types'
 import * as Helpers from '../../utils/helpers'
 import { ManualEntry } from '../Helper/ManualEntry';
 import { PreviousSolve } from '../../utils/types';
+import * as fmcHelper from '../../utils/helpers/fmcHelper/fmcHelper'
+import { PromptComponent } from '../Prompt/Prompt';
+import { showFmcInputPrompt, showInfoPrompt, showListViewPrompt } from '../../utils/store/actions/promptActions';
 
 type TimerProps = {
     settings: Types.UserSettingsMinified
     previousSolve: Types.PreviousSolve | "none"
-    currentScrambleId: { id: number } | "none"
+    currentScramble: { id: number, scramble: string } | "none"
     eventName: string
     comment: string
     postTime: (time: number, penalty: Penalty, callback: () => void) => void
+    postFmc: (moves: number, solution: string, callback: () => void) => void
     postPenalty: (id: number, penalty: Penalty) => void
-    deleteTime: (id: number) => void
+    deleteTime: (id: number, callback: () => void) => void
     updateComment: (text: string) => void
 }
 
 type TimerState = {
     timer: TimerInfo
     comment: string
+    fmcSolution: string
 }
 
 type TimeState = "idle" | "starting-inspection" | "inspecting" | "starting" | "ready" | "timing" | "finished"
@@ -55,7 +60,8 @@ export class Timer extends React.Component<TimerProps, TimerState>{
 
         this.state = {
             timer: initialTimerInfo,
-            comment: props.comment
+            comment: props.comment,
+            fmcSolution: ""
         }
     }
 
@@ -72,7 +78,7 @@ export class Timer extends React.Component<TimerProps, TimerState>{
     }
 
     onKeyDown = (event: KeyboardEvent) => {
-        if (this.props.currentScrambleId === "none") return
+        if (this.props.currentScramble === "none") return
         if (this.state.timer.state === "timing") {
             if (this.state.timer.start === "none") throw "impossible"
 
@@ -121,7 +127,7 @@ export class Timer extends React.Component<TimerProps, TimerState>{
             this.setState({ timer: { ...this.state.timer, state: "idle" } })
         }
 
-        if (this.props.currentScrambleId === "none") return
+        if (this.props.currentScramble === "none") return
 
         if (this.state.timer.state === "starting-inspection") {
             this.setState({ timer: { ...this.state.timer, state: "inspecting", inspectionStart: Date.now() } }, () => {
@@ -208,54 +214,136 @@ export class Timer extends React.Component<TimerProps, TimerState>{
     }
 
     renderTime() {
-        let timeEntryDisabled = this.props.currentScrambleId === "none"
+        let timeEntryDisabled = this.props.currentScramble === "none"
         let mblind = this.props.eventName.toLowerCase().indexOf("bld") !== -1
+        let fmc = this.props.eventName.toLowerCase().indexOf("fmc") !== -1
 
         if (mblind)
-            return <ManualEntry disabled={timeEntryDisabled} multiblind={mblind} submit={(value, blindInfo) => this.props.postTime(value, "none", () => { })} />
+            return <ManualEntry
+                type="mbld"
+                disabled={timeEntryDisabled}
+                submit={(value, callback) => this.props.postTime(value, "none", callback)}
+            />
+
+        if (fmc) {
+            let cleanInput = fmcHelper.sanitizeSolutionAndGetRawMoves(this.state.fmcSolution)
+            let moveCount = fmcHelper.getOBTMMoveCount(cleanInput)
+            return <ManualEntry
+                type="fmc"
+                disabled={timeEntryDisabled}
+                submit={(moveCount, callback) => this.props.postFmc(moveCount, this.state.fmcSolution, () => {
+                    this.setState({ fmcSolution: "" }, callback)
+                })}
+                moveCount={moveCount ? moveCount : "none"}
+            />
+        }
 
         if (this.props.settings.manual_time_entry_by_default)
-            return <ManualEntry disabled={timeEntryDisabled} submit={(value) => this.props.postTime(value / 10, "none", () => { })} />
+            return <ManualEntry
+                type="normal"
+                disabled={timeEntryDisabled}
+                submit={(value, callback) => this.props.postTime(value / 10, "none", callback)}
+            />
 
         return <span className={`timer-time ${this.getTimerState(this.state.timer.state)} ${this.getInspectionState()}`}>
             {this.getTime()}
         </span>
     }
 
-    render() {
-        let disabled = this.props.previousSolve === "none" || this.state.timer.state !== "idle"
-        let penaltyDisabled = this.props.previousSolve === "none" || this.state.timer.state !== "idle" || this.props.previousSolve.is_inspection_dnf
-        let buttonStyle = disabled ? "disabled" : "enabled"
-        let penaltyButtonStyle = penaltyDisabled ? "disabled" : "enabled"
+    renderFmcButtons(id: number, disabled: boolean, buttonStyle: "disabled" | "enabled") {
+        let timeEntryDisabled = this.props.currentScramble === "none"
+        return <div className="timer-buttons">
+            <button className={`timer-modifier-button ${buttonStyle}`} disabled={disabled} onClick={e => {
+                this.props.deleteTime(id, () => {
+                    this.setState({ fmcSolution: "" })
+                })
+            }}>
+                <i className="fas fa-undo"></i>
+            </button>
+            <button className={`timer-modifier-button ${buttonStyle}`} disabled={disabled || timeEntryDisabled} onClick={e => {
+                if (this.props.currentScramble === "none") return
+                let { currentScramble } = this.props
+                PromptComponent.modifyPrompt(showFmcInputPrompt(
+                    `Enter your solution`,
+                    this.state.fmcSolution,
+                    (newSolution) => {
+                        let cleanSolution = fmcHelper.sanitizeSolutionAndGetRawMoves(newSolution)
+                        if (!fmcHelper.doesSolutionSolveScramble(cleanSolution.join(" "), currentScramble.scramble)) {
+                            return PromptComponent.swapPrompt(showListViewPrompt(
+                                `Your solution doesn't appear to solve the provided scramble!
+                                Please double-check your solution for correctness and typos.
+                                
+                                Here is how your solution was interpreted:`,
+                                [cleanSolution.join(" ")]
+                            ))
+                        }
 
+                        this.setState({ fmcSolution: newSolution })
+                    }
+                ))
+            }}>Solution</button>
+        </div>
+    }
+
+    renderMbldButtons(id: number, disabled: boolean, buttonStyle: "disabled" | "enabled") {
+        return <div className="timer-buttons">
+            <button className={`timer-modifier-button ${buttonStyle}`} disabled={disabled} onClick={e => {
+                this.props.deleteTime(id, () => { })
+            }}>
+                <i className="fas fa-undo"></i>
+            </button>
+            <button className={`timer-modifier-button ${buttonStyle}`} disabled={disabled} onClick={e => {
+                this.props.updateComment(this.props.comment)
+            }}>
+                <i className="far fa-comment"></i>
+            </button>
+        </div>
+    }
+
+    renderButtons() {
         let { id } = this.props.previousSolve as PreviousSolve
 
+        let disabled = this.props.previousSolve === "none" || this.state.timer.state !== "idle"
+        let penaltyDisabled = this.props.previousSolve === "none" || this.state.timer.state !== "idle" || this.props.previousSolve.is_inspection_dnf
+        let buttonStyle: "disabled" | "enabled" = disabled ? "disabled" : "enabled"
+        let penaltyButtonStyle = penaltyDisabled ? "disabled" : "enabled"
+
+        let mblind = this.props.eventName.toLowerCase().indexOf("bld") !== -1
+        let fmc = this.props.eventName.toLowerCase().indexOf("fmc") !== -1
+
+        if (mblind) return this.renderMbldButtons(id, disabled, buttonStyle)
+        if (fmc) return this.renderFmcButtons(id, disabled, buttonStyle)
+
+        return <div className="timer-buttons">
+            <button className={`timer-modifier-button ${buttonStyle}`} disabled={disabled} onClick={e => {
+                this.props.deleteTime(id, () => { })
+            }}>
+                <i className="fas fa-undo"></i>
+            </button>
+            <button className={`timer-modifier-button ${penaltyButtonStyle} ${this.getPenaltyState() === "+2" ? "active" : ""}`} disabled={penaltyDisabled} onClick={e => {
+                this.updateTime("+2")
+                e.currentTarget.blur()
+            }}>
+                <span>+2</span>
+            </button>
+            <button className={`timer-modifier-button ${penaltyButtonStyle} ${this.getPenaltyState() === "DNF" ? "active" : ""}`} disabled={penaltyDisabled} onClick={e => {
+                this.updateTime("DNF")
+                e.currentTarget.blur()
+            }}>
+                <span>DNF</span>
+            </button>
+            <button className={`timer-modifier-button ${buttonStyle}`} disabled={disabled} onClick={e => {
+                this.props.updateComment(this.props.comment)
+            }}>
+                <i className="far fa-comment"></i>
+            </button>
+        </div>
+    }
+
+    render() {
         return <div className="timer-wrapper">
             {this.renderTime()}
-            <div className="timer-buttons">
-                <button className={`timer-modifier-button ${buttonStyle}`} disabled={disabled} onClick={e => {
-                    this.props.deleteTime(id)
-                }}>
-                    <i className="fas fa-undo"></i>
-                </button>
-                <button className={`timer-modifier-button ${penaltyButtonStyle} ${this.getPenaltyState() === "+2" ? "active" : ""}`} disabled={penaltyDisabled} onClick={e => {
-                    this.updateTime("+2")
-                    e.currentTarget.blur()
-                }}>
-                    <span>+2</span>
-                </button>
-                <button className={`timer-modifier-button ${penaltyButtonStyle} ${this.getPenaltyState() === "DNF" ? "active" : ""}`} disabled={penaltyDisabled} onClick={e => {
-                    this.updateTime("DNF")
-                    e.currentTarget.blur()
-                }}>
-                    <span>DNF</span>
-                </button>
-                <button className={`timer-modifier-button ${buttonStyle}`} disabled={disabled} onClick={e => {
-                    this.props.updateComment(this.props.comment)
-                }}>
-                    <i className="far fa-comment"></i>
-                </button>
-            </div>
+            {this.renderButtons()}
         </div>
     }
 }

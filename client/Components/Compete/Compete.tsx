@@ -5,7 +5,7 @@ import { match } from 'react-router'
 import * as Api from '../../utils/api'
 import * as Types from '../../utils/types'
 import { CompeteAction, CompeteState } from '../../utils/store/types/competeTypes'
-import { fetchEvent, submitSolve, submitPenalty, deleteSolveAction } from '../../utils/store/actions/competeActions'
+import { fetchEvent, submitSolve, submitPenalty, deleteSolveAction, submitFmcResult } from '../../utils/store/actions/competeActions'
 import { Store } from '../../utils/store/types/generalTypes'
 import { minifyRawSettings } from '../../utils/helpers/settingsHelper'
 import { UserSettings } from '../../utils/types'
@@ -14,7 +14,7 @@ import { Timer } from './Timer'
 import { FitText } from '../Helper/FitText'
 import { ScrambleViewer } from '../Helper/ScrambleViewer'
 import { PromptAction } from '../../utils/store/types/promptTypes'
-import { showCommentInputPrompt, showConfirmationPrompt } from '../../utils/store/actions/promptActions'
+import { showCommentInputPrompt, showConfirmationPrompt, showFmcInputPrompt } from '../../utils/store/actions/promptActions'
 
 type RemoteProps = {
     eventType: number
@@ -42,36 +42,23 @@ export class CompeteComponent extends React.Component<Props>{
     postTime(time: number, penalty: "none" | "+2" | "DNF", callback: () => void) {
         let event = this.props.event as Types.Event
         submitSolve(this.props.dispatch, event, time, penalty, callback)
-        // Api.postSolve({
-        //     comp_event_id: event.event.id,
-        //     elapsed_centiseconds: parseInt(`${time / 10}`),
-        //     is_inspection_dnf: penalty === "DNF",
-        //     is_dnf: penalty === "DNF",
-        //     is_plus_two: penalty === "+2",
-        //     scramble_id: event.currentScramble.id
-        // }).then(newEvent => this.setState({ event: newEvent }, () => callback()))
+    }
+
+    postFmc(moveCount: number, solution: string, callback: () => void) {
+        let event = this.props.event as Types.Event
+        submitFmcResult(this.props.dispatch, event, moveCount, solution, callback)
     }
 
     postPenalty(id: number, penalty: "none" | "+2" | "DNF") {
         let event = this.props.event as Types.Event
         submitPenalty(this.props.dispatch, event, id, penalty)
-        // if (penalty === "+2") {
-        //     Api.putPlusTwo(id, event.event.id)
-        //         .then(newEvent => this.setState({ event: newEvent }))
-        //     return
-        // }
-        // if (penalty === "DNF") {
-        //     Api.putDnf(id, event.event.id)
-        //         .then(newEvent => this.setState({ event: newEvent }))
-        //     return
-        // }
     }
 
-    deleteTime(id: number) {
+    deleteTime(id: number, callback: () => void) {
         let event = this.props.event as Types.Event
         this.props.dispatch(showConfirmationPrompt(
             `Are you sure you want to delete your last solve? (${event.previousSolve.time})`,
-            () => deleteSolveAction(this.props.dispatch, event, id)
+            () => deleteSolveAction(this.props.dispatch, event, id, callback)
         ))
     }
 
@@ -112,15 +99,19 @@ export class CompeteComponent extends React.Component<Props>{
             <Timer
                 settings={this.props.settings}
                 previousSolve={!previousSolve ? "none" : previousSolve}
-                currentScrambleId={event.currentScramble.id === -1 ?
+                currentScramble={event.currentScramble.id === -1 ?
                     "none" :
-                    { id: event.currentScramble.id }
+                    {
+                        id: event.currentScramble.id,
+                        scramble: event.currentScramble.text
+                    }
                 }
                 eventName={event.event.name}
                 comment={event.event.comment}
                 postTime={(time, penalty, callback) => this.postTime(time, penalty, callback)}
+                postFmc={(moveCount, solution, callback) => this.postFmc(moveCount, solution, callback)}
                 postPenalty={(id, penalty) => this.postPenalty(id, penalty)}
-                deleteTime={(id: number) => this.deleteTime(id)}
+                deleteTime={(id, callback) => this.deleteTime(id, callback)}
                 updateComment={(text: string) => this.updateComment(text)}
             />
         </div>
