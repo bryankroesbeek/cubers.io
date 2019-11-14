@@ -14,14 +14,35 @@ type PromptBody = {
 }
 
 export class PromptComponent extends React.Component<PromptProps & DispatchProp<PromptAction>> {
+    static instance: PromptComponent
+    static modifyPrompt(action: PromptAction) {
+        this.instance.props.dispatch(action)
+    }
+
+    static swapPrompt(action: PromptAction) {
+        this.instance.props.dispatch(hidePrompt())
+        setTimeout(() => {
+            this.instance.props.dispatch(action)
+        }, 300)
+    }
+
+    constructor(props: PromptProps & DispatchProp<PromptAction>) {
+        super(props)
+
+        PromptComponent.instance = this
+    }
+
     componentDidUpdate() {
         let { hideType, dispatch } = this.props
+
         if (hideType === "hidden") return setTimeout(() => {
-            dispatch(closePrompt())
-        }, 750)
+            if (this.props.hideType === "hidden") {
+                dispatch(closePrompt())
+            }
+        }, 500)
         if (hideType === "fade-in") return setTimeout(() => {
             dispatch(showPrompt())
-        }, 32)
+        })
     }
 
     closeCurrentPrompt = () => {
