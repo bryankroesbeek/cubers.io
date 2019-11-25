@@ -215,7 +215,7 @@ export class Timer extends React.Component<TimerProps, TimerState>{
 
     renderTime() {
         let timeEntryDisabled = this.props.currentScramble === "none"
-        let mblind = this.props.eventName.toLowerCase().indexOf("bld") !== -1
+        let mblind = this.props.eventName.toLowerCase().indexOf("mbld") !== -1
         let fmc = this.props.eventName.toLowerCase().indexOf("fmc") !== -1
 
         if (mblind)
