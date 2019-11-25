@@ -20,6 +20,7 @@
     width: 20%;
     font-family: 'Roboto Mono';
     background: white;
+    overflow-y: hidden;
 
     box-shadow: 5px 0px 7px 0px rgba(0,0,0,0.64);
     -webkit-box-shadow: 5px 0px 7px 0px rgba(0,0,0,0.64);
@@ -39,14 +40,85 @@
     flex-direction: column;
     // margin: 0 auto;
     text-align: center;
-    min-height: 250px;
+    // min-height: 250px;
     
     .time {
-        flex: 1;
-        font-size: 14pt;
+        position: relative;
+        font-size: 2vh;
         display: inline-flex;
         justify-content: center;
-        align-items: center;
+        justify-items: stretch;
+        align-items: stretch;
         border-bottom: 1px solid #d8d8d8;
+        min-height: 6vh;
+        flex-direction: column;
+
+        .button { 
+            position: relative;
+            padding: 0;
+            height: 6vh;
+            background: transparent;
+            border: 0;
+
+            &:active {
+                // border: 1px solid #01010120;
+                background: #01010120;
+                padding: 0;
+            }
+            &:disabled {
+                border: 0;
+            }
+
+            transition: background 0.25s;
+        }
     }
+}
+
+.sidebar-modifier-menu {
+    z-index: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    max-height: 28vh;
+    padding: 5px 0;
+
+    background: #202020ef;
+    
+    &.hidden {
+        padding: 0;
+        max-height: 0;
+    }
+
+    .menu-divider {
+        border: 1px solid #7f7f7f3f;
+        margin: 0.35vh 0;
+    }
+    
+    .menu-button {
+        flex-shrink: 0;
+        height: 4vh;
+        font-family: 'Roboto';
+        font-size: 1.5vh;
+        border: 0;
+        padding: 0;
+        background: transparent;
+        color: white;
+
+        &:hover{
+            background: white;//#0101013f;
+            color: black;
+        }
+        &:active{
+            background: #0101017f;
+            color: black;
+        }
+        &:disabled {
+            color: #7f7f7f;
+            background: transparent;
+        }
+    }
+
+    transition: .5s;
 }
