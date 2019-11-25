@@ -27,6 +27,11 @@ export class ScrambleViewer extends React.Component<ScrambleViewerProps, Scrambl
         this.canvasRef = React.createRef()
     }
 
+    componentDidUpdate() {
+        // TEMPORARY FIX FOR SCRAMBLE PREVIEW
+        this.handleResize(null)
+    }
+
     componentDidMount() {
         this.canvasRef.current.width = 1500
         this.canvasRef.current.height = 300
@@ -40,6 +45,7 @@ export class ScrambleViewer extends React.Component<ScrambleViewerProps, Scrambl
     }
 
     handleResize = (e: UIEvent) => {
+        if (!this.canvasRef.current) return
         let event = this.props.event
 
         let ctx = this.canvasRef.current.getContext("2d")
@@ -53,7 +59,7 @@ export class ScrambleViewer extends React.Component<ScrambleViewerProps, Scrambl
     }
 
     showScrambleFullscreen() {
-        if (!this.state.showBigScramble) return <span className="fullscreen-scramble-preview hide"></span>
+        if (!this.state.showBigScramble) return <span className="fullscreen-scramble-preview hide"></span>        
 
         return <span className="fullscreen-scramble-preview">
             <button className="scramble-preview-button-big" onClick={() => {
