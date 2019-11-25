@@ -226,8 +226,8 @@ def __build_user_solves_list(user_results, event_total_solves, scrambles):
     for i, scramble in enumerate(scrambles):
         for solve in user_results.solves:
             if scramble.id == solve.scramble_id:
-                user_solves[i] = [solve.get_friendly_time(), solve.id, str(solve.is_dnf).lower(),
-                    str(solve.is_plus_two).lower(), scramble.scramble]
+                user_solves[i] = [solve.get_friendly_time(), solve.id, solve.is_dnf,
+                    solve.is_plus_two, scramble.scramble]
 
     return user_solves, user_results.solves[-1].get_friendly_time()
 

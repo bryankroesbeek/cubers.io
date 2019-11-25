@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 
 import { CompeteState, CompeteAction } from '../types/competeTypes'
-import { getEventInfo, postSolve, putDnf, putPlusTwo, deleteSolve } from '../../api/compete'
+import { getEventInfo, postSolve, putDnf, putPlusTwo, deleteSolve, putClearPenalty } from '../../api/compete'
 import { Event } from '../../types/event'
 
 
@@ -36,15 +36,19 @@ export function submitFmcResult(dispatch: Dispatch<CompeteAction>, event: Event,
         .then(() => callback())
 }
 
-export function submitPenalty(dispatch: Dispatch<CompeteAction>, event: Event, id: number, penalty: "none" | "+2" | "DNF") {
+export function submitPenalty(dispatch: Dispatch<CompeteAction>, event: Event, id: number, penalty: "none" | "+2" | "DNF", callback: () => void) {
     if (penalty === "+2") {
-        putPlusTwo(id, event.event.id)
-            .then(newEvent => dispatch({ type: "FETCH_EVENT", event: newEvent }))
+        var request = putPlusTwo(id, event.event.id)
     }
     if (penalty === "DNF") {
-        putDnf(id, event.event.id)
-            .then(newEvent => dispatch({ type: "FETCH_EVENT", event: newEvent }))
+        var request = putDnf(id, event.event.id)
     }
+    if (penalty === "none") {
+        var request = putClearPenalty(id, event.event.id)
+    }
+    request
+        .then(newEvent => dispatch({ type: "FETCH_EVENT", event: newEvent }))
+        .then(() => callback())
 }
 
 export function deleteSolveAction(dispatch: Dispatch<CompeteAction>, event: Event, id: number, callback: () => void) {

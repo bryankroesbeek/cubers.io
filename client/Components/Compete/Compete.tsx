@@ -8,7 +8,7 @@ import { CompeteAction, CompeteState } from '../../utils/store/types/competeType
 import { fetchEvent, submitSolve, submitPenalty, deleteSolveAction, submitFmcResult } from '../../utils/store/actions/competeActions'
 import { Store } from '../../utils/store/types/generalTypes'
 import { minifyRawSettings } from '../../utils/helpers/settingsHelper'
-import { UserSettings } from '../../utils/types'
+import { UserSettings, Solve } from '../../utils/types'
 
 import { Timer } from './Timer'
 import { FitText } from '../Helper/FitText'
@@ -25,18 +25,37 @@ type CompeteProps = CompeteState
 
 type Props = CompeteProps & RemoteProps & DispatchProp<CompeteAction | PromptAction>
 
-export class CompeteComponent extends React.Component<Props>{
+type State = {
+    expandedId: string
+}
+
+export class CompeteComponent extends React.Component<Props, State>{
     scrambleRef: React.RefObject<HTMLDivElement>
+    modifierMenuRef: React.RefObject<HTMLDivElement>
 
     constructor(props: Props) {
         super(props)
 
+        this.state = { expandedId: "" }
+
         this.scrambleRef = React.createRef()
+        this.modifierMenuRef = React.createRef()
     }
 
     componentDidMount() {
         Api.getEventInfo(this.props.eventType)
             .then(event => this.props.dispatch(fetchEvent(event)))
+        addEventListener('mousedown', this.handleClick)
+    }
+    componentWillUnmount() {
+        removeEventListener('mousedown', this.handleClick)
+    }
+
+    handleClick = (e: MouseEvent) => {
+        if (!this.modifierMenuRef.current) return
+        if (!this.modifierMenuRef.current.contains(e.target as Element)) {
+            this.setState({ expandedId: "" })
+        }
     }
 
     postTime(time: number, penalty: "none" | "+2" | "DNF", callback: () => void) {
@@ -49,9 +68,9 @@ export class CompeteComponent extends React.Component<Props>{
         submitFmcResult(this.props.dispatch, event, moveCount, solution, callback)
     }
 
-    postPenalty(id: number, penalty: "none" | "+2" | "DNF") {
+    postPenalty(id: number, penalty: "none" | "+2" | "DNF", callback: () => void) {
         let event = this.props.event as Types.Event
-        submitPenalty(this.props.dispatch, event, id, penalty)
+        submitPenalty(this.props.dispatch, event, id, penalty, callback)
     }
 
     deleteTime(id: number, callback: () => void) {
@@ -74,15 +93,61 @@ export class CompeteComponent extends React.Component<Props>{
         ))
     }
 
+    renderModifierMenu(id: string, solve: Solve) {
+        let hidden = this.state.expandedId === id ? "" : "hidden"
+
+        return <div className={`sidebar-modifier-menu ${hidden}`}>
+            <button className="menu-button" disabled={!(solve.isPlusTwo || solve.isDnf)} onClick={() => {
+                this.postPenalty(solve.solveId, "none", () => {
+                    this.setState({ expandedId: "" })
+                })
+            }}>Clear penalty</button>
+            <button className="menu-button" disabled={solve.isPlusTwo} onClick={() => {
+                this.postPenalty(solve.solveId, "+2", () => {
+                    this.setState({ expandedId: "" })
+                })
+            }}>+2</button>
+            <button className="menu-button" disabled={solve.isDnf} onClick={() => {
+                this.postPenalty(solve.solveId, "DNF", () => {
+                    this.setState({ expandedId: "" })
+                })
+            }}>DNF</button>
+            <div className="menu-divider"></div>
+            <button className="menu-button" onClick={() => {
+                // TODO: Show prompt here
+            }}>Manual time entry</button>
+            <div className="menu-divider"></div>
+            <button className="menu-button" onClick={() => {
+                navigator.clipboard.writeText(solve.scramble)
+                    .then(() => this.setState({ expandedId: "" }))
+            }}>Copy Scramble</button>
+            <div className="menu-divider"></div>
+            <button className="menu-button" onClick={() => {
+                this.deleteTime(solve.solveId, () => { })
+                this.setState({ expandedId: "" })
+            }}>Delete time</button>
+        </div>
+    }
+
     renderSidebar(event: Types.Event) {
         return <div className="sidebar">
             <div className="sidebar-title">Solves</div>
-            <div className="sidebar-times">
-                {event.event.solves.map((solve, count) =>
-                    <div key={`solve_${count}`} className="time">
-                        {solve.friendlyTime}
+            <div ref={this.modifierMenuRef} className="sidebar-times">
+                {event.event.solves.map((solve, count) => {
+                    let id = `solve_${count}`
+                    return <div key={id} className="time">
+                        <button disabled={solve.solveId === -1} className="button" onClick={() => {
+                            if (this.state.expandedId === id)
+                                return this.setState({ expandedId: "" })
+                            this.setState({ expandedId: id })
+                        }}>
+                            {solve.friendlyTime}
+                        </button>
+                        {solve.solveId === -1 ? null :
+                            this.renderModifierMenu(id, solve)
+                        }
                     </div>
-                )}
+                })}
             </div>
             <ScrambleViewer
                 event={event}
@@ -110,7 +175,7 @@ export class CompeteComponent extends React.Component<Props>{
                 comment={event.event.comment}
                 postTime={(time, penalty, callback) => this.postTime(time, penalty, callback)}
                 postFmc={(moveCount, solution, callback) => this.postFmc(moveCount, solution, callback)}
-                postPenalty={(id, penalty) => this.postPenalty(id, penalty)}
+                postPenalty={(id, penalty) => this.postPenalty(id, penalty, () => { })}
                 deleteTime={(id, callback) => this.deleteTime(id, callback)}
                 updateComment={(text: string) => this.updateComment(text)}
             />
