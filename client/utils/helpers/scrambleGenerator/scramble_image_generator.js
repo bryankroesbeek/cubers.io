@@ -1,5 +1,5 @@
 export function sig(scramble, eventName, settings) {
-    var app = window.app;
+    // var app = window.app;
 
     var cube_colors = [];
     var skewb_colors = [];
@@ -2478,9 +2478,9 @@ posit:
 
             // If the event is complete, don't event bother trying to parse
             // a real scramble. Just use an empty string in place of scramble.
-            if (window.app.isComplete) {
-                scrambleText = '';
-            }
+            // if (window.app.isComplete) {
+            //     scrambleText = '';
+            // }
 
             setBorderRadius(type, canvasSize);
 
