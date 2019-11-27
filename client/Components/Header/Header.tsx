@@ -52,12 +52,22 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     handleClick = (e: MouseEvent) => {
         if (!this.currentActiveItem.current) return
         if (!this.currentActiveItem.current.contains(e.target as Element)) {
-            this.setState({ currentDropdown: "none" })
+            this.setDropdown("none")
         }
     }
 
     hideNavigation = () => {
-        this.setState({ currentDropdown: "none" })
+        this.setDropdown("none")
+    }
+
+    setDropdown = (type: "none" | "records" | "leaderboards" | "profile" | "wca" | "non-wca" | "sum") => {
+        let d = this.state.currentDropdown
+        if (d === "wca" && type === "wca" || d === "non-wca" && type === "non-wca" || d === "sum" && type === "sum")
+            return this.setState({ currentDropdown: "records" })
+
+        if (d === type) return this.setState({ currentDropdown: "none" })
+
+        this.setState({ currentDropdown: type })
     }
 
     renderRecordItem(item: Types.HeaderItem, loading: boolean) {
@@ -66,7 +76,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                 key={id}
                 className="dropdown-item slim-nav-item"
                 to={item.url}
-                onClick={() => this.setState({ currentDropdown: "none" })}
+                onClick={() => this.setDropdown("none")}
             >{item.name}</Link>
         )
     }
@@ -79,12 +89,12 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 
         return <>
             <button className="nav-link dropdown-toggle py-0" onClick={() => {
-                this.setState({ currentDropdown: "records" })
+                this.setDropdown("records")
             }}>Records</button>
             <div className={`dropdown-menu dropdown-menu-right ${show}`}>
                 <div className="dropdown dropright dropdown-submenu">
                     <button className="dropdown-item dropdown-toggle" onClick={() => {
-                        this.setState({ currentDropdown: "wca" })
+                        this.setDropdown("wca")
                     }}>
                         {this.state.recordsItems.wca.title}
                     </button>
@@ -95,7 +105,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 
                 <div className="dropdown dropright dropdown-submenu">
                     <button className="dropdown-item dropdown-toggle" onClick={() => {
-                        this.setState({ currentDropdown: "non-wca" })
+                        this.setDropdown("non-wca")
                     }}>
                         {this.state.recordsItems.nonWca.title}
                     </button>
@@ -107,7 +117,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 
                 <div className="dropdown dropright dropdown-submenu">
                     <button className="dropdown-item dropdown-toggle" onClick={() => {
-                        this.setState({ currentDropdown: "sum" })
+                        this.setDropdown("sum")
                     }}>
                         {this.state.recordsItems.sum.title}
                     </button>
@@ -127,7 +137,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 
         return <>
             <button className="nav-link dropdown-toggle py-0" onClick={() => {
-                this.setState({ currentDropdown: "leaderboards" })
+                this.setDropdown("leaderboards")
             }}>Leaderboards</button>
             <div className={`dropdown-menu dropdown-menu-right ${show}`}>
                 <Link className="dropdown-item" to={leaderboard.current.url} onClick={this.hideNavigation}>{leaderboard.current.name}</Link>
@@ -146,7 +156,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 
         return <>
             <button className="nav-link dropdown-toggle py-0" onClick={() => {
-                this.setState({ currentDropdown: "profile" })
+                this.setDropdown("profile")
             }}>
                 {this.props.user.name}
             </button>
@@ -172,7 +182,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             <div className="navbar navbar-expand-md navbar-dark cubers-navbar"></div>
             <div className="navbar navbar-expand-md fixed-top navbar-dark cubers-navbar">
                 <div className="container-fluid">
-                    <Link to="/" className="navbar-brand py-0">{this.state.title}</Link>
+                    <Link to="/" className="navbar-brand py-0">cubers.io - {this.state.title}</Link>
 
                     <button className="navbar-toggler py-0">
                         <span className="navbar-toggler-icon"></span>
