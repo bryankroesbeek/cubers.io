@@ -19,6 +19,11 @@ type HeaderState = {
 export class Header extends React.Component<HeaderProps, HeaderState> {
     currentActiveItem: React.RefObject<HTMLUListElement>
 
+    static instance: Header
+    static setTitle(newTitle: string) {
+        this.instance.setState({ title: newTitle })
+    }
+
     constructor(props: HeaderProps) {
         super(props)
 
@@ -31,6 +36,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
         }
 
         this.currentActiveItem = React.createRef()
+        Header.instance = this
     }
 
     componentDidMount() {
