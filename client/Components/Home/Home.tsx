@@ -6,6 +6,7 @@ import { HomeState, HomeAction } from '../../utils/store/types/homeTypes'
 import { Store } from '../../utils/store/types/generalTypes'
 import { fetchCompetitionEvents } from '../../utils/store/actions/homeActions'
 import { Link } from 'react-router-dom';
+import { Header } from '../Header/Header'
 
 type HomeProps = HomeState & DispatchProp<HomeAction>
 
@@ -16,6 +17,7 @@ class HomeComponent extends React.Component<HomeProps, {}> {
 
     componentDidMount() {
         this.props.dispatch(fetchCompetitionEvents(this.props.dispatch))
+        Header.setTitle(Header.currentCompetition)
     }
 
     render() {

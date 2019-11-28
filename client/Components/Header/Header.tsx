@@ -19,6 +19,7 @@ type HeaderState = {
 export class Header extends React.Component<HeaderProps, HeaderState> {
     currentActiveItem: React.RefObject<HTMLUListElement>
 
+    static currentCompetition: string
     static instance: Header
     static setTitle(newTitle: string) {
         this.instance.setState({ title: newTitle })
@@ -39,16 +40,20 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
         Header.instance = this
     }
 
-    componentDidMount() {
-        Api.getHeaderInfo()
-            .then(info => this.setState({
-                title: info.title,
-                recordsItems: info.recordsItems,
-                leaderboardItems: info.leaderboardItems,
-                userItems: info.userItems
-            }))
-
+    async componentDidMount() {
         window.addEventListener('click', this.handleClick)
+
+        let info = await Api.getHeaderInfo()
+
+        this.setState({
+            ...this.state,
+            title: this.state.title || info.title,
+            recordsItems: info.recordsItems,
+            leaderboardItems: info.leaderboardItems,
+            userItems: info.userItems
+        })
+
+        Header.currentCompetition = info.title
     }
 
     componentWillUnmount() {

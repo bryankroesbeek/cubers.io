@@ -8,6 +8,7 @@ import { SumOfRanksAction, SumOfRanksState } from '../../utils/store/types/sumOf
 import { fetchSumOfRanks, setAverage, setSingle } from '../../utils/store/actions/sunOfRanksActions';
 import { Store } from '../../utils/store/types/generalTypes';
 import { User } from '../../utils/types';
+import { Header } from '../Header/Header';
 
 type RemoteProps = {
     type: string
@@ -26,6 +27,7 @@ class SumOfRanksComponent extends React.Component<SumOfRanksProps, {}>{
     }
 
     componentDidMount() {
+        Header.setTitle("Sum of Ranks")
         this.props.dispatch(fetchSumOfRanks(this.props.dispatch, this.props.type))
     }
 

@@ -5,6 +5,7 @@ import { DispatchProp, connect } from 'react-redux'
 import { LeaderboardCollectionAction, LeaderboardsCollectionState } from '../../utils/store/types/leaderboardTypes'
 import { fetchLeaderboardCollection } from '../../utils/store/actions/leaderboardActions'
 import { Store } from '../../utils/store/types/generalTypes'
+import { Header } from '../Header/Header'
 
 type RemoteProps = {}
 
@@ -12,6 +13,7 @@ type LeaderboardsCollectionProps = DispatchProp<LeaderboardCollectionAction> & L
 
 export class LeaderboardsCollectionComponent extends React.Component<LeaderboardsCollectionProps>{
     componentDidMount() {
+        Header.setTitle("Leaderboards")
         this.props.dispatch(fetchLeaderboardCollection(this.props.dispatch))
     }
 

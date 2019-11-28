@@ -9,6 +9,7 @@ import { DispatchProp, MapStateToProps, connect } from 'react-redux'
 import { VersusAction, VersusState } from '../../utils/store/types/versusTypes'
 import { fetchUser1Rankings, fetchUser1Records, fetchUser2Rankings, fetchUser2Records } from '../../utils/store/actions/versusActions'
 import { Store } from '../../utils/store/types/generalTypes'
+import { Header } from '../Header/Header'
 
 type RemoteProps = {
     username1: string
@@ -19,6 +20,7 @@ type VersusProps = VersusState
 
 class VersusComponent extends React.Component<VersusProps & RemoteProps & DispatchProp<VersusAction>>{
     componentDidMount() {
+        Header.setTitle("Competitor Showdown")
         this.props.dispatch(fetchUser1Rankings(this.props.dispatch, this.props.username1))
         this.props.dispatch(fetchUser1Records(this.props.dispatch, this.props.username1))
         this.props.dispatch(fetchUser2Rankings(this.props.dispatch, this.props.username2))

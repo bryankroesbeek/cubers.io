@@ -15,6 +15,7 @@ import { FitText } from '../Helper/FitText'
 import { ScrambleViewer } from '../Helper/ScrambleViewer'
 import { PromptAction } from '../../utils/store/types/promptTypes'
 import { showCommentInputPrompt, showConfirmationPrompt, showFmcInputPrompt } from '../../utils/store/actions/promptActions'
+import { Header } from '../Header/Header'
 
 type RemoteProps = {
     eventType: number
@@ -42,11 +43,14 @@ export class CompeteComponent extends React.Component<Props, State>{
         this.modifierMenuRef = React.createRef()
     }
 
-    componentDidMount() {
-        Api.getEventInfo(this.props.eventType)
-            .then(event => this.props.dispatch(fetchEvent(event)))
+    async componentDidMount() {
         addEventListener('mousedown', this.handleClick)
+
+        let event = await Api.getEventInfo(this.props.eventType)
+        Header.setTitle(`${event.event.name} - ${Header.currentCompetition}`)
+        this.props.dispatch(fetchEvent(event))
     }
+
     componentWillUnmount() {
         removeEventListener('mousedown', this.handleClick)
     }

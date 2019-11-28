@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { SearchableInput } from './SearchableInput'
 import { Link } from 'react-router-dom';
+import { Header } from '../Header/Header';
 
 type VersusSelectProps = {}
 
@@ -17,6 +18,10 @@ export class VersusSelect extends React.Component<VersusSelectProps, VersusSelec
             user1: "none",
             user2: "none",
         }
+    }
+
+    componentDidMount(){
+        Header.setTitle("Competitor Showdown")
     }
 
     getUrl() {

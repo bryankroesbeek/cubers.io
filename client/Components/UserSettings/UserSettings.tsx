@@ -12,6 +12,7 @@ import { CleanUserSettings } from '../../utils/types'
 import { Store } from '../../utils/store/types/generalTypes'
 import { BaseAction } from '../../utils/store/types/baseTypes'
 import { submitNewSettings } from '../../utils/store/actions/baseActions'
+import { Header } from '../Header/Header'
 
 type UserSettingsProps = UserSettingsState & DispatchProp<SettingsAction | BaseAction>
 
@@ -32,6 +33,7 @@ class UserSettingsComponent extends React.Component<UserSettingsProps>{
 
     componentDidMount() {
         window.addEventListener('mousedown', this.handleClick)
+        Header.setTitle("Preferences")
     }
 
     componentWillUnmount() {

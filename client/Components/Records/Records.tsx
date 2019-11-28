@@ -11,6 +11,7 @@ import { fetchCompetitionEvents, setAverage, setSingle } from '../../utils/store
 
 import { Link } from 'react-router-dom'
 import { User } from '../../utils/types'
+import { Header } from '../Header/Header'
 
 type RemoteProps = {
     event: string
@@ -30,6 +31,7 @@ class RecordsComponent extends React.Component<RecordsProps, {}>{
     }
 
     componentDidMount() {
+        Header.setTitle(`${this.props.event} Records`)
         this.props.dispatch(fetchCompetitionEvents(this.props.dispatch, this.props.event, "single"))
     }
 
