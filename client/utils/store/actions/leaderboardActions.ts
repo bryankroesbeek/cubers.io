@@ -15,8 +15,8 @@ export let fetchLeaderboardCollection = (dispatch: Dispatch<LeaderboardCollectio
 export let fetchLeaderboardById = (dispatch: Dispatch<LeaderboardAction>, id: number): LeaderboardAction => {
     getLeaderboardItems(id)
         .then(result => {
-            dispatch({ type: "FETCH_COMPETITION_LEADERBOARD", events: result })
-            let event = result.filter(e => e.slug === "3x3")[0]
+            dispatch({ type: "FETCH_COMPETITION_LEADERBOARD", data: result })
+            let event = result.events.filter(e => e.slug === "3x3")[0]
             setCurrentActiveEvent(dispatch, event)
         })
 

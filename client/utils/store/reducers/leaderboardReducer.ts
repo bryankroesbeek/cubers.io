@@ -16,13 +16,13 @@ export const leaderboardCollectionReducer: Reducer<LeaderboardsCollectionState, 
 
 const initialLeaderboardState: LeaderboardState = {
     currentActiveEvent: "none",
-    events: "loading",
+    data: "loading",
     leaderboard: "loading"
 }
 
 export const leaderboardReducer: Reducer<LeaderboardState, LeaderboardAction> = (state = initialLeaderboardState, action): LeaderboardState => {
     if (action.type === "FETCH_COMPETITION_LEADERBOARD") {
-        return { ...state, events: action.events }
+        return { ...state, data: action.data }
     }
     if (action.type === "SET_ACTIVE_EVENT") {
         return { ...state, leaderboard: action.leaderboard, currentActiveEvent: action.event }

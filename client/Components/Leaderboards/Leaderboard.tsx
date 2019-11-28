@@ -9,6 +9,7 @@ import { fetchLeaderboardById, setCurrentActiveEvent } from '../../utils/store/a
 import { Store } from '../../utils/store/types/generalTypes'
 import { showListViewPrompt } from '../../utils/store/actions/promptActions'
 import { PromptAction } from '../../utils/store/types/promptTypes'
+import { Header } from '../Header/Header'
 
 type RemoteProps = {
     competitionId: number
@@ -22,14 +23,21 @@ export class LeaderboardComponent extends React.Component<LeaderboardsProps>{
         this.props.dispatch(fetchLeaderboardById(this.props.dispatch, this.props.competitionId))
     }
 
+    componentDidUpdate() {        
+        if (this.props.data === "loading") return
+        Header.setTitle(this.props.data.compTitle)
+        if (this.props.data.compId === this.props.competitionId) return
+        this.props.dispatch(fetchLeaderboardById(this.props.dispatch, this.props.competitionId))
+    }
+
     renderEvents() {
-        let events = this.props.events
+        let data = this.props.data
         let currentEvent = this.props.currentActiveEvent as LeaderboardEvent
 
-        if (events === "loading") return null
+        if (data === "loading") return null
 
         return <div className="tab-events-header">
-            {events.map(e => {
+            {data.events.map(e => {
                 let active = e.slug === currentEvent.slug ? "active" : ""
 
                 return <button
@@ -52,10 +60,12 @@ export class LeaderboardComponent extends React.Component<LeaderboardsProps>{
             <LeaderboardTable
                 currentEvent={currentActiveEvent}
                 leaderboard={leaderboard}
-                showScrambles={() => { dispatch(showListViewPrompt(
-                    `Scrambles for ${currentActiveEvent.name}`,
-                    leaderboard.scrambles
-                )) }}
+                showScrambles={() => {
+                    dispatch(showListViewPrompt(
+                        `Scrambles for ${currentActiveEvent.name}`,
+                        leaderboard.scrambles
+                    ))
+                }}
             />
         </div>
     }

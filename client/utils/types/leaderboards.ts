@@ -16,6 +16,12 @@ export type LeaderboardItem = {
     },
 }
 
+export type LeaderboardData = {
+    compTitle: string
+    compId: number
+    events: LeaderboardEvent[]
+}
+
 export type LeaderboardEvent = {
     compEventId: number,
     eventId: number,

@@ -46,7 +46,13 @@ def comp_results(comp_id):
         'slug': slugify(c.Event.name)
     } , comp_events)
 
-    return jsonify(list(events))
+    comp_data = {
+        "compId": competition.id,
+        "compTitle": competition.title,
+        "events": list(events)
+    }
+
+    return jsonify(comp_data)
 
     # return render_template("results/results_comp.html", alternative_title=alternative_title,
     #     events_names_ids=events_names_ids, id_3x3=id_3x3, comp_id=comp_id)
