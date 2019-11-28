@@ -28,7 +28,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
         super(props)
 
         this.state = {
-            title: "cubers.io",
+            title: "",
             recordsItems: "loading",
             leaderboardItems: "loading",
             userItems: "none",
@@ -183,12 +183,17 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
         </Link>
     }
 
+    renderTitle() {
+        if (!this.state.title) return "cubers.io"
+        return `cubers.io - ${this.state.title}`
+    }
+
     render() {
         return <div>
             <div className="navbar navbar-expand-md navbar-dark cubers-navbar"></div>
             <div className="navbar navbar-expand-md fixed-top navbar-dark cubers-navbar">
                 <div className="container-fluid">
-                    <Link to="/" className="navbar-brand py-0">cubers.io - {this.state.title}</Link>
+                    <Link to="/" className="navbar-brand py-0">{this.renderTitle()}</Link>
 
                     <button className="navbar-toggler py-0">
                         <span className="navbar-toggler-icon"></span>
