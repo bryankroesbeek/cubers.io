@@ -172,7 +172,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 
     renderSettings() {
         if (this.state.userItems === "none") return null
-        return <Link className="nav-link py-0" to={this.state.userItems.settings_url}>
+        return <Link className="nav-link py-0" to={this.state.userItems.settings_url} onClick={() => this.setDropdown("none")}>
             <i className="fas fa-cog"></i>
         </Link>
     }
