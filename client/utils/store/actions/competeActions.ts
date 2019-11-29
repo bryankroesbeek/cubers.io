@@ -22,11 +22,11 @@ export function submitSolve(dispatch: Dispatch<CompeteAction>, event: Event, tim
         .then(() => callback())
 }
 
-export function submitFmcResult(dispatch: Dispatch<CompeteAction>, event: Event, moveCount: number, solution: string, callback: () => void) {
+export function submitFmcResult(dispatch: Dispatch<CompeteAction>, event: Event, moveCount: number, solution: string, dnf: boolean, callback: () => void) {
     postSolve({
         comp_event_id: event.event.id,
         elapsed_centiseconds: moveCount * 100,
-        is_dnf: false,
+        is_dnf: dnf,
         is_plus_two: false,
         is_inspection_dnf: false,
         scramble_id: event.currentScramble.id,

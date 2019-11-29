@@ -7,7 +7,7 @@ import { ManualEntry } from '../Helper/ManualEntry';
 import { PreviousSolve } from '../../utils/types';
 import * as fmcHelper from '../../utils/helpers/fmcHelper/fmcHelper'
 import { PromptComponent } from '../Prompt/Prompt';
-import { showFmcInputPrompt, showInfoPrompt, showListViewPrompt } from '../../utils/store/actions/promptActions';
+import { showFmcInputPrompt, showInfoPrompt, showListViewPrompt, showConfirmationPrompt } from '../../utils/store/actions/promptActions';
 
 type TimerProps = {
     settings: Types.UserSettingsMinified
@@ -16,7 +16,7 @@ type TimerProps = {
     eventName: string
     comment: string
     postTime: (time: number, penalty: Penalty, callback: () => void) => void
-    postFmc: (moves: number, solution: string, callback: () => void) => void
+    postFmc: (moves: number, solution: string, dnf: boolean, callback: () => void) => void
     postPenalty: (id: number, penalty: Penalty) => void
     deleteTime: (id: number, callback: () => void) => void
     updateComment: (text: string) => void
@@ -231,7 +231,7 @@ export class Timer extends React.Component<TimerProps, TimerState>{
             return <ManualEntry
                 type="fmc"
                 disabled={timeEntryDisabled}
-                submit={(moveCount, callback) => this.props.postFmc(moveCount, this.state.fmcSolution, () => {
+                submit={(moveCount, callback) => this.props.postFmc(moveCount, this.state.fmcSolution, false, () => {
                     this.setState({ fmcSolution: "" }, callback)
                 })}
                 moveCount={moveCount ? moveCount : "none"}
@@ -250,8 +250,9 @@ export class Timer extends React.Component<TimerProps, TimerState>{
         </span>
     }
 
-    renderFmcButtons(id: number, disabled: boolean, buttonStyle: "disabled" | "enabled") {
+    renderFmcButtons(id: number, timerActive: boolean, disabled: boolean, buttonStyle: "disabled" | "enabled") {
         let timeEntryDisabled = this.props.currentScramble === "none"
+        let solutionButtonStyle = timerActive || timeEntryDisabled ? "disabled" : "enabled"
         return <div className="timer-buttons">
             <button className={`timer-modifier-button ${buttonStyle}`} disabled={disabled} onClick={e => {
                 this.props.deleteTime(id, () => {
@@ -260,7 +261,18 @@ export class Timer extends React.Component<TimerProps, TimerState>{
             }}>
                 <i className="fas fa-undo"></i>
             </button>
-            <button className={`timer-modifier-button ${buttonStyle}`} disabled={disabled || timeEntryDisabled} onClick={e => {
+            <button
+                className={`timer-modifier-button ${solutionButtonStyle}`}
+                disabled={timerActive || timeEntryDisabled}
+                onClick={() => {
+                    if (timerActive || timeEntryDisabled) return
+                    PromptComponent.modifyPrompt(showConfirmationPrompt(
+                        `Do you want to submit a DNF result?`,
+                        () => { this.props.postFmc(999, "", true, () => { this.setState({ fmcSolution: "" }) }) }
+                    ))
+                }}
+            /* button */>Submit DNF</button>
+            <button className={`timer-modifier-button ${solutionButtonStyle}`} disabled={timerActive || timeEntryDisabled} onClick={e => {
                 if (this.props.currentScramble === "none") return
                 let { currentScramble } = this.props
                 PromptComponent.modifyPrompt(showFmcInputPrompt(
@@ -312,7 +324,7 @@ export class Timer extends React.Component<TimerProps, TimerState>{
         let fmc = this.props.eventName.toLowerCase().indexOf("fmc") !== -1
 
         if (mblind) return this.renderMbldButtons(id, disabled, buttonStyle)
-        if (fmc) return this.renderFmcButtons(id, disabled, buttonStyle)
+        if (fmc) return this.renderFmcButtons(id, this.state.timer.state !== "idle", disabled, buttonStyle)
 
         return <div className="timer-buttons">
             <button className={`timer-modifier-button ${buttonStyle}`} disabled={disabled} onClick={e => {

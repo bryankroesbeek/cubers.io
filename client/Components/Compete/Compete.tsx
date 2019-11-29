@@ -67,9 +67,9 @@ export class CompeteComponent extends React.Component<Props, State>{
         submitSolve(this.props.dispatch, event, time, penalty, callback)
     }
 
-    postFmc(moveCount: number, solution: string, callback: () => void) {
+    postFmc(moveCount: number, solution: string, dnf: boolean, callback: () => void) {
         let event = this.props.event as Types.Event
-        submitFmcResult(this.props.dispatch, event, moveCount, solution, callback)
+        submitFmcResult(this.props.dispatch, event, moveCount, solution, dnf, callback)
     }
 
     postPenalty(id: number, penalty: "none" | "+2" | "DNF", callback: () => void) {
@@ -178,7 +178,7 @@ export class CompeteComponent extends React.Component<Props, State>{
                 eventName={event.event.name}
                 comment={event.event.comment}
                 postTime={(time, penalty, callback) => this.postTime(time, penalty, callback)}
-                postFmc={(moveCount, solution, callback) => this.postFmc(moveCount, solution, callback)}
+                postFmc={(moveCount, solution, dnf, callback) => this.postFmc(moveCount, solution, dnf, callback)}
                 postPenalty={(id, penalty) => this.postPenalty(id, penalty, () => { })}
                 deleteTime={(id, callback) => this.deleteTime(id, callback)}
                 updateComment={(text: string) => this.updateComment(text)}
