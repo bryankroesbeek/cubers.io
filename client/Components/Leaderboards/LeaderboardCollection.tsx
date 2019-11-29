@@ -32,11 +32,11 @@ export class LeaderboardsCollectionComponent extends React.Component<Leaderboard
                 </thead>
                 <tbody>
                     <tr>
-                        <td><Link to={`/leaderboards/${collection.currentComp.id}`} ></Link>{collection.currentComp.title}</td>
+                        <td><Link to={`/leaderboards/${collection.currentComp.id}`}>{collection.currentComp.title}</Link></td>
                         <td colSpan={2}>In progress!!</td>
                     </tr>
                     {collection.pastComps.map(c => <tr>
-                        <td><Link to={`/leaderboards/${c.id}`} ></Link>{c.title}</td>
+                        <td><Link to={`/leaderboards/${c.id}`}>{c.title}</Link></td>
                         <td>{new Date(c.startDate).toDateString()}</td>
                         <td>{new Date(c.endDate).toDateString()}</td>
                     </tr>)}
