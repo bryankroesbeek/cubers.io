@@ -7,10 +7,14 @@ from io import StringIO
 from flask import render_template, make_response, jsonify
 from flask_login import current_user
 
+from slugify import slugify
+
 from app import app
 from app.business.rankings import get_ordered_pb_averages_for_event,\
     get_ordered_pb_singles_for_event
 from app.persistence.comp_manager import get_event_by_name
+
+from app.routes.api.constants import WCA_EVENTS, NON_WCA_EVENTS
 
 # -------------------------------------------------------------------------------------------------
 
@@ -28,14 +32,15 @@ CSV_EMPTY             = ''
 def event_results(event_name):
     """ A route for showing the global top results for a specific event. """
 
-    event = __safe_get_event(event_name)
+    name = next(filter(lambda name: slugify(name) == event_name, WCA_EVENTS), None) or \
+        next(filter(lambda name: slugify(name) == event_name, NON_WCA_EVENTS), None)
+
+    event = __safe_get_event(name)
     if not event:
         return ("I don't know what {} is.".format(event_name), 404)
 
     singles  = get_ordered_pb_singles_for_event(event.id)
     averages = get_ordered_pb_averages_for_event(event.id)
-
-    title = "{} Records".format(event.name)
 
     result = {
         "singles": list(map(lambda single: single.__dict__, singles)),
@@ -45,11 +50,6 @@ def event_results(event_name):
     }
 
     return jsonify(result)
-
-    return render_template("records/event.html", event_id=event.id, event_name=event.name,
-        singles=singles, averages=averages, alternative_title=title,
-        show_admin=(current_user.is_admin or current_user.is_results_mod))
-
 
 @app.route('/event/<event_name>/export/')
 def event_results_export(event_name):

@@ -12,6 +12,7 @@ import { fetchCompetitionEvents, setAverage, setSingle } from '../../utils/store
 import { Link } from 'react-router-dom'
 import { User } from '../../utils/types'
 import { Header } from '../Header/Header'
+import { events } from '../../utils/constants'
 
 type RemoteProps = {
     event: string
@@ -31,7 +32,9 @@ class RecordsComponent extends React.Component<RecordsProps, {}>{
     }
 
     componentDidMount() {
-        Header.setTitle(`${this.props.event} Records`)
+        let event = events.filter(e => e.slug === this.props.event)[0]
+        let title = event ? `${event.name} Records` : ""
+        Header.setTitle(title)
         this.props.dispatch(fetchCompetitionEvents(this.props.dispatch, this.props.event, "single"))
     }
 

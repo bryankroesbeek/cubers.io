@@ -2,6 +2,7 @@
 
 from flask import render_template, redirect, url_for, jsonify, request, session
 from flask_login import current_user
+from slugify import slugify
 
 import json
 
@@ -27,7 +28,6 @@ from app.util.api.helpers import *
 
 # -------------------------------------------------------------------------------------------------
 
-
 @app.route("/api/header-info")
 def get_header_info():
     """ Api endpoint for retrieving header information """
@@ -38,11 +38,11 @@ def get_header_info():
         title = comp.title
 
     wca_events = list(map(lambda event: {
-        'url': "/event/" + event, #url_for('event_results', event_name=event),
+        'url': "/event/" + slugify(event), #url_for('event_results', event_name=event),
         'name': event
     }, WCA_EVENTS))
     non_wca_events = list(map(lambda event: {
-        'url': "/event/" + event, #url_for('event_results', event_name=event),
+        'url': "/event/" + slugify(event), #url_for('event_results', event_name=event),
         'name': event
     }, NON_WCA_EVENTS))
 
