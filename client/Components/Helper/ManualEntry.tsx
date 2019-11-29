@@ -45,7 +45,7 @@ export class ManualEntry extends React.Component<ManualEntryProps, ManualEntrySt
         if (Number.isNaN(numberValue)) return
         if (numberValue === 0) return this.setState({ value: "" })
 
-        let newValue = Helper.formatTimeString(numberValue)
+        let newValue = Helper.formatTimeString(Math.abs(numberValue))
         this.setState({ value: newValue })
     }
 
