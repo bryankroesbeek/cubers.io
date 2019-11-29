@@ -45,7 +45,7 @@ class HomeComponent extends React.Component<HomeProps, {}> {
     renderCard(event: CompetitionEvent) {
         return <Link to={event.competeLocation} key={`comp_event_${event.compId}`} className={`event-card drop-shadow ${event.status === "not_started" ? "" : event.status}`}>
             <div className="event-image-container">
-                <img className="event-image" src={`./static/images/cube-${event.name.toLowerCase().split(" ").join("-")}.png`} />
+                <img className="event-image" src={`./static/images/cube-${event.slug}.png`} />
                 {this.renderOverlay(event.status)}
             </div>
 

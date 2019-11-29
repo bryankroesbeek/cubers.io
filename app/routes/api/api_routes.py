@@ -152,6 +152,7 @@ def api_event(event, complete_events, incomplete_events, bonus_events):
 
     return {
         'name': name,
+        'slug': slugify(event.Event.name),
         'compId': comp_id,
         'competeLocation': '/compete/{}'.format(event.id),
         'status': status,
