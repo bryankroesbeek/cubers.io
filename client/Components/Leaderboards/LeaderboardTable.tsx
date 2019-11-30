@@ -5,6 +5,7 @@ import * as Helpers from '../../utils/helpers'
 import { Leaderboard, LeaderboardItem, LeaderboardEvent, User } from '../../utils/types'
 import { PromptComponent } from '../Prompt/Prompt'
 import { showConfirmationPrompt } from '../../utils/store/actions/promptActions'
+import { Comment } from '../Helper/Comment'
 
 type LeaderboardTableProps = {
     user: User
@@ -17,7 +18,8 @@ type LeaderboardTableProps = {
 export class LeaderboardTable extends React.Component<LeaderboardTableProps> {
     renderTableHeader() {
         return <tr>
-            <th>Rank</th>
+            <th>#</th>
+            <th></th>
             <th>User</th>
             <th>Average</th>
             <th>Best</th>
@@ -31,6 +33,7 @@ export class LeaderboardTable extends React.Component<LeaderboardTableProps> {
         let className = r.solve.blacklisted ? "blacklisted-result" : null
         return <tr className={className}>
             <td>{r.visibleRank}</td>
+            <td><Comment comment={r.solve.comment} /></td>
             <td>
                 {this.props.user.admin || this.props.user.mod ?
                     <i className={`fas fa-user-check ${r.solve.user.verified ? "verified" : "unverified"} mr-1`} />
@@ -52,7 +55,7 @@ export class LeaderboardTable extends React.Component<LeaderboardTableProps> {
                         else PromptComponent.modifyPrompt(showConfirmationPrompt(
                             `Blacklist this ${this.props.currentEvent.name} result for ${r.solve.user.name}`,
                             () => { this.props.toggleBlacklist(r, "blacklist") }
-                        )) 
+                        ))
                     }}
                 /* button */>
                     {r.solve.blacklisted ? "unblacklist" : "blacklist"}
