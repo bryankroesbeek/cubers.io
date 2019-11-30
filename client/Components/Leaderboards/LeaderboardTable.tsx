@@ -31,7 +31,13 @@ export class LeaderboardTable extends React.Component<LeaderboardTableProps> {
         let className = r.solve.blacklisted ? "blacklisted-result" : null
         return <tr className={className}>
             <td>{r.visibleRank}</td>
-            <td><Link to={`/u/${r.solve.user.name}`}>/u/{r.solve.user.name}</Link></td>
+            <td>
+                {this.props.user.admin || this.props.user.mod ?
+                    <i className={`fas fa-user-check ${r.solve.user.verified ? "verified" : "unverified"} mr-1`} />
+                    : null
+                }
+                <Link to={`/u/${r.solve.user.name}`}>/u/{r.solve.user.name}</Link>
+            </td>
             <td>{Helpers.toReadableTime(r.solve.average * 10)}</td>
             <td>{Helpers.toReadableTime(r.solve.best_single * 10)}</td>
             {r.solve.times.map(t => <td>{t}</td>)}
