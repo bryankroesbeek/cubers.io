@@ -5,7 +5,7 @@ import { DispatchProp, connect, MapStateToProps } from 'react-redux'
 import { User, LeaderboardEvent } from '../../utils/types'
 import { LeaderboardTable } from './LeaderboardTable'
 import { LeaderboardState, LeaderboardAction } from '../../utils/store/types/leaderboardTypes'
-import { fetchLeaderboardById, setCurrentActiveEvent } from '../../utils/store/actions/leaderboardActions'
+import { fetchLeaderboardById, setCurrentActiveEvent, updateBlacklist } from '../../utils/store/actions/leaderboardActions'
 import { Store } from '../../utils/store/types/generalTypes'
 import { showListViewPrompt } from '../../utils/store/actions/promptActions'
 import { PromptAction } from '../../utils/store/types/promptTypes'
@@ -23,7 +23,7 @@ export class LeaderboardComponent extends React.Component<LeaderboardsProps>{
         this.props.dispatch(fetchLeaderboardById(this.props.dispatch, this.props.competitionId))
     }
 
-    componentDidUpdate() {        
+    componentDidUpdate() {
         if (this.props.data === "loading") return
         Header.setTitle(this.props.data.compTitle)
         if (this.props.data.compId === this.props.competitionId) return
@@ -58,6 +58,7 @@ export class LeaderboardComponent extends React.Component<LeaderboardsProps>{
         return <div className="leaderboards">
             {this.renderEvents()}
             <LeaderboardTable
+                user={this.props.user}
                 currentEvent={currentActiveEvent}
                 leaderboard={leaderboard}
                 showScrambles={() => {
@@ -65,6 +66,9 @@ export class LeaderboardComponent extends React.Component<LeaderboardsProps>{
                         `Scrambles for ${currentActiveEvent.name}`,
                         leaderboard.scrambles
                     ))
+                }}
+                toggleBlacklist={(row, type) => {
+                    this.props.dispatch(updateBlacklist(this.props.dispatch, row, type))
                 }}
             />
         </div>
@@ -76,7 +80,7 @@ export let mapStateToProps:
     (store, ownProps) => {
         return {
             ...store.leaderboard,
-            user: ownProps.user,
+            user: store.baseInfo.user as User,
             competitionId: Number(ownProps.match.params.compId),
         }
     }

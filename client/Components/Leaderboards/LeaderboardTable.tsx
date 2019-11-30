@@ -2,12 +2,16 @@ import * as React from 'react'
 import { Link } from 'react-router-dom'
 
 import * as Helpers from '../../utils/helpers'
-import { Leaderboard, LeaderboardItem, LeaderboardEvent } from '../../utils/types'
+import { Leaderboard, LeaderboardItem, LeaderboardEvent, User } from '../../utils/types'
+import { PromptComponent } from '../Prompt/Prompt'
+import { showConfirmationPrompt } from '../../utils/store/actions/promptActions'
 
 type LeaderboardTableProps = {
+    user: User
     leaderboard: Leaderboard
     currentEvent: LeaderboardEvent
     showScrambles: () => void
+    toggleBlacklist?: (row: LeaderboardItem, type: "blacklist" | "unblacklist") => void
 }
 
 export class LeaderboardTable extends React.Component<LeaderboardTableProps> {
@@ -17,19 +21,37 @@ export class LeaderboardTable extends React.Component<LeaderboardTableProps> {
             <th>User</th>
             <th>Average</th>
             <th>Best</th>
-            <th colSpan={5}>Solves</th>
-            {/* TODO: add mod buttons */}
+            <th colSpan={Number(this.props.currentEvent.format.slice(2))}>Solves</th>
+            {this.props.user.admin ? <th></th> : null}
         </tr>
     }
 
     renderTableRow(r: LeaderboardItem) {
-        return <tr>
+        // We know for a fact that blacklisted results are only shown to people with higher privileges
+        let className = r.solve.blacklisted ? "blacklisted-result" : null
+        return <tr className={className}>
             <td>{r.visibleRank}</td>
             <td><Link to={`/u/${r.solve.user.name}`}>/u/{r.solve.user.name}</Link></td>
             <td>{Helpers.toReadableTime(r.solve.average * 10)}</td>
             <td>{Helpers.toReadableTime(r.solve.best_single * 10)}</td>
             {r.solve.times.map(t => <td>{t}</td>)}
-            {/* TODO: add mod button */}
+            {this.props.user.admin ? <td>
+                <button
+                    className={r.solve.blacklisted ? "btn btn-success btn-xs btn-unblacklist" : "btn btn-danger btn-xs btn-blacklist"}
+                    onClick={() => {
+                        if (r.solve.blacklisted) PromptComponent.modifyPrompt(showConfirmationPrompt(
+                            `Unblacklist this ${this.props.currentEvent.name} result for ${r.solve.user.name}`,
+                            () => { this.props.toggleBlacklist(r, "unblacklist") }
+                        ))
+                        else PromptComponent.modifyPrompt(showConfirmationPrompt(
+                            `Blacklist this ${this.props.currentEvent.name} result for ${r.solve.user.name}`,
+                            () => { this.props.toggleBlacklist(r, "blacklist") }
+                        )) 
+                    }}
+                /* button */>
+                    {r.solve.blacklisted ? "unblacklist" : "blacklist"}
+                </button>
+            </td> : null}
         </tr>
     }
 

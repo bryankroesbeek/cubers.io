@@ -9,9 +9,11 @@ export type LeaderboardItem = {
     rank: number,
     visibleRank: number
     solve: {
-        average: number,
-        best_single: number,
-        times: string[],
+        id: number
+        average: number
+        best_single: number
+        times: string[]
+        blacklisted: boolean
         user: CommonUser
     },
 }
@@ -27,6 +29,7 @@ export type LeaderboardEvent = {
     eventId: number,
     name: string,
     slug: string
+    format: "Ao5" | "Mo3" | "Bo3" | "Bo1"
 }
 
 export type LeaderboardsCollection = {

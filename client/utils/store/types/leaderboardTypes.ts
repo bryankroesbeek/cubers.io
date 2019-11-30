@@ -18,4 +18,5 @@ export type LeaderboardCollectionAction = Action<"NONE"> |
 
 export type LeaderboardAction = Action<"NONE"> |
     Action<"FETCH_COMPETITION_LEADERBOARD"> & { data: LeaderboardData } |
-    Action<"SET_ACTIVE_EVENT"> & { event: LeaderboardEvent, leaderboard: Leaderboard }
+    Action<"SET_ACTIVE_EVENT"> & { event: LeaderboardEvent, leaderboard: Leaderboard } |
+    Action<"UPDATE_LEADERBOARD_TABLE_ROW"> & { row: LeaderboardItem }

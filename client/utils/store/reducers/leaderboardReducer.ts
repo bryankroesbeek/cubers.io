@@ -27,6 +27,14 @@ export const leaderboardReducer: Reducer<LeaderboardState, LeaderboardAction> = 
     if (action.type === "SET_ACTIVE_EVENT") {
         return { ...state, leaderboard: action.leaderboard, currentActiveEvent: action.event }
     }
+    if (action.type === "UPDATE_LEADERBOARD_TABLE_ROW") {
+        if (state.leaderboard === "loading") return state
+        let currentRows = [...state.leaderboard.results]
+        let currentItem = currentRows.filter(r => r.solve.id === action.row.solve.id)[0]
+        let index = currentRows.indexOf(currentItem)
+        currentRows[index] = action.row
+        return { ...state, leaderboard: { ...state.leaderboard, results: currentRows } }
+    }
 
     return state
 }
