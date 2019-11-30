@@ -22,7 +22,7 @@ function sendResources<T>(url: string, data: any, method: "POST" | "PUT" | "DELE
     if (!!data) request.body = JSON.stringify(data)
 
     return fetch(url, request)
-        .then(res => res.json())
+        .then(res => res.status === 204 ? {} : res.json())
         .then(json => json as T)
 }
 
