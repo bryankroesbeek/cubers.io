@@ -122,9 +122,9 @@ def get_user_records(username):
     rankings = [x for x in map(lambda key: {
         'puzzle': event_id_name_map[key],
         'puzzleSlug': slugify(event_id_name_map[key]),
-        'single': int(site_rankings[key][0]) if not site_rankings[key][0] == "DNF" else "DNF",
+        'single': "DNF" if site_rankings[key][0] == "DNF" else "" if site_rankings[key][0] == '' else int(site_rankings[key][0]),
         'singleRank': site_rankings[key][1],
-        'average': int(site_rankings[key][2]) if not site_rankings[key][2] == "DNF" else "DNF",
+        'average': "DNF" if site_rankings[key][2] == "DNF" else "" if site_rankings[key][2] == '' else int(site_rankings[key][2]),
         'averageRank': site_rankings[key][3],
         'kinchRank': site_rankings[key][4]
     } if site_rankings[key][0] else None,site_rankings.keys()) if x is not None]
