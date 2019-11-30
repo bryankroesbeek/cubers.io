@@ -124,6 +124,7 @@ def comp_event_results(comp_event_id):
             "times": result[2].__dict__['times_string'].split(', '),
             "best_single": result[2].__dict__['single'],
             "average": result[2].__dict__['average'],
+            "comment": result[2].__dict__['comment'],
             "blacklisted": result[2].__dict__['is_blacklisted'],
             "user": get_user(result[2].__dict__['User'])
         }

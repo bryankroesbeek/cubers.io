@@ -13,6 +13,7 @@ export type LeaderboardItem = {
         average: number
         best_single: number
         times: string[]
+        comment: string
         blacklisted: boolean
         user: CommonUser
     },
