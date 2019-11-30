@@ -41,6 +41,7 @@ def comp_results(comp_id):
 
     events = map(lambda c: {
         'name': c.Event.name,
+        'format': c.Event.eventFormat,
         'compEventId': c.id,
         'eventId': c.Event.id,
         'slug': slugify(c.Event.name)
@@ -119,9 +120,11 @@ def comp_event_results(comp_event_id):
         "rank": result[0],
         "visibleRank": result[1],
         "solve": {
+            "id": result[2].__dict__['id'],
             "times": result[2].__dict__['times_string'].split(', '),
             "best_single": result[2].__dict__['single'],
             "average": result[2].__dict__['average'],
+            "blacklisted": result[2].__dict__['is_blacklisted'],
             "user": get_user(result[2].__dict__['User'])
         }
     },results_with_ranks))
@@ -218,6 +221,7 @@ def results_list():
 # -------------------------------------------------------------------------------------------------
 
 @app.route('/results/blacklist/<int:results_id>/')
+@app.route('/api/blacklist-result/<int:results_id>/', methods=["PUT"])
 def blacklist(results_id):
     """ Blacklists the specified UserEventResults. """
 
@@ -252,6 +256,7 @@ def blacklist(results_id):
 
 
 @app.route('/results/unblacklist/<int:results_id>/')
+@app.route('/api/unblacklist-result/<int:results_id>/', methods=["PUT"])
 def unblacklist(results_id):
     """ Unblacklists the specified UserEventResults. """
 
