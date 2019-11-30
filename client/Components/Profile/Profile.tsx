@@ -7,6 +7,7 @@ import { ProfileHistory, ProfileRankings, ProfileRecords, User, ProfileHistoryEv
 import { ProfileAction } from '../../utils/store/types/profileTypes'
 import { fetchUserRankings, fetchUserRecords, fetchUserHistory, setActiveHistoryItem } from '../../utils/store/actions/profileActions'
 import { Store } from '../../utils/store/types/generalTypes'
+import { Comment } from '../Helper/Comment'
 
 type RemoteProps = {
     username: string
@@ -150,20 +151,11 @@ class ProfileComponent extends React.Component<ProfileProps & RemoteProps & Disp
     }
 
     renderHistoryTableRow(r: ProfileHistoryResult) {
-        let commentIconStyle = !r.solves.comment ? "empty-comment" : ""
-        let comment = null
-
-        if (r.solves.comment) comment = <div className="comment-tooltip">
-            <span>{r.solves.comment}</span>
-        </div>
-
         let singleCellStyling = r.solves.wasPbSingle ? "personal-best" : null
         let averageCellStyling = r.solves.wasPbAverage ? "personal-best" : null
 
         return <tr className="medium-row">
-            <td className={`table-comment ${commentIconStyle}`}>
-                <i className="far fa-comment comment-icon">{comment}</i>
-            </td>
+            <td><Comment comment={r.solves.comment} /></td>
             <td>
                 <Link to={`/leaderboards/${r.comp.id}`}>{r.comp.title}</Link>
             </td>
