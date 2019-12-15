@@ -17,7 +17,7 @@ SOR_TYPE_NON_WCA = 'non_wca'
 # -------------------------------------------------------------------------------------------------
 
 # @app.route('/sum_of_ranks/<sor_type>/')
-@app.route('/api/sum-of-ranks/<sor_type>')
+@app.route('/api/sum-of-ranks/<sor_type>/')
 def sum_of_ranks(sor_type):
     """ A route for showing sum of ranks. """
 
