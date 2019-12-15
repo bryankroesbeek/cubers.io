@@ -125,7 +125,7 @@ def get_user_kinchranks_wca_sorted():
     These indicate users who haven't participated at all. """
 
     return DB.session.\
-        query(UserSiteRankings.wca_kinchrank, User.username).\
+        query(UserSiteRankings.wca_kinchrank, User).\
         join(User).\
         filter(UserSiteRankings.wca_kinchrank != 0).\
         order_by(UserSiteRankings.wca_kinchrank.desc()).\
@@ -137,7 +137,7 @@ def get_user_kinchranks_non_wca_sorted():
     These indicate users who haven't participated at all. """
 
     return DB.session.\
-        query(UserSiteRankings.non_wca_kinchrank, User.username).\
+        query(UserSiteRankings.non_wca_kinchrank, User).\
         join(User).\
         filter(UserSiteRankings.non_wca_kinchrank != 0).\
         order_by(UserSiteRankings.non_wca_kinchrank.desc()).\
@@ -149,7 +149,7 @@ def get_user_kinchranks_all_sorted():
     These indicate users who haven't participated at all. """
 
     return DB.session.\
-        query(UserSiteRankings.all_kinchrank, User.username).\
+        query(UserSiteRankings.all_kinchrank, User).\
         join(User).\
         filter(UserSiteRankings.all_kinchrank != 0).\
         order_by(UserSiteRankings.all_kinchrank.desc()).\

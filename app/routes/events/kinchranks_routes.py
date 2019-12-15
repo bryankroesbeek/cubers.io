@@ -1,6 +1,6 @@
 """ Routes related to displaying overall Kinchranks results. """
 
-from flask import render_template
+from flask import jsonify
 
 from app import app
 from app.persistence.user_site_rankings_manager import get_user_kinchranks_all_sorted,\
@@ -14,7 +14,8 @@ KINCH_TYPE_NON_WCA = 'non_wca'
 
 # -------------------------------------------------------------------------------------------------
 
-@app.route('/kinchranks/<rank_type>/')
+# @app.route('/kinchranks/<rank_type>/')
+@app.route('/api/kinchranks/<rank_type>/')
 def kinchranks(rank_type):
     """ A route for showing Kinchranks. """
 
@@ -38,5 +39,17 @@ def kinchranks(rank_type):
 
     sorted_kinchranks = [(format(kr[0], '.3f'), kr[1]) for kr in sorted_kinchranks]
 
-    return render_template("records/kinchranks.html", title=title,
-        alternative_title="Kinchranks", sorted_kinchranks=sorted_kinchranks)
+    return jsonify({
+        'title': title,
+        'values': clean_ranks(sorted_kinchranks)
+    })
+
+def clean_ranks(records):
+    return list(map(lambda solve: {
+        'rank_count': solve[0],
+        'user': {
+            'id': solve[1].id,
+            'name': solve[1].username,
+            'verified': solve[1].is_verified
+        }
+    }, records))

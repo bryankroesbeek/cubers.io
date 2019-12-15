@@ -51,6 +51,11 @@ def get_header_info():
         'name': sort['name']
     }, SUM_OF_RANKS))
 
+    kinchranks = list(map(lambda sort: {
+        'url': "/kinchranks/" + sort['sort'], #url_for('sum_of_ranks', sor_type=sort['sort']),
+        'name': sort['name']
+    }, SUM_OF_RANKS))
+
     user_items = "none"
     if current_user:
         user_items = {
@@ -71,6 +76,10 @@ def get_header_info():
             'nonWca': {
                 'urls': non_wca_events,
                 'title': 'Non-WCA Events'
+            },
+            'kinchranks': {
+                'urls': kinchranks,
+                'title': 'Kinchranks'
             },
             'sum': {
                 'urls': sum_of_ranks,
