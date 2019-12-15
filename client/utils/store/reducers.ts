@@ -10,6 +10,7 @@ import { versusReducer } from './reducers/versusReducer'
 import { settingsReducer } from './reducers/settingsReducer'
 import { competeReducer } from './reducers/competeReducer'
 import { promptReducer } from './reducers/promptReducer'
+import { kinchranksReducer } from './reducers/kinchranksReducer'
 
 const reducers: ReducersMapObject = {
     home: homeReducer,
@@ -22,7 +23,8 @@ const reducers: ReducersMapObject = {
     versus: versusReducer,
     settings: settingsReducer,
     compete: competeReducer,
-    prompt: promptReducer
+    prompt: promptReducer,
+    kinchranks: kinchranksReducer
 }
 
 export let combineReducer = combineReducers(reducers)

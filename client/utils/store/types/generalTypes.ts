@@ -8,6 +8,7 @@ import { VersusState, VersusAction } from './versusTypes'
 import { UserSettingsState, SettingsAction } from './settingsTypes'
 import { CompeteState, CompeteAction } from './competeTypes'
 import { PromptState, PromptAction } from './promptTypes'
+import { KinchranksState } from './kinchranksTypes'
 
 export type Store = {
     home: HomeState
@@ -21,4 +22,5 @@ export type Store = {
     settings: UserSettingsState
     compete: CompeteState
     prompt: PromptState
+    kinchranks: KinchranksState
 }
