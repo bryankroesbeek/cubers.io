@@ -9,6 +9,7 @@ export type Record = {
     wca: HeaderItem
     nonWca: HeaderItem
     sum: HeaderItem
+    kinchranks: HeaderItem
 }
 
 export type LeaderboardHeaderItem = {

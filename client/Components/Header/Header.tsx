@@ -12,7 +12,7 @@ type HeaderState = {
     recordsItems: Types.Record | "loading"
     leaderboardItems: Types.LeaderboardHeaderItem | "loading",
     userItems: Types.UserItems
-    currentDropdown: "none" | "records" | "leaderboards" | "profile" | "wca" | "non-wca" | "sum"
+    currentDropdown: "none" | "records" | "leaderboards" | "profile" | "wca" | "non-wca" | "sum" | "kinchranks"
 }
 
 
@@ -71,7 +71,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
         this.setDropdown("none")
     }
 
-    setDropdown = (type: "none" | "records" | "leaderboards" | "profile" | "wca" | "non-wca" | "sum") => {
+    setDropdown = (type: "none" | "records" | "leaderboards" | "profile" | "wca" | "non-wca" | "sum" | "kinchranks") => {
         let d = this.state.currentDropdown
         if (d === "wca" && type === "wca" || d === "non-wca" && type === "non-wca" || d === "sum" && type === "sum")
             return this.setState({ currentDropdown: "records" })
@@ -96,7 +96,8 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
         if (this.state.recordsItems === "loading") return null
         let currentDropdown = this.state.currentDropdown
         let show = currentDropdown === "records" || currentDropdown === "wca"
-            || currentDropdown === "non-wca" || currentDropdown === "sum" ? "show" : ""
+            || currentDropdown === "non-wca" || currentDropdown === "sum"
+            || currentDropdown === "kinchranks" ? "show" : ""
 
         return <>
             <button className="nav-link dropdown-toggle py-0" onClick={() => {
@@ -134,6 +135,17 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                     </button>
                     <div className={`dropdown-menu ${currentDropdown === "sum" ? "show" : ""}`}>
                         {this.renderRecordItem(this.state.recordsItems.sum, false)}
+                    </div>
+                </div>
+
+                <div className="dropdown dropright dropdown-submenu">
+                    <button className="dropdown-item dropdown-toggle" onClick={() => {
+                        this.setDropdown("kinchranks")
+                    }}>
+                        {this.state.recordsItems.kinchranks.title}
+                    </button>
+                    <div className={`dropdown-menu ${currentDropdown === "kinchranks" ? "show" : ""}`}>
+                        {this.renderRecordItem(this.state.recordsItems.kinchranks, false)}
                     </div>
                 </div>
             </div>
