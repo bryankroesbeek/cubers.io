@@ -24,6 +24,7 @@ import { BaseState, BaseAction } from './utils/store/types/baseTypes'
 import { getBaseInfo } from './utils/store/actions/baseActions'
 import { Store } from './utils/store/types/generalTypes'
 import { SettingsAction } from './utils/store/types/settingsTypes'
+import { Kinchranks } from './Components/Records/Kinchranks'
 
 type RouterProps = DispatchProp<BaseAction | SettingsAction> & BaseState
 
@@ -55,6 +56,8 @@ class MainRouterComponent extends React.Component<RouterProps, {}> {
                         <Route path="/event/:eventType" component={Records} />
 
                         <Route path="/sum-of-ranks/:eventType" component={SumOfRanks} />
+
+                        <Route path="/kinchranks/:eventType" component={Kinchranks} />
 
                         <Route exact path="/leaderboards" component={LeaderboardsCollection} />
 
