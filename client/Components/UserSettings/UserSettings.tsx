@@ -49,7 +49,7 @@ class UserSettingsComponent extends React.Component<UserSettingsProps>{
         let generalSettings = this.props.settings.generalSettings
 
         let manualEntry = generalSettings.manual_time_entry_by_default.value
-        let useInspection = manualEntry && generalSettings.use_inspection_time.value
+        let useInspection = manualEntry || !generalSettings.use_inspection_time.value
 
         return <div className="settings-block">
             <label className="block-title">General Settings</label>
