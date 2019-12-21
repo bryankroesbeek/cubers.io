@@ -8,7 +8,7 @@ import { SettingsToggle } from './SettingsToggle'
 import { UserSettingsState, SettingsAction } from '../../utils/store/types/settingsTypes'
 import { DispatchProp, MapStateToProps, connect } from 'react-redux'
 import { updateSettingsState, updateExpandedPicker } from '../../utils/store/actions/settingsActions'
-import { CleanUserSettings } from '../../utils/types'
+import { CleanUserSettings, GeneralSetting } from '../../utils/types'
 import { Store } from '../../utils/store/types/generalTypes'
 import { BaseAction } from '../../utils/store/types/baseTypes'
 import { submitNewSettings } from '../../utils/store/actions/baseActions'
@@ -48,20 +48,31 @@ class UserSettingsComponent extends React.Component<UserSettingsProps>{
     renderGeneralSettings() {
         let generalSettings = this.props.settings.generalSettings
 
+        let manualEntry = generalSettings.manual_time_entry_by_default.value
+        let useInspection = manualEntry && generalSettings.use_inspection_time.value
+
         return <div className="settings-block">
             <label className="block-title">General Settings</label>
-            {Object.keys(this.props.settings.generalSettings).map(s => {
-                let setting = this.props.settings.generalSettings[s]
-                return <div className="settings-block-field">
-                    <span className="field-title">{setting.title}</span>
-                    <span className="guide"></span>
-                    <SettingsToggle toggled={setting.value} setSwitch={(value) => {
-                        let settings = cloneDeep(this.props.settings)
-                        settings.generalSettings[s].value = value
-                        this.props.dispatch(updateSettingsState(settings))
-                    }} />
-                </div>
-            })}
+
+            {this.renderSetting(generalSettings.manual_time_entry_by_default, false, "manual_time_entry_by_default")}
+            {this.renderSetting(generalSettings.use_inspection_time, manualEntry, "use_inspection_time")}
+            {this.renderSetting(generalSettings.hide_inspection_time, useInspection, "hide_inspection_time")}
+            {this.renderSetting(generalSettings.hide_running_timer, manualEntry, "hide_running_timer")}
+
+            {this.renderSetting(generalSettings.hide_scramble_preview, false, "hide_scramble_preview")}
+            {this.renderSetting(generalSettings.enable_moving_shapes_bg, false, "enable_moving_shapes_bg")}
+        </div>
+    }
+
+    renderSetting(setting: GeneralSetting, disabled: boolean, settingKey: string) {
+        return <div className="settings-block-field">
+            <span className="field-title">{setting.title}</span>
+            <span className="guide"></span>
+            <SettingsToggle toggled={setting.value} disabled={disabled} setSwitch={(value) => {
+                let settings = cloneDeep(this.props.settings)
+                settings.generalSettings[settingKey].value = value
+                this.props.dispatch(updateSettingsState(settings))
+            }} />
         </div>
     }
 
@@ -72,7 +83,7 @@ class UserSettingsComponent extends React.Component<UserSettingsProps>{
             <div className="settings-block-field">
                 <span className="field-title">{settings.reddit_comp_notify.title}</span>
                 <span className="guide"></span>
-                <SettingsToggle toggled={settings.reddit_comp_notify.value} setSwitch={(value) => {
+                <SettingsToggle toggled={settings.reddit_comp_notify.value} disabled={false} setSwitch={(value) => {
                     let settings = cloneDeep(this.props.settings)
                     settings.redditSettings.reddit_comp_notify.value = value
                     this.props.dispatch(updateSettingsState(settings))
@@ -81,7 +92,7 @@ class UserSettingsComponent extends React.Component<UserSettingsProps>{
             <div className="settings-block-field">
                 <span className="field-title">{settings.reddit_results_notify.title}</span>
                 <span className="guide"></span>
-                <SettingsToggle toggled={settings.reddit_results_notify.value} setSwitch={(value) => {
+                <SettingsToggle toggled={settings.reddit_results_notify.value} disabled={false} setSwitch={(value) => {
                     let settings = cloneDeep(this.props.settings)
                     settings.redditSettings.reddit_results_notify.value = value
                     this.props.dispatch(updateSettingsState(settings))
@@ -100,7 +111,7 @@ class UserSettingsComponent extends React.Component<UserSettingsProps>{
             <span className="settings-block-field">
                 <label className="field-title">Use Custom {puzzleType} Colors</label>
                 <span className="guide"></span>
-                <SettingsToggle toggled={useCustomColors} setSwitch={(value) => {
+                <SettingsToggle toggled={useCustomColors} disabled={false} setSwitch={(value) => {
                     let settings = cloneDeep(this.props.settings)
                     if (puzzleType === "Megaminx") settings.megaminxSettings.use_custom_megaminx_colors = value
                     if (puzzleType === "Pyraminx") settings.pyraminxSettings.use_custom_pyraminx_colors = value

@@ -5,6 +5,7 @@ import * as React from 'react'
 
 type SettingsToggleProps = {
     toggled: boolean
+    disabled: boolean
     setSwitch: (value: boolean) => void
 }
 
@@ -19,11 +20,13 @@ export class SettingsToggle extends React.Component<SettingsToggleProps, Setting
 
     switchOff = (e: React.MouseEvent) => {
         e.preventDefault()
+        if (this.props.disabled) return
         this.props.setSwitch(false)
     }
 
     switchOn = (e: React.MouseEvent) => {
         e.preventDefault()
+        if (this.props.disabled) return
         this.props.setSwitch(true)
     }
 

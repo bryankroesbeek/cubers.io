@@ -53,14 +53,19 @@ export type CleanUserSettings = {
         reddit_results_notify: { value: boolean, title: string }
     },
     generalSettings: {
-        [index: string]: { value: boolean, title: string },
-        enable_moving_shapes_bg: { value: boolean, title: string }
-        hide_inspection_time: { value: boolean, title: string }
-        hide_running_timer: { value: boolean, title: string }
-        hide_scramble_preview: { value: boolean, title: string }
-        manual_time_entry_by_default: { value: boolean, title: string }
-        use_inspection_time: { value: boolean, title: string }
+        [index: string]: GeneralSetting
+        enable_moving_shapes_bg: GeneralSetting
+        hide_inspection_time: GeneralSetting
+        hide_running_timer: GeneralSetting
+        hide_scramble_preview: GeneralSetting
+        manual_time_entry_by_default: GeneralSetting
+        use_inspection_time: GeneralSetting
     }
+}
+
+export type GeneralSetting = {
+    value: boolean
+    title: string
 }
 
 export type UserSettingsMinified = {
