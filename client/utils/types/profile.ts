@@ -55,7 +55,7 @@ export type ProfileHistoryResult = {
 export type ProfileHistorySolves = {
     id: number
     compEventId: number
-    eventType: "normal" | "fmc"|"blind"|"multi_blind"
+    eventType: "normal" | "fmc" | "blind" | "multi_blind"
     single: number
     result: number
     average: number
@@ -63,7 +63,7 @@ export type ProfileHistorySolves = {
     wasPbAverage: boolean
     times: string[]
     comment: string
-    medal: "bronze"|"silver"|"gold"|"none"
+    medal: "bronze" | "silver" | "gold" | "none"
     isBlacklisted: boolean
     blacklistNote: string
 }
@@ -71,4 +71,13 @@ export type ProfileHistorySolves = {
 export type ProfileHistoryComp = {
     id: number
     title: string
+}
+
+export type ProfileUser = {
+    id: number
+    name: string
+    verified: boolean | "none"
+    alwaysBlacklist: boolean | "none"
+    admin: boolean | "none"
+    resultsMod: boolean | "none"
 }

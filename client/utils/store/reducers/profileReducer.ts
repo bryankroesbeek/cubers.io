@@ -3,6 +3,7 @@ import { Reducer, Action } from 'redux'
 import { ProfileAction, ProfileState } from '../types/profileTypes'
 
 const initialState: ProfileState = {
+    user: "loading",
     history: "loading",
     rankings: "loading",
     records: "loading",
@@ -11,6 +12,9 @@ const initialState: ProfileState = {
 
 export const profileReducer: Reducer<ProfileState, ProfileAction> = (state = initialState, action): ProfileState => {
     switch (action.type) {
+        case "FETCH_PROFILE_INFORMATION":
+            return { ...state, user: action.user }
+
         case "FETCH_PROFILE_STATISTICS":
             return { ...state, rankings: action.statistics }
 

@@ -1,7 +1,12 @@
-import { getUserRankings, getUserRecords, getUserHistory } from "../../api/profile"
+import { getUserRankings, getUserRecords, getUserHistory, getUserInformation } from "../../api/profile"
 import { ProfileAction } from "../types/profileTypes"
 import { Dispatch } from "react"
 import { ProfileHistoryEvent } from "../../types/profile"
+
+export let fetchUserInformation = (dispatch: Dispatch<ProfileAction>, username: string) => {
+    getUserInformation(username)
+        .then(u => dispatch({ type: "FETCH_PROFILE_INFORMATION", user: u }))
+}
 
 export let fetchUserRankings = (dispatch: Dispatch<ProfileAction>, username: string): ProfileAction => {
     getUserRankings(username)

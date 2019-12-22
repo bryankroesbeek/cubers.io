@@ -1,8 +1,9 @@
 import { Reducer, Action } from 'redux'
 
-import { ProfileRankings, ProfileRecords, ProfileHistory, ProfileHistoryEvent } from "../../types/profile";
+import { ProfileRankings, ProfileRecords, ProfileHistory, ProfileHistoryEvent, ProfileUser } from "../../types/profile";
 
 export type ProfileState = {
+    user: ProfileUser | "loading"
     rankings: ProfileRankings | "loading"
     records: ProfileRecords | "loading"
     history: ProfileHistory | "loading"
@@ -11,6 +12,7 @@ export type ProfileState = {
 }
 
 export type ProfileAction = Action<"NONE"> |
+    Action<"FETCH_PROFILE_INFORMATION"> & { user: ProfileUser } |
     Action<"FETCH_PROFILE_STATISTICS"> & { statistics: ProfileRankings } |
     Action<"FETCH_PROFILE_RECORDS"> & { records: ProfileRecords } |
     Action<"FETCH_PROFILE_HISTORY"> & { history: ProfileHistory } |
