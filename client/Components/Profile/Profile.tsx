@@ -3,30 +3,60 @@ import { Link, match } from 'react-router-dom'
 import { DispatchProp, MapStateToProps, connect } from 'react-redux'
 
 import * as Helpers from '../../utils/helpers'
-import { ProfileHistory, ProfileRankings, ProfileRecords, User, ProfileHistoryEvent, ProfileHistoryResult } from '../../utils/types'
-import { ProfileAction } from '../../utils/store/types/profileTypes'
-import { fetchUserRankings, fetchUserRecords, fetchUserHistory, setActiveHistoryItem } from '../../utils/store/actions/profileActions'
+import { ProfileHistory, ProfileRankings, ProfileRecords, User, ProfileHistoryEvent, ProfileHistoryResult, ProfileUser } from '../../utils/types'
+import { ProfileAction, ProfileState } from '../../utils/store/types/profileTypes'
+import { fetchUserRankings, fetchUserRecords, fetchUserHistory, setActiveHistoryItem, fetchUserInformation } from '../../utils/store/actions/profileActions'
 import { Store } from '../../utils/store/types/generalTypes'
 import { Comment } from '../Helper/Comment'
+import { setVerifiedStatus, setBlacklistStatus } from '../../utils/api'
 
 type RemoteProps = {
     username: string
     currentUser: User
 }
 
-type ProfileProps = {
-    rankings: ProfileRankings | "loading"
-    records: ProfileRecords | "loading"
-    history: ProfileHistory | "loading"
+type ProfileProps = ProfileState & RemoteProps & DispatchProp<ProfileAction>
 
-    selectedEvent: ProfileHistoryEvent | "none"
-}
-
-class ProfileComponent extends React.Component<ProfileProps & RemoteProps & DispatchProp<ProfileAction>>{
+class ProfileComponent extends React.Component<ProfileProps>{
     async componentDidMount() {
+        fetchUserInformation(this.props.dispatch, this.props.username)
         this.props.dispatch(fetchUserRankings(this.props.dispatch, this.props.username))
         this.props.dispatch(fetchUserRecords(this.props.dispatch, this.props.username))
         this.props.dispatch(fetchUserHistory(this.props.dispatch, this.props.username))
+    }
+
+    renderModBanner() {
+        if (this.props.user === "loading") return null
+        let user = this.props.user
+
+        if (!(this.props.currentUser.admin || this.props.currentUser.admin)) return null
+
+        const verify = () => setVerifiedStatus(this.props.username, "verify")
+            .then(() => this.props.dispatch({ type: "FETCH_PROFILE_INFORMATION", user: { ...user, verified: true } }))
+
+        const unverify = () => setVerifiedStatus(this.props.username, "unverify")
+            .then(() => this.props.dispatch({ type: "FETCH_PROFILE_INFORMATION", user: { ...user, verified: false } }))
+
+        const blacklist = () => setBlacklistStatus(this.props.username, "blacklist")
+            .then(() => this.props.dispatch({ type: "FETCH_PROFILE_INFORMATION", user: { ...user, alwaysBlacklist: true } }))
+
+        const unblacklist = () => setBlacklistStatus(this.props.username, "unblacklist")
+            .then(() => this.props.dispatch({ type: "FETCH_PROFILE_INFORMATION", user: { ...user, alwaysBlacklist: false } }))
+
+        let verifiedButton = user.verified ?
+            <button className="profile-mod-button gray" onClick={unverify}>Un-verify User</button> :
+            <button className="profile-mod-button green" onClick={verify}>Verify User</button>
+
+        let blacklistButton = user.alwaysBlacklist ?
+            <button className="profile-mod-button gray" onClick={unblacklist}>Remove Permanent Blacklist</button> :
+            <button className="profile-mod-button red" onClick={blacklist}>Apply Permanent Blacklist</button>
+
+        return <div className="profile-mod-row">
+            <div className="mod-row-banner">
+                {verifiedButton}
+                {blacklistButton}
+            </div>
+        </div>
     }
 
     renderRankings() {
@@ -175,6 +205,7 @@ class ProfileComponent extends React.Component<ProfileProps & RemoteProps & Disp
 
     render() {
         return <div className="profile">
+            {this.renderModBanner()}
             <h1 className="profile-username">{this.props.username}</h1>
             {this.renderRankings()}
             <div className="profile-section-title">
@@ -191,7 +222,7 @@ class ProfileComponent extends React.Component<ProfileProps & RemoteProps & Disp
 }
 
 let mapStateToProps:
-    MapStateToProps<ProfileProps & RemoteProps, { match: match<{ username: string }> } & RemoteProps, Store> =
+    MapStateToProps<ProfileState & RemoteProps, { match: match<{ username: string }> } & RemoteProps, Store> =
     (store, ownProps) => {
         return {
             ...store.profile,
