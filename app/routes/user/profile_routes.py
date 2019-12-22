@@ -23,7 +23,7 @@ LOG_PROFILE_VIEW = "{} is viewing {}'s profile"
 # -------------------------------------------------------------------------------------------------
 
 # @app.route('/u/<username>/')
-@app.route('/api/user/<username>')
+# @app.route('/api/user/<username>')
 def profile(username):
     """ A route for showing a user's profile. """
 
@@ -251,68 +251,45 @@ def result_to_dictionary(item):
 
 # -------------------------------------------------------------------------------------------------
 
-@app.route('/blacklist_user/<int:user_id>/')
-def blacklist_user(user_id: int):
+# @app.route('/blacklist_user/<int:user_id>/')
+@app.route('/api/blacklist-user/<username>', methods=["POST"])
+@app.route('/api/unblacklist-user/<username>', methods=["POST"])
+def blacklist_user(username):
     """ Sets the perma-blacklist flag for the specified user. """
 
-    if not (current_user.is_authenticated and (current_user.is_admin or current_user.is_results_moderator)):
+    if not (current_user.is_authenticated and (current_user.is_admin or current_user.is_results_mod)):
         return ("Hey, you're not allowed to do that.", 403)
 
-    set_perma_blacklist_for_user(user_id)
-
-    user = get_user_by_id(user_id)
+    user = get_user_by_username(username)
     if not user:
-        return redirect(url_for('index'))
+        return  "", 403
 
-    return redirect(url_for('profile', username=user.username))
+    if user.always_blacklist:
+        unset_perma_blacklist_for_user(user.id)
+    else:
+        set_perma_blacklist_for_user(user.id)
 
+    return "", 204
 
-@app.route('/unblacklist_user/<int:user_id>/')
-def unblacklist_user(user_id: int):
-    """ Unsets the perma-blacklist flag for the specified user. """
-
-    if not (current_user.is_authenticated and (current_user.is_admin or current_user.is_results_moderator)):
-        return ("Hey, you're not allowed to do that.", 403)
-
-    unset_perma_blacklist_for_user(user_id)
-
-    user = get_user_by_id(user_id)
-    if not user:
-        return redirect(url_for('index'))
-
-    return redirect(url_for('profile', username=user.username))
-
-
-@app.route('/verify_user/<int:user_id>/')
-def do_verify_user(user_id: int):
+# @app.route('/verify_user/<user_nam>/')
+@app.route('/api/verify-user/<username>', methods=["POST"])
+@app.route('/api/unverify-user/<username>', methods=["POST"])
+def do_verify_user(username):
     """ Sets the verified flag for the specified user. """
 
-    if not (current_user.is_authenticated and (current_user.is_admin or current_user.is_results_moderator)):
+    if not (current_user.is_authenticated and (current_user.is_admin or current_user.is_results_mod)):
         return ("Hey, you're not allowed to do that.", 403)
 
-    verify_user(user_id)
-
-    user = get_user_by_id(user_id)
+    user = get_user_by_username(username)
     if not user:
-        return redirect(url_for('index'))
+        return "", 404
 
-    return redirect(url_for('profile', username=user.username))
+    if user.is_verified:
+        unverify_user(user.id)
+    else:
+        verify_user(user.id)
 
-
-@app.route('/unverify_user/<int:user_id>/')
-def do_unverify_user(user_id: int):
-    """ Unsets the verified flag for the specified user. """
-
-    if not (current_user.is_authenticated and (current_user.is_admin or current_user.is_results_moderator)):
-        return ("Hey, you're not allowed to do that.", 403)
-
-    unverify_user(user_id)
-
-    user = get_user_by_id(user_id)
-    if not user:
-        return redirect(url_for('index'))
-
-    return redirect(url_for('profile', username=user.username))
+    return "", 204
 
 # -------------------------------------------------------------------------------------------------
 
