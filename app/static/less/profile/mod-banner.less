@@ -1,0 +1,55 @@
+.profile-mod-button {
+    width: 200px;
+    border-radius: 5px;
+    margin: 10px;
+    color: white;
+    font-size: 11pt;
+
+    &.gray {
+        background: #565656;
+        border: 1px solid darken(#565656, 10%);
+
+        &:active {
+            background: darken(#565656, 10%);
+            border-color: darken(#565656, 20%);
+        }
+    }
+
+    &.green { 
+        background: #28a745;
+        border: 1px solid darken(#28a745, 10%);
+
+        &:active {
+            background: darken(#28a745, 10%);
+            border-color: darken(#28a745, 20%);
+        }
+    }
+
+    &.red {
+        background: #dc3545;
+        border: 1px solid darken(#dc3545, 10%);
+
+        &:active {
+            background: darken(#dc3545, 10%);
+            border-color: darken(#dc3545, 20%);
+        }
+    }
+
+}
+
+.profile-mod-row {
+    margin: 15px 0;
+    height: 75px;
+}
+
+.mod-row-banner {
+    position: absolute;
+    display: flex;
+    left: 0;
+    width: 100%;
+    height: inherit;
+
+    justify-content: center;
+
+    background: darken(white, 20%);
+}
