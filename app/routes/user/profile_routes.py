@@ -105,6 +105,25 @@ def profile(username):
         kinch_all=kinch_all, kinch_wca=kinch_wca, kinch_non_wca=kinch_non_wca)
 
 
+@app.route('/api/user/<username>/')
+def get_user_profile_info(username):
+    if not current_user:
+        return "", 401
+
+    user = get_user_by_username(username)
+
+    user_dict = {
+        'id': user.id,
+        'name': user.username,
+        'wcaId': user.wca_id,
+        'admin': user.is_admin if current_user.is_admin or current_user.is_results_mod else "none",
+        'alwaysBlacklist': user.always_blacklist if current_user.is_admin or current_user.is_results_mod else "none",
+        'resultsMod': user.is_results_mod if current_user.is_admin or current_user.is_results_mod else "none",
+        'verified': user.is_verified if current_user.is_admin or current_user.is_results_mod else "none",
+    }
+
+    return jsonify(user_dict)
+
 @app.route('/api/user/<username>/records')
 def get_user_records(username):
     if not current_user:
