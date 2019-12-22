@@ -59,6 +59,21 @@ class ProfileComponent extends React.Component<ProfileProps>{
         </div>
     }
 
+    renderTitle() {
+        if (this.props.user === "loading") return null
+        let user = this.props.user
+
+        let allowView = this.props.currentUser.admin || this.props.currentUser.mod
+
+        return <h1 className="profile-username">
+            {this.props.username}
+            {allowView ? <span className="profile-username-mod-icons">
+                <i className={`fas fa-user-check ${user.verified ? "verified" : "unverified"} ml-3`}></i>
+                <i className={`fas fa-ban ${user.alwaysBlacklist ? "blacklisted" : "unblacklisted"} mx-3`}></i>
+            </span> : null}
+        </h1>
+    }
+
     renderRankings() {
         let rankings = this.props.rankings
         if (rankings === "loading") return null
@@ -206,7 +221,7 @@ class ProfileComponent extends React.Component<ProfileProps>{
     render() {
         return <div className="profile">
             {this.renderModBanner()}
-            <h1 className="profile-username">{this.props.username}</h1>
+            {this.renderTitle()}
             {this.renderRankings()}
             <div className="profile-section-title">
                 <h3>Personal Records</h3>
