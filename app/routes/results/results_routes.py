@@ -9,6 +9,7 @@ from slugify import slugify
 from app import app
 from app.business.user_results import set_medals_on_best_event_results
 from app.business.user_results.personal_bests import recalculate_user_pbs_for_event
+from app.persistence.user_manager import get_user_by_username
 from app.persistence.comp_manager import get_active_competition, get_complete_competitions,\
     get_previous_competition, get_competition, get_all_comp_events_for_comp, get_comp_event_by_id
 from app.persistence.user_results_manager import get_all_complete_user_results_for_comp_event,\
@@ -58,6 +59,27 @@ def comp_results(comp_id):
     # return render_template("results/results_comp.html", alternative_title=alternative_title,
     #     events_names_ids=events_names_ids, id_3x3=id_3x3, comp_id=comp_id)
 
+@app.route('/api/leaderboards/<comp_id>/overall/')
+def comp_overall_results(comp_id):
+    perf_data =  get_overall_performance_data(int(comp_id))
+
+
+    results = map(__get_result, perf_data)
+
+    return jsonify(list(results))
+
+def __get_result(res):
+    user = get_user_by_username(res[0])
+    result = {
+        'user': {
+            'id': user.id,
+            'name': user.username,
+            'verified': user.is_verified
+        },
+        'points': res[1]
+    }
+
+    return result
 
 # @app.route('/compevent/<comp_event_id>/')
 @app.route('/api/leaderboards/event/<comp_event_id>/')
@@ -173,7 +195,7 @@ def get_overall_performance_data(comp_id):
     if not user_points:
         return "Nobody has participated in anything yet this week?"
 
-    return render_template("results/overall_points.html", user_points=user_points)
+    return user_points
 
 # -------------------------------------------------------------------------------------------------
 
