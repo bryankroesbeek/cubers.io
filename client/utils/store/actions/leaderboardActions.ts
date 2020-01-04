@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 
 import { LeaderboardCollectionAction, LeaderboardAction } from '../types/leaderboardTypes'
-import { getLeaderboardCompetitions, getLeaderboardItems, getLeaderboardEvent } from '../../api'
+import { getLeaderboardCompetitions, getLeaderboardItems, getLeaderboardEvent, getLeaderboardOverall } from '../../api'
 import { LeaderboardEvent, LeaderboardItem } from '../../types/leaderboards'
 import { setBlacklist } from '../../api/leaderboard'
 import { cloneDeep } from 'lodash'
@@ -22,6 +22,13 @@ export let fetchLeaderboardById = (dispatch: Dispatch<LeaderboardAction>, id: nu
         })
 
     return { type: "NONE" }
+}
+
+export let fetchLeaderboardOverall = (dispatch: Dispatch<LeaderboardAction>, id: number) => {
+    getLeaderboardOverall(id)
+        .then(result => {
+            dispatch({ type: "SET_LEADERBOARD_OVERALL", overall: result })
+        })
 }
 
 export let setCurrentActiveEvent = (dispatch: Dispatch<LeaderboardAction>, leaderboardEvent: LeaderboardEvent): LeaderboardAction => {

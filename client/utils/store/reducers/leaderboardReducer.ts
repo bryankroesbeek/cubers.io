@@ -17,7 +17,8 @@ export const leaderboardCollectionReducer: Reducer<LeaderboardsCollectionState, 
 const initialLeaderboardState: LeaderboardState = {
     currentActiveEvent: "none",
     data: "loading",
-    leaderboard: "loading"
+    leaderboard: "loading",
+    overall: "none"
 }
 
 export const leaderboardReducer: Reducer<LeaderboardState, LeaderboardAction> = (state = initialLeaderboardState, action): LeaderboardState => {
@@ -25,7 +26,7 @@ export const leaderboardReducer: Reducer<LeaderboardState, LeaderboardAction> = 
         return { ...state, data: action.data }
     }
     if (action.type === "SET_ACTIVE_EVENT") {
-        return { ...state, leaderboard: action.leaderboard, currentActiveEvent: action.event }
+        return { ...state, leaderboard: action.leaderboard, currentActiveEvent: action.event, overall: "none" }
     }
     if (action.type === "UPDATE_LEADERBOARD_TABLE_ROW") {
         if (state.leaderboard === "loading") return state
@@ -34,6 +35,10 @@ export const leaderboardReducer: Reducer<LeaderboardState, LeaderboardAction> = 
         let index = currentRows.indexOf(currentItem)
         currentRows[index] = action.row
         return { ...state, leaderboard: { ...state.leaderboard, results: currentRows } }
+    }
+    if (action.type === "SET_LEADERBOARD_OVERALL") {
+        if (state.leaderboard === "loading") return state
+        return { ...state, overall: action.overall, currentActiveEvent: "none" }
     }
 
     return state

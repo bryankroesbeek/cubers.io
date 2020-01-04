@@ -1,9 +1,14 @@
 import { fetchResources, putResources } from './base'
 import { Leaderboard, LeaderboardEvent, LeaderboardsCollection } from '../types'
 import { LeaderboardData } from '../types/leaderboards'
+import { LeaderboardTableRowOverall } from '../store/types/leaderboardTypes'
 
 export function getLeaderboardItems(compId: number): Promise<LeaderboardData> {
     return fetchResources<LeaderboardData>(`/api/leaderboards/comp/${compId}`)
+}
+
+export function getLeaderboardOverall(compId: number): Promise<LeaderboardTableRowOverall[]> {
+    return fetchResources(`/api/leaderboards/${compId}/overall`)
 }
 
 export function getLeaderboardEvent(eventId: number): Promise<Leaderboard> {
