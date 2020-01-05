@@ -7,12 +7,14 @@ type HeaderProps = {
     user: Types.User
 }
 
+type DropdownTypes = "none" | "records" | "leaderboards" | "profile" | "wca" | "non-wca" | "sum" | "kinchranks" | "export"
+
 type HeaderState = {
     title: string
     recordsItems: Types.Record | "loading"
     leaderboardItems: Types.LeaderboardHeaderItem | "loading",
     userItems: Types.UserItems
-    currentDropdown: "none" | "records" | "leaderboards" | "profile" | "wca" | "non-wca" | "sum" | "kinchranks"
+    currentDropdown: DropdownTypes
 }
 
 
@@ -71,7 +73,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
         this.setDropdown("none")
     }
 
-    setDropdown = (type: "none" | "records" | "leaderboards" | "profile" | "wca" | "non-wca" | "sum" | "kinchranks") => {
+    setDropdown = (type: DropdownTypes) => {
         let d = this.state.currentDropdown
         if (d === "wca" && type === "wca" || d === "non-wca" && type === "non-wca" || d === "sum" && type === "sum")
             return this.setState({ currentDropdown: "records" })
@@ -175,7 +177,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
         if (this.state.userItems === "none")
             return <Link className="nav-link py-0" to="/login">Login with Reddit</Link>
 
-        let show = this.state.currentDropdown === "profile" ? "show" : ""
+        let show = this.state.currentDropdown === "profile" || this.state.currentDropdown === "export" ? "show" : ""
 
         return <>
             <button className="nav-link dropdown-toggle py-0" onClick={() => {
@@ -187,6 +189,26 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                 <Link className="dropdown-item" to={this.state.userItems.profile_url} onClick={this.hideNavigation}>Profile</Link>
                 <div className="dropdown-divider"></div>
                 <Link className="dropdown-item" to={this.state.userItems.versus_url} onClick={this.hideNavigation}>Competitor Showdown</Link>
+                <div className="dropdown-divider"></div>
+                <div className="dropdown dropleft dropdown-submenu">
+                    <button className="dropdown-item dropdown-toggle" onClick={() => {
+                        this.setDropdown("export")
+                    }}>
+                        {" Solves Export"}
+                    </button>
+                    <div className={`dropdown-menu ${this.state.currentDropdown === "export" ? "show" : ""}`}>
+                        <a
+                            className="dropdown-item slim-nav-item"
+                            href={"/api/export?type=twisty_timer"}
+                            onClick={() => this.setDropdown("none")}
+                        >{"Twisty Timer"}</a>
+                        <div className="dropdown-divider"></div>
+
+                        <button className="dropdown-item" disabled>
+                            {"More coming soon!"}
+                        </button>
+                    </div>
+                </div>
                 <div className="dropdown-divider"></div>
                 <Link className="dropdown-item" to="/logout" onClick={this.hideNavigation}>Logout</Link>
             </div>
