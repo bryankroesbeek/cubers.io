@@ -49,7 +49,7 @@ export class LeaderboardComponent extends React.Component<LeaderboardsProps>{
                 </button>
             })}
             <button
-                className={`tab-events-header-item ${currentEvent.slug === "overall" ? "active" : ""}`}
+                className={`tab-events-header-item ${this.props.overall !== "none" ? "active" : ""}`}
                 onClick={() => fetchLeaderboardOverall(this.props.dispatch, this.props.competitionId)}
             /* button */>
                 <i className={`fas fa-globe-europe tab-events-header-item-image`} />
