@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { PromptState, PromptAction } from '../../utils/store/types/promptTypes'
+import { PromptState, PromptAction, ButtonColor } from '../../utils/store/types/promptTypes'
 import { DispatchProp, MapStateToProps, connect } from 'react-redux'
 import { closePrompt, hidePrompt, updateCommentInput, updateFmcInput, showPrompt } from '../../utils/store/actions/promptActions'
 import { Store } from '../../utils/store/types/generalTypes'
@@ -67,12 +67,12 @@ export class PromptComponent extends React.Component<PromptProps & DispatchProp<
         }
     }
 
-    getConfirmationBody(confirmAction: () => void): PromptBody {
+    getConfirmationBody(confirmAction: () => void, buttonColor: ButtonColor): PromptBody {
         return {
             body: null,
             buttons: <div className="prompt-buttons">
                 <button className="prompt-button cancel" onClick={this.closeCurrentPrompt}>Cancel</button>
-                <button className="prompt-button" onClick={() => {
+                <button className={`prompt-button ${buttonColor}`} onClick={() => {
                     confirmAction()
                     this.closeCurrentPrompt()
                 }}>Yes</button>
@@ -99,7 +99,7 @@ export class PromptComponent extends React.Component<PromptProps & DispatchProp<
 
         if (this.props.type === "confirmation") {
             let { confirmAction } = this.props
-            return this.getConfirmationBody(confirmAction)
+            return this.getConfirmationBody(confirmAction, this.props.buttonColor)
         }
 
         if (this.props.type === "comment") {

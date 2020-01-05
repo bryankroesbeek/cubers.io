@@ -102,14 +102,27 @@
         border-radius: 5px;
         font-size: 11pt;
         font-family: 'Roboto';
-        
-        &:hover {
-            background: darken(#007bff, 10%)
+
+        &.blue { 
+            background: #3f3fbf;
+
+            &:hover { background: darken(#3f3fbf, 10%) }
+            &:active { background: darken(#3f3fbf, 15%) }
         }
-        &:active {
-            background: darken(#007bff, 15%)
+        &.green { 
+            background: #3fbf3f;
+
+            &:hover { background: darken(#3fbf3f, 10%) }
+            &:active { background: darken(#3fbf3f, 15%) }
         }
+        &.red { 
+            background: #bf3f3f;
+
+            &:hover { background: darken(#bf3f3f, 10%) }
+            &:active { background: darken(#bf3f3f, 15%) }
+        }        
     }
+    
     .cancel {
         background: #6c757d;
 

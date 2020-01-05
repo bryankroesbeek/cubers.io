@@ -25,7 +25,7 @@ export const promptReducer: Reducer<PromptState, PromptAction> = (state = initia
             return { ...state, type: "listview", title: action.title, items: action.items, hideType: "fade-in" }
 
         case "SHOW_CONFIRMATION_PROMPT":
-            return { ...state, type: "confirmation", title: action.title, confirmAction: action.confirmAction, hideType: "fade-in" }
+            return { ...state, type: "confirmation", title: action.title, confirmAction: action.confirmAction, hideType: "fade-in", buttonColor: action.buttonColor }
 
         case "SHOW_COMMENT_INPUT_PROMPT":
             return { ...state, type: "comment", title: action.title, comment: action.comment, confirmAction: action.confirmAction, hideType: "fade-in" }
