@@ -21,7 +21,7 @@ import { Prompt } from './Components/Prompt/Prompt'
 
 import { connect, DispatchProp } from 'react-redux'
 import { BaseState, BaseAction } from './utils/store/types/baseTypes'
-import { getBaseInfo } from './utils/store/actions/baseActions'
+import { getBaseInfo, getUserInformation } from './utils/store/actions/baseActions'
 import { Store } from './utils/store/types/generalTypes'
 import { SettingsAction } from './utils/store/types/settingsTypes'
 import { Kinchranks } from './Components/Records/Kinchranks'
@@ -35,6 +35,11 @@ class MainRouterComponent extends React.Component<RouterProps, {}> {
 
     async componentDidMount() {
         this.props.dispatch(getBaseInfo(this.props.dispatch))
+        setInterval(this.updateUser, 10000)
+    }
+
+    updateUser = () => {
+        getUserInformation(this.props.dispatch)
     }
 
     render() {
