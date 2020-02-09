@@ -6,82 +6,32 @@
 //     shapes.begin();
 //
 // It is your responsibility to resize the canvas as needed.
+let shapesCanvas;
 
-(function () {
-
-  function Animation(start, end, duration) {
-    this.start = start;
-    this.end = end;
-    this.duration = duration;
-    this.timestamp = (new Date()).getTime();
-  }
-
-  Animation.prototype.elapsed = function () {
-    return ((new Date()).getTime() - this.timestamp) / 1000;
+export function initShapes(canvas) {
+  if (!canvas) return;
+  if (shapesCanvas) return;
+  shapesCanvas = canvas;
+  var shapes = new Shapes(shapesCanvas);
+  shapes.begin();
+  var resizeFunc = function () {
+    shapesCanvas.width = window.innerWidth;
+    shapesCanvas.height = window.innerHeight;
+    shapes.draw();
   };
+  window.addEventListener('resize', resizeFunc);
+  resizeFunc();
+};
 
-  Animation.prototype.intermediate = function (pg) {
-    var percentage = Math.min(this.elapsed() / this.duration, 1);
-    pg.x = this.start.x + (this.end.x - this.start.x) * percentage;
-    pg.y = this.start.y + (this.end.y - this.start.y) * percentage;
-    pg.radius = this.start.radius +
-      (this.end.radius - this.start.radius) * percentage;
-    pg.rotation = this.start.rotation +
-      (this.end.rotation - this.start.rotation) * percentage;
-    pg.opacity = this.start.opacity +
-      (this.end.opacity - this.start.opacity) * percentage;
-  };
-
-  Animation.prototype.isDone = function () {
-    return this.elapsed() >= this.duration;
-  };
-
-  function MovingShape(initial) {
+class MovingShape {
+  constructor(initial) {
     this.pentagon = initial.copy();
     this.animation = new Animation(initial, initial, 0);
   }
+}
 
-  function Shape(x, y, radius, rotation, opacity, numSides) {
-    this.x = x;
-    this.y = y;
-    this.radius = radius;
-    this.rotation = rotation;
-    this.opacity = opacity;
-    this.numSides = numSides;
-  }
-
-  Shape.prototype.copy = function () {
-    return new Shape(this.x, this.y, this.radius, this.rotation,
-      this.opacity, this.numSides);
-  };
-
-  Shape.prototype.draw = function (ctx, width, height) {
-    var radius = this.radius;
-    var rotation = this.rotation;
-    var numSides = this.numSides;
-    var x = this.x;
-    var y = this.y;
-    var size = Math.max(width, height);
-
-    // TODO: use this.___ in here instead of local variables.
-
-    ctx.fillStyle = 'rgba(255, 255, 255, ' + this.opacity + ')';
-    ctx.beginPath();
-    for (var i = 0; i < numSides; ++i) {
-      var ang = rotation + i * Math.PI * 2 / numSides;
-      if (i == 0) {
-        ctx.moveTo((x + Math.cos(ang) * radius) * size,
-          (y + Math.sin(ang) * radius) * size);
-      } else {
-        ctx.lineTo((x + Math.cos(ang) * radius) * size,
-          (y + Math.sin(ang) * radius) * size);
-      }
-    }
-    ctx.closePath();
-    ctx.fill();
-  };
-
-  function Shapes(canvas, count) {
+class Shapes {
+  constructor(canvas, count) {
     this.canvas = canvas;
     this.movingShapes = [];
 
@@ -92,13 +42,14 @@
     }
   }
 
-  Shapes.prototype.begin = function () {
+
+  begin() {
     setInterval(function () {
       this.draw();
     }.bind(this), 1000 / 24);
   };
 
-  Shapes.prototype.draw = function () {
+  draw() {
     var context = this.canvas.getContext('2d');
     var width = this.canvas.width;
     var height = this.canvas.height;
@@ -122,7 +73,7 @@
     }
   };
 
-  Shapes.prototype.random = function (ignoreIdx) {
+  random(ignoreIdx) {
     var radius = (0.11 + (Math.pow(Math.random(), 15) + 1.0) * 0.075) * 0.65;
     var opacity = Math.random() * 0.20 + 0.04;
     var numSides = 3 + Math.floor(Math.random() * 3);
@@ -140,7 +91,7 @@
     return new Shape(coords.x, coords.y, radius, rotation, opacity, last.numSides);
   };
 
-  Shapes.prototype._gravityCoords = function (ignoreIdx, last) {
+  _gravityCoords(ignoreIdx, last) {
     var newCoords = {};
 
     // Use gravity to figure out where the pentagon "wants" to go.
@@ -176,27 +127,75 @@
 
     return newCoords;
   };
+}
 
-  $(function () {
-    var canvas = $('#shapes')[0];
-    var shapes = new Shapes(canvas);
-    shapes.begin();
-    var resizeFunc = function () {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      shapes.draw();
-    };
-    $(window).resize(resizeFunc);
-    resizeFunc();
+class Shape {
+  constructor(x, y, radius, rotation, opacity, numSides) {
+    this.x = x;
+    this.y = y;
+    this.radius = radius;
+    this.rotation = rotation;
+    this.opacity = opacity;
+    this.numSides = numSides;
+  }
 
-    setTimeout(function () {
-      $('#shapes').css({
-        opacity: 1,
-        '-ms-transform': 'none',
-        '-webkit-transform': 'none',
-        transform: 'none'
-      });
-    }, 10);
-  });
+  copy() {
+    return new Shape(this.x, this.y, this.radius, this.rotation,
+      this.opacity, this.numSides);
+  };
 
-})();
+  draw(ctx, width, height) {
+    var radius = this.radius;
+    var rotation = this.rotation;
+    var numSides = this.numSides;
+    var x = this.x;
+    var y = this.y;
+    var size = Math.max(width, height);
+
+    // TODO: use this.___ in here instead of local variables.
+
+    ctx.fillStyle = 'rgba(255, 255, 255, ' + this.opacity + ')';
+    ctx.beginPath();
+    for (var i = 0; i < numSides; ++i) {
+      var ang = rotation + i * Math.PI * 2 / numSides;
+      if (i == 0) {
+        ctx.moveTo((x + Math.cos(ang) * radius) * size,
+          (y + Math.sin(ang) * radius) * size);
+      } else {
+        ctx.lineTo((x + Math.cos(ang) * radius) * size,
+          (y + Math.sin(ang) * radius) * size);
+      }
+    }
+    ctx.closePath();
+    ctx.fill();
+  };
+}
+
+class Animation {
+  constructor(start, end, duration) {
+    this.start = start;
+    this.end = end;
+    this.duration = duration;
+    this.timestamp = (new Date()).getTime();
+  }
+
+  elapsed() {
+    return ((new Date()).getTime() - this.timestamp) / 1000;
+  };
+
+  intermediate(pg) {
+    var percentage = Math.min(this.elapsed() / this.duration, 1);
+    pg.x = this.start.x + (this.end.x - this.start.x) * percentage;
+    pg.y = this.start.y + (this.end.y - this.start.y) * percentage;
+    pg.radius = this.start.radius +
+      (this.end.radius - this.start.radius) * percentage;
+    pg.rotation = this.start.rotation +
+      (this.end.rotation - this.start.rotation) * percentage;
+    pg.opacity = this.start.opacity +
+      (this.end.opacity - this.start.opacity) * percentage;
+  };
+
+  isDone() {
+    return this.elapsed() >= this.duration;
+  };
+}
