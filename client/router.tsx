@@ -26,16 +26,25 @@ import { Store } from './utils/store/types/generalTypes'
 import { SettingsAction } from './utils/store/types/settingsTypes'
 import { Kinchranks } from './Components/Records/Kinchranks'
 
+import { initShapes } from './utils/helpers/shapes/shapes'
+
 type RouterProps = DispatchProp<BaseAction | SettingsAction> & BaseState
 
 class MainRouterComponent extends React.Component<RouterProps, {}> {
+    canvas: React.RefObject<HTMLCanvasElement>
     constructor(props: RouterProps) {
         super(props)
+
+        this.canvas = React.createRef()
     }
 
     async componentDidMount() {
         this.props.dispatch(getBaseInfo(this.props.dispatch))
         setInterval(this.updateUser, 10000)
+    }
+
+    componentDidUpdate() {
+        initShapes(this.canvas.current)
     }
 
     updateUser = () => {
@@ -50,6 +59,8 @@ class MainRouterComponent extends React.Component<RouterProps, {}> {
 
         return <BrowserRouter>
             <Header user={user} />
+
+            <Route><canvas ref={this.canvas} id="shapes" /></Route>
 
             <Switch>
                 <Route exact path="/" component={Home} />
