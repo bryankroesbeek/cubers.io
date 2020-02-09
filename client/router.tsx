@@ -65,27 +65,27 @@ class MainRouterComponent extends React.Component<RouterProps, {}> {
             <Switch>
                 <Route exact path="/" component={Home} />
 
-                <Route path="/compete/:eventType" component={Compete} />
+                <Route exact path="/compete/:eventType" component={Compete} />
 
                 <Route>
                     <div className="white-container">
-                        <Route path="/event/:eventType" component={Records} />
+                        <Route exact path="/event/:eventType" component={Records} />
 
-                        <Route path="/sum-of-ranks/:eventType" component={SumOfRanks} />
+                        <Route exact path="/sum-of-ranks/:eventType" component={SumOfRanks} />
 
-                        <Route path="/kinchranks/:eventType" component={Kinchranks} />
+                        <Route exact path="/kinchranks/:eventType" component={Kinchranks} />
 
                         <Route exact path="/leaderboards" component={LeaderboardsCollection} />
 
-                        <Route path="/leaderboards/:compId" component={Leaderboard} />
+                        <Route exact path="/leaderboards/:compId" component={Leaderboard} />
 
                         <Route exact path="/(u|user)/:username" component={Profile} />
 
                         <Route exact path="/versus" component={VersusSelect} />
 
-                        <Route path="/(vs|versus)/:user1/:user2" component={Versus} />
+                        <Route exact path="/(vs|versus)/:user1/:user2" component={Versus} />
 
-                        <Route path="/settings" component={UserSettings} />
+                        <Route exact path="/settings" component={UserSettings} />
                     </div>
                 </Route>
             </Switch>
