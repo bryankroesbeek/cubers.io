@@ -1,0 +1,1 @@
+export declare function initShapes(canvas: HTMLCanvasElement): void
